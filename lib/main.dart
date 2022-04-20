@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      title: "Loy Eat",
+      title: "Loy Eat driver app",
       initialRoute: "/",
       defaultTransition: Transition.noTransition,
       getPages: [
