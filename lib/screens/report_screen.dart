@@ -322,7 +322,7 @@ class _ReportScreenState extends State<ReportScreen> {
             children: [
               InkWell(
                 splashColor: none,
-                onTap: () => Get.back(),
+                onTap: () => Get.toNamed('/report_order_detail?titleOrder=${reportController.orderNo[index]}'),
                 child: Column(
                   children: [
                     Row(

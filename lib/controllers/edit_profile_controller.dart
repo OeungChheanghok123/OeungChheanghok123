@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:loy_eat/controllers/become_driver_controller.dart';
 import 'package:loy_eat/widgets/layout_widget/color.dart';
 
 class EditProfileController extends GetxController{
+  var becomeDriverController = BecomeDriverController();
   var driverNameController = TextEditingController();
   var phoneNumberController = TextEditingController();
 
@@ -14,8 +16,6 @@ class EditProfileController extends GetxController{
   var bikeBorderVehicleColor = platinum.obs; var bikeBackgroundVehicleColor = white.obs;
   var motorBorderVehicleMotorColor = platinum.obs; var motorBackgroundVehicleBikeColor = white.obs;
   var rickshawBorderVehicleBikeColor = platinum.obs; var rickshawBackgroundVehicleBikeColor = white.obs;
-
-  var isSelectMorning = false.obs; var isSelectAfternoon = false.obs; var isSelectEvening = false.obs;
 
   var morningTextScheduleColor  = black.obs; var morningBorderScheduleColor = silver.obs; var morningBackgroundScheduleColor = white.obs;
   var afternoonTextScheduleColor  = black.obs; var afternoonBorderScheduleColor = silver.obs; var afternoonBackgroundScheduleColor = white.obs;
@@ -31,6 +31,11 @@ class EditProfileController extends GetxController{
   var satTextColor = black.obs; var satBackColor = platinum.obs;
   var sunTextColor = black.obs; var sunBackColor = platinum.obs;
 
+  @override
+  onInit() {
+    super.onInit();
+    setColorScheduleTime();
+  }
   void selectVehicle(int index) {
     if (index == 0){
       isSelectedBike.value = true;
@@ -72,48 +77,16 @@ class EditProfileController extends GetxController{
   }
   void selectScheduleTime(int index) {
     if (index == 0) {
-      isSelectMorning.value = true;
-      isSelectAfternoon.value = false;
-      isSelectEvening.value = false;
+      becomeDriverController.isSelectMorning.value = !becomeDriverController.isSelectMorning.value;
     }
     if (index == 1) {
-      isSelectAfternoon.value = true;
-      isSelectMorning.value = false;
-      isSelectEvening.value = false;
+      becomeDriverController.isSelectAfternoon.value = !becomeDriverController.isSelectAfternoon.value;
     }
     if(index == 2) {
-      isSelectEvening.value = true;
-      isSelectMorning.value = false;
-      isSelectAfternoon.value = false;
+      becomeDriverController.isSelectEvening.value = !becomeDriverController.isSelectEvening.value;
     }
 
-    if (isSelectMorning.value  == true){
-      morningTextScheduleColor.value = white;
-      morningBackgroundScheduleColor.value = rabbit;
-      morningBorderScheduleColor.value = none;
-    } else {
-      morningTextScheduleColor.value = black;
-      morningBackgroundScheduleColor.value = white;
-      morningBorderScheduleColor.value = silver;
-    }
-    if (isSelectAfternoon.value == true){
-      afternoonTextScheduleColor.value = white;
-      afternoonBackgroundScheduleColor.value = rabbit;
-      afternoonBorderScheduleColor.value = none;
-    } else {
-      afternoonTextScheduleColor.value = black;
-      afternoonBackgroundScheduleColor.value = white;
-      afternoonBorderScheduleColor.value = silver;
-    }
-    if (isSelectEvening.value  == true){
-      eveningTextScheduleColor.value = white;
-      eveningBackgroundScheduleColor.value = rabbit;
-      eveningBorderScheduleColor.value = none;
-    } else {
-      eveningTextScheduleColor.value = black;
-      eveningBackgroundScheduleColor.value = white;
-      eveningBorderScheduleColor.value = silver;
-    }
+    setColorScheduleTime();
   }
   void selectScheduleWeek(int index) {
     switch(index) {
@@ -195,6 +168,35 @@ class EditProfileController extends GetxController{
     else {
       sunTextColor.value = black;
       sunBackColor.value = platinum;
+    }
+  }
+  void setColorScheduleTime() {
+    if (becomeDriverController.isSelectMorning.value  == true){
+      morningTextScheduleColor.value = white;
+      morningBackgroundScheduleColor.value = rabbit;
+      morningBorderScheduleColor.value = none;
+    } else {
+      morningTextScheduleColor.value = black;
+      morningBackgroundScheduleColor.value = white;
+      morningBorderScheduleColor.value = silver;
+    }
+    if (becomeDriverController.isSelectAfternoon.value == true){
+      afternoonTextScheduleColor.value = white;
+      afternoonBackgroundScheduleColor.value = rabbit;
+      afternoonBorderScheduleColor.value = none;
+    } else {
+      afternoonTextScheduleColor.value = black;
+      afternoonBackgroundScheduleColor.value = white;
+      afternoonBorderScheduleColor.value = silver;
+    }
+    if (becomeDriverController.isSelectEvening.value  == true){
+      eveningTextScheduleColor.value = white;
+      eveningBackgroundScheduleColor.value = rabbit;
+      eveningBorderScheduleColor.value = none;
+    } else {
+      eveningTextScheduleColor.value = black;
+      eveningBackgroundScheduleColor.value = white;
+      eveningBorderScheduleColor.value = silver;
     }
   }
 }

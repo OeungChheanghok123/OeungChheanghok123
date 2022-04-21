@@ -230,9 +230,24 @@ class _BecomeDriverScreenState extends State<BecomeDriverScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Obx(() => _buildButtonSchedule(0, 'Morning', becomeDriverController.morningTextScheduleColor.value, becomeDriverController.morningBackgroundScheduleColor.value, becomeDriverController.morningBorderScheduleColor.value)),
-              Obx(() => _buildButtonSchedule(1, 'Afternoon', becomeDriverController.afternoonTextScheduleColor.value, becomeDriverController.afternoonBackgroundScheduleColor.value, becomeDriverController.afternoonBorderScheduleColor.value)),
-              Obx(() => _buildButtonSchedule(2, 'Evening', becomeDriverController.eveningTextScheduleColor.value, becomeDriverController.eveningBackgroundScheduleColor.value, becomeDriverController.eveningBorderScheduleColor.value)),
+              Obx(() => _buildButtonSchedule(
+                  0,
+                  'Morning',
+                  becomeDriverController.morningTextScheduleColor.value,
+                  becomeDriverController.morningBackgroundScheduleColor.value,
+                  becomeDriverController.morningBorderScheduleColor.value)),
+              Obx(() => _buildButtonSchedule(
+                  1,
+                  'Afternoon',
+                  becomeDriverController.afternoonTextScheduleColor.value,
+                  becomeDriverController.afternoonBackgroundScheduleColor.value,
+                  becomeDriverController.afternoonBorderScheduleColor.value)),
+              Obx(() => _buildButtonSchedule(
+                  2,
+                  'Evening',
+                  becomeDriverController.eveningTextScheduleColor.value,
+                  becomeDriverController.eveningBackgroundScheduleColor.value,
+                  becomeDriverController.eveningBorderScheduleColor.value)),
             ],
           ),
         ],

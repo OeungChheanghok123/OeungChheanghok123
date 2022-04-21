@@ -10,6 +10,7 @@ import 'package:loy_eat/screens/invite_friend_screen.dart';
 import 'package:loy_eat/screens/login_screen.dart';
 import 'package:loy_eat/screens/qr_code_screen.dart';
 import 'package:loy_eat/screens/rating_score_screen.dart';
+import 'package:loy_eat/screens/report_order_detail_screen.dart';
 import 'package:loy_eat/screens/start_up_screen.dart';
 import 'package:loy_eat/screens/support_screen.dart';
 import 'package:loy_eat/screens/verify_phone_number_screen.dart';
@@ -42,6 +43,7 @@ class MyApp extends StatelessWidget {
         GetPage(name: '/support', page: () => const SupportScreen(), transition: Transition.rightToLeftWithFade),
         GetPage(name: '/feedback_us', page: () => const FeedbackUsScreen(), transition: Transition.rightToLeftWithFade),
         GetPage(name: '/qr_code', page: () => const QRCodeScreen(), transition: Transition.rightToLeftWithFade),
+        GetPage(name: '/report_order_detail', page: () => const ReportOrderDetailScreen(), transition: Transition.rightToLeftWithFade),
       ],
       home: StartUpScreen(key: key),
     );

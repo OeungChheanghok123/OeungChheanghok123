@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:loy_eat/widgets/layout_widget/color.dart';
 
 class BecomeDriverController extends GetxController {
-
   TextEditingController driverNameController = TextEditingController();
   TextEditingController birthDayController = TextEditingController();
   TextEditingController phoneNumberController = TextEditingController();
@@ -82,19 +81,13 @@ class BecomeDriverController extends GetxController {
   }
   void selectSchedule(int index) {
     if (index == 0) {
-      isSelectMorning.value = true;
-      isSelectAfternoon.value = false;
-      isSelectEvening.value = false;
+      isSelectMorning.value = !isSelectMorning.value;
     }
     if (index == 1) {
-      isSelectAfternoon.value = true;
-      isSelectMorning.value = false;
-      isSelectEvening.value = false;
+      isSelectAfternoon.value = !isSelectAfternoon.value;
     }
     if(index == 2) {
-      isSelectEvening.value = true;
-      isSelectMorning.value = false;
-      isSelectAfternoon.value = false;
+      isSelectEvening.value = !isSelectEvening.value;
     }
 
     if (isSelectMorning.value  == true){

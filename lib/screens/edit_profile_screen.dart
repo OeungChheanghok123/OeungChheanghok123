@@ -138,9 +138,24 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Obx(() => _buildButtonSchedule(0, 'Morning', editProfileController.morningTextScheduleColor.value, editProfileController.morningBackgroundScheduleColor.value, editProfileController.morningBorderScheduleColor.value)),
-              Obx(() => _buildButtonSchedule(1, 'Afternoon', editProfileController.afternoonTextScheduleColor.value, editProfileController.afternoonBackgroundScheduleColor.value, editProfileController.afternoonBorderScheduleColor.value)),
-              Obx(() => _buildButtonSchedule(2, 'Evening', editProfileController.eveningTextScheduleColor.value, editProfileController.eveningBackgroundScheduleColor.value, editProfileController.eveningBorderScheduleColor.value)),
+              Obx(() => _buildButtonSchedule(
+                  0,
+                  'Morning',
+                  editProfileController.morningTextScheduleColor.value,
+                  editProfileController.morningBackgroundScheduleColor.value,
+                  editProfileController.morningBorderScheduleColor.value)),
+              Obx(() => _buildButtonSchedule(
+                  1,
+                  'Afternoon',
+                  editProfileController.afternoonTextScheduleColor.value,
+                  editProfileController.afternoonBackgroundScheduleColor.value,
+                  editProfileController.afternoonBorderScheduleColor.value)),
+              Obx(() => _buildButtonSchedule(
+                  2,
+                  'Evening',
+                  editProfileController.eveningTextScheduleColor.value,
+                  editProfileController.eveningBackgroundScheduleColor.value,
+                  editProfileController.eveningBorderScheduleColor.value)),
             ],
           ),
         ],
