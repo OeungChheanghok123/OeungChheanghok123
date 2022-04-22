@@ -20,6 +20,7 @@ class TextFieldWidget extends StatelessWidget {
   final bool isPrefixIcon;
   final Icon suffixIcon;
   final Icon prefixIcon;
+  final bool readOnly;
   final TextEditingController controller;
 
   const TextFieldWidget({
@@ -43,6 +44,7 @@ class TextFieldWidget extends StatelessWidget {
     this.isPrefixIcon = false,
     this.suffixIcon = const Icon(null),
     this.prefixIcon = const Icon(null),
+    this.readOnly = false,
   }) : super(key: key);
 
   @override
@@ -56,6 +58,7 @@ class TextFieldWidget extends StatelessWidget {
         keyboardType: inputType,
         textAlign: textAlign,
         autocorrect: false,
+        readOnly: readOnly,
         textAlignVertical: TextAlignVertical.center,
         maxLines: maxLine,
         style: TextStyle(
