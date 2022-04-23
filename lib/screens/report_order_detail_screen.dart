@@ -2,6 +2,7 @@ import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:loy_eat/controllers/report_order_detail_controller.dart';
+import 'package:loy_eat/widgets/layout_widget/button_widget.dart';
 import 'package:loy_eat/widgets/layout_widget/color.dart';
 import 'package:loy_eat/widgets/layout_widget/icon_widget.dart';
 import 'package:loy_eat/widgets/layout_widget/space.dart';
@@ -52,8 +53,24 @@ class _ReportOrderDetailScreenState extends State<ReportOrderDetailScreen> {
               _buildDetailCustomer,
               _buildItemCountAndTotal,
               _buildTextFieldRemark,
-              _buildItemsDetail,
+              _buildItemsOrderDetail,
+              _buildStatusDetail,
+              _buildYourEarning,
             ],
+          ),
+        ),
+        bottomSheet: Container(
+          color: white,
+          margin: const EdgeInsets.symmetric(horizontal: 15),
+          child: ButtonWidget(
+            onPressed: () => Get.back(),
+            height: 40,
+            width: MediaQuery.of(context).size.width,
+            child: const TextWidget(
+              text: 'Delivered successfully to Sovongdy',
+              color: white,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
       ),
@@ -178,12 +195,13 @@ class _ReportOrderDetailScreenState extends State<ReportOrderDetailScreen> {
             controller: reportOrderDetailController.remarkController,
             height: 45,
             inputType: TextInputType.text,
+            readOnly: true,
           ),
         ],
       ),
     );
   }
-  Widget get _buildItemsDetail{
+  Widget get _buildItemsOrderDetail{
     return Container(
       margin: const EdgeInsets.only(top: 5, right: 15, left: 15),
       alignment: Alignment.topLeft,
@@ -196,6 +214,7 @@ class _ReportOrderDetailScreenState extends State<ReportOrderDetailScreen> {
           ),
           ListView.builder(
             shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
             itemCount: 5,
             itemBuilder: (BuildContext context, int index){
               return Container(
@@ -241,6 +260,81 @@ class _ReportOrderDetailScreenState extends State<ReportOrderDetailScreen> {
             height: 1,
             color: silver,
           ),
+        ],
+      ),
+    );
+  }
+  Widget get _buildStatusDetail{
+    return Container(
+      margin: const EdgeInsets.only(top: 10, right: 15, left: 15),
+      child: Column(
+        children: [
+          _buildItemsStatus('Subtotal', '\$15.00'),
+          _buildItemsStatus('Discount', '\$0.00'),
+          _buildItemsStatus('VAT', '\$0.00', dottedLine: true),
+          _buildItemsStatus('Net delivery fee', '\$4.00', fontBold: true),
+          _buildItemsStatus('Tip', '\$1.00', fontBold: true),
+          _buildItemsStatus('Bonus', '\$0.00', fontBold: true, underLine: true),
+          _buildItemsStatus('Total', '\$20.00'),
+        ],
+      ),
+    );
+  }
+  Widget get _buildYourEarning{
+    return Container(
+      margin: const EdgeInsets.only(top: 5, right: 15, left: 15, bottom: 60),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const TextWidget(
+            text: 'Your Earnings',
+            fontWeight: FontWeight.bold,
+          ),
+          Container(
+            color: rabbit,
+            padding: const EdgeInsets.symmetric(horizontal: 2),
+            child: const TextWidget(
+              text: '\$5.00',
+              color: white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildItemsStatus(String title, String price, {bool fontBold = false, dottedLine = false, underLine = false}){
+    return Container(
+      margin: const EdgeInsets.only(bottom: 5),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              TextWidget(
+                text: title,
+                fontWeight: fontBold ? FontWeight.bold : FontWeight.normal,
+              ),
+              TextWidget(
+                text: price,
+                fontWeight: fontBold ? FontWeight.bold : FontWeight.normal,
+              ),
+            ],
+          ),
+          underLine ? Container(
+            margin: const EdgeInsets.only(top: 5),
+            width: double.infinity,
+            height: 1,
+            color: silver,
+          ) : dottedLine ? Container(
+            margin: const EdgeInsets.only(top: 5),
+            child: const DottedLine(
+              dashLength: 1.5,
+              lineThickness: 2,
+              dashColor: silver,
+            ),
+          ) : const SizedBox.shrink(),
         ],
       ),
     );

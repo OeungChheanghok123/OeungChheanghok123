@@ -2,11 +2,14 @@ import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:loy_eat/controllers/home_controller.dart';
+import 'package:loy_eat/models/report_chart.dart';
 import 'package:loy_eat/widgets/layout_widget/color.dart';
 import 'package:loy_eat/widgets/layout_widget/icon_widget.dart';
 import 'package:loy_eat/widgets/layout_widget/space.dart';
 import 'package:loy_eat/widgets/layout_widget/text_widget.dart';
 import 'package:loy_eat/widgets/screen_widget/home_screen_app_bar.dart';
+import 'package:charts_flutter/flutter.dart' as charts;
+import 'package:loy_eat/widgets/screen_widget/home_screen_bar_chart.dart';
 
 class HomeScreen extends StatefulWidget{
    const HomeScreen({Key? key}) : super(key: key);
@@ -46,6 +49,16 @@ class _HomeScreenState extends State<HomeScreen>{
     );
   }
 
+  final List<ReportChart> data = [
+    ReportChart(date: '15\nMon', price: 12.45, barColor: charts.ColorUtil.fromDartColor(rabbit)),
+    ReportChart(date: '16\nTue', price: 22, barColor: charts.ColorUtil.fromDartColor(rabbit)),
+    ReportChart(date: '17\nWed', price: 15, barColor: charts.ColorUtil.fromDartColor(rabbit)),
+    ReportChart(date: '18\nThu', price: 30.05, barColor: charts.ColorUtil.fromDartColor(rabbit)),
+    ReportChart(date: '19\nFri', price: 40, barColor: charts.ColorUtil.fromDartColor(rabbit)),
+    ReportChart(date: '20\nSat', price: 0, barColor: charts.ColorUtil.fromDartColor(rabbit)),
+    ReportChart(date: '21\nSun', price: 0, barColor: charts.ColorUtil.fromDartColor(rabbit)),
+  ];
+
   Widget get _buildDatePicker {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -59,7 +72,7 @@ class _HomeScreenState extends State<HomeScreen>{
               Space(width: 5),
               IconWidget(icon: Icons.arrow_right_alt, color: black),
               Space(width: 5),
-              TextWidget(text: '22 - Nov - 2021'),
+              TextWidget(text: '21 - Nov - 2021'),
               Space(width: 5),
               IconWidget(icon: Icons.arrow_drop_down, color: black),
             ],
@@ -70,9 +83,10 @@ class _HomeScreenState extends State<HomeScreen>{
   }
   Widget get _buildChart {
     return Container(
-      margin: const EdgeInsets.only(top: 15, bottom: 5),
-      color: rabbit,
+      margin: const EdgeInsets.only(top: 5, bottom: 5),
+      color: white,
       height: 180,
+      child:  HomeScreenBarChart(data: data),
     );
   }
   Widget get _buildStatus {
@@ -181,7 +195,6 @@ class _HomeScreenState extends State<HomeScreen>{
   }
   Widget get _buildBreakDown {
     const space = Space(height: 8);
-
     return Container(
       margin: const EdgeInsets.fromLTRB(10, 0, 25, 15),
       child: Column(
