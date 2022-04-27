@@ -20,9 +20,20 @@ class HomeScreenBarChart extends StatelessWidget {
         domainFn: (ReportChart chart, _) => chart.date,
         measureFn: (ReportChart chart, _) => chart.price,
         colorFn: (ReportChart chart, _) => chart.barColor,
-      )
+        labelAccessorFn: (ReportChart chart, _) => chart.price == 0 ? '' : '${chart.price}',
+      ),
     ];
 
-    return charts.BarChart(chart, animate: true);
+    return charts.BarChart(
+      chart,
+      animate: true,
+      barRendererDecorator: charts.BarLabelDecorator<String>(
+        outsideLabelStyleSpec: const charts.TextStyleSpec(
+          fontSize: 9,
+        ),
+        labelPadding: 5,
+        labelAnchor: charts.BarLabelAnchor.end,
+      ),
+    );
   }
 }

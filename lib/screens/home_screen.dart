@@ -51,10 +51,10 @@ class _HomeScreenState extends State<HomeScreen>{
 
   final List<ReportChart> data = [
     ReportChart(date: '15\nMon', price: 12.45, barColor: charts.ColorUtil.fromDartColor(rabbit)),
-    ReportChart(date: '16\nTue', price: 22, barColor: charts.ColorUtil.fromDartColor(rabbit)),
-    ReportChart(date: '17\nWed', price: 15, barColor: charts.ColorUtil.fromDartColor(rabbit)),
+    ReportChart(date: '16\nTue', price: 30.00, barColor: charts.ColorUtil.fromDartColor(rabbit)),
+    ReportChart(date: '17\nWed', price: 15.00, barColor: charts.ColorUtil.fromDartColor(rabbit)),
     ReportChart(date: '18\nThu', price: 30.05, barColor: charts.ColorUtil.fromDartColor(rabbit)),
-    ReportChart(date: '19\nFri', price: 40, barColor: charts.ColorUtil.fromDartColor(rabbit)),
+    ReportChart(date: '19\nFri', price: 40.00, barColor: charts.ColorUtil.fromDartColor(rabbit)),
     ReportChart(date: '20\nSat', price: 0, barColor: charts.ColorUtil.fromDartColor(rabbit)),
     ReportChart(date: '21\nSun', price: 0, barColor: charts.ColorUtil.fromDartColor(rabbit)),
   ];
@@ -91,7 +91,7 @@ class _HomeScreenState extends State<HomeScreen>{
   }
   Widget get _buildStatus {
     return Container(
-      margin: const EdgeInsets.fromLTRB(10, 15, 25, 15),
+      margin: const EdgeInsets.fromLTRB(10, 15, 10, 15),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -196,7 +196,7 @@ class _HomeScreenState extends State<HomeScreen>{
   Widget get _buildBreakDown {
     const space = Space(height: 8);
     return Container(
-      margin: const EdgeInsets.fromLTRB(10, 0, 25, 15),
+      margin: const EdgeInsets.fromLTRB(10, 0, 10, 15),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

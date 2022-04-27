@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/get_navigation.dart';
+import 'package:loy_eat/screens/become_driver_fail_screen.dart';
 import 'package:loy_eat/screens/become_driver_screen.dart';
 import 'package:loy_eat/screens/become_driver_success_screen.dart';
 import 'package:loy_eat/screens/edit_profile_screen.dart';
@@ -15,6 +16,7 @@ import 'package:loy_eat/screens/start_up_screen.dart';
 import 'package:loy_eat/screens/support_screen.dart';
 import 'package:loy_eat/screens/verify_phone_number_screen.dart';
 import 'package:loy_eat/screens/notification_screen.dart';
+import 'package:loy_eat/widgets/screen_widget/auto_complete_text_field.dart';
 
 void main() => runApp(const MyApp());
 
@@ -37,6 +39,8 @@ class MyApp extends StatelessWidget {
         GetPage(name: '/instruction', page: () => const InstructionScreen()),
         GetPage(name: '/notification', page: () => const NotificationScreen(), transition: Transition.rightToLeftWithFade),
         GetPage(name: '/become_driver_success', page: () => const BecomeDriverSuccessScreen()),
+        GetPage(name: '/become_driver_fail', page: () => const BecomeDriverFailScreen()),
+        GetPage(name: '/auto_complete_text_field', page: () => const AutoCompleteTextField(), transition: Transition.downToUp),
         GetPage(name: '/edit_profile', page: () => const EditProfileScreen(), transition: Transition.rightToLeftWithFade),
         GetPage(name: '/rating_score', page: () => const RatingScoreScreen(), transition: Transition.rightToLeftWithFade),
         GetPage(name: '/invite_friend', page: () => const InviteFriendScreen(), transition: Transition.rightToLeftWithFade),

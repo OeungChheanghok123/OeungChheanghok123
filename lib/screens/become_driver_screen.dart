@@ -39,7 +39,7 @@ class _BecomeDriverScreenState extends State<BecomeDriverScreen> {
                 _buildDriverGenderAndBirthYear,
                 _buildDriverMobilePhone,
                 _buildDriverVehicle,
-                //_buildDriverAddress,
+                _buildDriverAddress,
                 _buildDriverSchedule,
                 _buildDriverIDCard,
                 _buildDriverReferral,
@@ -164,59 +164,45 @@ class _BecomeDriverScreenState extends State<BecomeDriverScreen> {
       ),
     );
   }
-
-  // Widget get _buildDriverAddress{
-  //   return SizedBox(
-  //     width: double.infinity,
-  //     child: Column(
-  //       crossAxisAlignment: CrossAxisAlignment.start,
-  //       children: <Widget>[
-  //         const TextWidget(
-  //           isTitle: true,
-  //           text: 'Where do you live?',
-  //         ),
-  //         SizedBox(
-  //           width: double.infinity,
-  //           child: Column(
-  //             crossAxisAlignment: CrossAxisAlignment.start,
-  //             children: [
-  //               _buildDropdownButton(0, 'Districts', menuDistrictItems),
-  //               _buildDropdownButton(1, 'Communes', menuCommuneItems),
-  //             ],
-  //           ),
-  //         ),
-  //         const Space(height: 10),
-  //       ],
-  //     ),
-  //   );
-  // }
-
-  // Widget get _buildDriverAddress{
-  //   return SizedBox(
-  //     width: double.infinity,
-  //     child: Column(
-  //       crossAxisAlignment: CrossAxisAlignment.start,
-  //       children: <Widget>[
-  //         const TextWidget(
-  //           isTitle: true,
-  //           text: 'Where do you live?',
-  //         ),
-  //         SizedBox(
-  //           width: double.infinity,
-  //           child: Column(
-  //             crossAxisAlignment: CrossAxisAlignment.start,
-  //             children: [
-  //               _buildDropdownButton(),
-  //               _buildDropdownButton(),
-  //             ],
-  //           ),
-  //         ),
-  //         const Space(height: 10),
-  //       ],
-  //     ),
-  //   );
-  // }
-
+  Widget get _buildDriverAddress{
+    return SizedBox(
+      width: double.infinity,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          const TextWidget(
+            isTitle: true,
+            text: 'Where do you live?',
+          ),
+          Container(
+            height: 35,
+            margin: const EdgeInsets.only(top: 10),
+            child: TextField(
+              controller: becomeDriverController.khanCodeController,
+              onTap: () => Get.toNamed('/auto_complete_text_field'),
+              readOnly: true,
+              decoration: InputDecoration(
+                border: const OutlineInputBorder(),
+                hintText: becomeDriverController.khanCodeController.text,
+                contentPadding: const EdgeInsets.only(left: 10),
+              ),
+            ),
+          ),
+          // SizedBox(
+          //   width: double.infinity,
+          //   child: Column(
+          //     crossAxisAlignment: CrossAxisAlignment.start,
+          //     children: [
+          //       _buildDropdownButton(0, 'Districts', menuDistrictItems),
+          //       _buildDropdownButton(1, 'Communes', menuCommuneItems),
+          //     ],
+          //   ),
+          // )
+          const Space(height: 10),
+        ],
+      ),
+    );
+  }
   Widget get _buildDriverSchedule{
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
@@ -307,7 +293,13 @@ class _BecomeDriverScreenState extends State<BecomeDriverScreen> {
       margin: const EdgeInsets.fromLTRB(25, 15, 25, 0),
       child:  ButtonWidget(
         height: 40,
-        onPressed: () => Get.offAllNamed('/become_driver_success'),
+        onPressed: () {
+          if (becomeDriverController.phoneNumberController.text == "") {
+            Get.offAllNamed('/become_driver_fail');
+          } else {
+            Get.offAllNamed('/become_driver_success');
+          }
+        },
         borderRadius: 25,
         child: const TextWidget(
           isTitle: true,
@@ -375,34 +367,6 @@ class _BecomeDriverScreenState extends State<BecomeDriverScreen> {
       ),
     ),
   );
-
-  // Widget _buildDropdownButton(){
-  //   return DropDownTextField(
-  //     //initialValue: "name4",
-  //     validator: (value){
-  //       if (value == 'name4') {
-  //         return "Required field";
-  //       } else {
-  //         return null;
-  //       }
-  //     },
-  //     dropDownList: [
-  //       DropDownValueModel(name: 'name1', value: "value1"),
-  //       DropDownValueModel(name: 'name2', value: "value2"),
-  //       DropDownValueModel(name: 'name3', value: "value3"),
-  //       DropDownValueModel(name: 'name4', value: "value4"),
-  //       DropDownValueModel(name: 'name5', value: "value5"),
-  //       DropDownValueModel(name: 'name6', value: "value6"),
-  //       DropDownValueModel(name: 'name7', value: "value7"),
-  //       DropDownValueModel(name: 'name8', value: "value8"),
-  //     ],
-  //     maxItemCount: 6,
-  //     onChanged: (val) {
-  //       print(val);
-  //     },
-  //   );
-  // }
-
   // Widget _buildDropdownButton(int index, String hintText, List<String> menuItems){
   //   return Container(
   //     padding: const EdgeInsets.fromLTRB(10, 5, 5, 5),

@@ -7,6 +7,7 @@ class BecomeDriverController extends GetxController {
   TextEditingController birthDayController = TextEditingController();
   TextEditingController phoneNumberController = TextEditingController();
   TextEditingController referralCodeController = TextEditingController();
+  TextEditingController khanCodeController = TextEditingController();
 
   var radioGenderValue = 0.obs;
   var dropDownDistrictValue = "".obs;
@@ -37,6 +38,11 @@ class BecomeDriverController extends GetxController {
   var eveningBorderScheduleColor = silver.obs;
   var eveningBackgroundScheduleColor = white.obs;
 
+  @override
+  void onInit() {
+    super.onInit();
+    khanCodeController.text = "select you khan";
+  }
   void selectGender(int index) {
     radioGenderValue.value = index;
   }
