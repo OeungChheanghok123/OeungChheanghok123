@@ -79,6 +79,11 @@ class TextFieldWidget extends StatelessWidget {
           ),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(borderRadius)),
+            borderSide: const BorderSide(color: silver),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(borderRadius)),
+            borderSide: const BorderSide(color: silver),
           ),
         ),
       ),

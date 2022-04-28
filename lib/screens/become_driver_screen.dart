@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:get/get.dart';
 import 'package:loy_eat/controllers/become_driver_controller.dart';
+import 'package:loy_eat/models/location_model.dart';
 import 'package:loy_eat/widgets/layout_widget/button_widget.dart';
 import 'package:loy_eat/widgets/layout_widget/color.dart';
 import 'package:loy_eat/widgets/layout_widget/icon_widget.dart';
@@ -169,35 +171,26 @@ class _BecomeDriverScreenState extends State<BecomeDriverScreen> {
       width: double.infinity,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
+        children: [
           const TextWidget(
             isTitle: true,
             text: 'Where do you live?',
           ),
-          Container(
-            height: 35,
-            margin: const EdgeInsets.only(top: 10),
-            child: TextField(
-              controller: becomeDriverController.khanCodeController,
-              onTap: () => Get.toNamed('/auto_complete_text_field'),
-              readOnly: true,
-              decoration: InputDecoration(
-                border: const OutlineInputBorder(),
-                hintText: becomeDriverController.khanCodeController.text,
-                contentPadding: const EdgeInsets.only(left: 10),
-              ),
-            ),
+          const Space(height: 10),
+          _buildAddressTextField(
+            controller: becomeDriverController.districtController,
+            labelText: 'District',
+            hintText: 'Select District',
+            menuItem: menuDistrictItems,
+            noItemFoundText: 'No district matched.',
           ),
-          // SizedBox(
-          //   width: double.infinity,
-          //   child: Column(
-          //     crossAxisAlignment: CrossAxisAlignment.start,
-          //     children: [
-          //       _buildDropdownButton(0, 'Districts', menuDistrictItems),
-          //       _buildDropdownButton(1, 'Communes', menuCommuneItems),
-          //     ],
-          //   ),
-          // )
+          _buildAddressTextField(
+            controller: becomeDriverController.communeController,
+            labelText: 'Commune',
+            hintText: 'Select Commune',
+            menuItem: menuCommuneItems,
+            noItemFoundText: 'No commune matched.',
+          ),
           const Space(height: 10),
         ],
       ),
@@ -367,6 +360,67 @@ class _BecomeDriverScreenState extends State<BecomeDriverScreen> {
       ),
     ),
   );
+  Widget _buildAddressTextField({required TextEditingController controller, required List<String> menuItem, required String labelText, required String hintText, required String noItemFoundText}){
+    return Container(
+      color: white,
+      height: 40,
+      margin: const EdgeInsets.only(bottom: 10),
+      child: TypeAheadFormField(
+        autoFlipDirection: true,
+        getImmediateSuggestions: true,
+        hideSuggestionsOnKeyboardHide: false,
+        hideOnEmpty: false,
+        suggestionsCallback: (pattern) => menuItem.where((item) => item.toLowerCase().contains(pattern.toLowerCase())),
+        suggestionsBoxDecoration: const SuggestionsBoxDecoration(
+          color: white,
+          clipBehavior: Clip.hardEdge,
+        ),
+        itemBuilder: (_, String item) => Container(
+          padding: const EdgeInsets.all(10),
+          child: TextWidget(
+            text: item,
+          ),
+        ),
+        errorBuilder: (context, error) => Text('error',
+          style: TextStyle(color: Theme.of(context).errorColor),
+        ),
+        onSuggestionSelected: (String val) => controller.text = val,
+        noItemsFoundBuilder: (context) => Container(
+          padding: const EdgeInsets.all(10),
+          child: TextWidget(
+            text: noItemFoundText,
+            size: 12,
+          ),
+        ),
+        textFieldConfiguration: TextFieldConfiguration(
+          style: const TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.normal,
+            color: black,
+          ),
+          controller: controller,
+          decoration: InputDecoration(
+            labelText: labelText,
+            hintText: hintText,
+            hintStyle: const TextStyle(
+              fontSize: 12,
+              color: silver,
+            ),
+            contentPadding: const EdgeInsets.only(left: 10),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(5),
+              borderSide: const BorderSide(),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(5),
+              borderSide: const BorderSide(),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   // Widget _buildDropdownButton(int index, String hintText, List<String> menuItems){
   //   return Container(
   //     padding: const EdgeInsets.fromLTRB(10, 5, 5, 5),
