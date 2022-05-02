@@ -420,47 +420,4 @@ class _BecomeDriverScreenState extends State<BecomeDriverScreen> {
       ),
     );
   }
-
-  // Widget _buildDropdownButton(int index, String hintText, List<String> menuItems){
-  //   return Container(
-  //     padding: const EdgeInsets.fromLTRB(10, 5, 5, 5),
-  //     margin: const EdgeInsets.symmetric(vertical: 10),
-  //     decoration: BoxDecoration(
-  //       color: white,
-  //       border: Border.all(color: silver, width: 1),
-  //       borderRadius: BorderRadius.circular(5),
-  //     ),
-  //     child: DropdownButton<String>(
-  //       value: index == 0 ? _dropDownDistrictValue : _dropDownCommuneValue,
-  //       hint: TextWidget(text: hintText),
-  //       items: menuItems.map((String value) =>
-  //           DropdownMenuItem<String>(
-  //             value: value,
-  //             child: TextWidget(text: value),
-  //           ),
-  //       ).toList(),
-  //       borderRadius: BorderRadius.circular(5),
-  //       dropdownColor: white,
-  //       alignment: AlignmentDirectional.center,
-  //       isDense: true,
-  //       itemHeight: null,
-  //       menuMaxHeight: 300,
-  //       underline: Container(),
-  //       onChanged: (String? newValue){
-  //         if (newValue != null){
-  //           if (index == 0){
-  //             setState(() {
-  //               _dropDownDistrictValue = newValue;
-  //             });
-  //           }
-  //           else {
-  //             setState(() {
-  //               _dropDownCommuneValue = newValue;
-  //             });
-  //           }
-  //         }
-  //       },
-  //     ),
-  //   );
-  // }
 }
