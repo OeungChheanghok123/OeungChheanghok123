@@ -37,7 +37,7 @@ class MyApp extends StatelessWidget {
         GetPage(name: '/verify_phone_number', page: () => const VerifyPhoneNumberScreen()),
         GetPage(name: '/enter_otp_code', page: () => const EnterOTPCodeScreen()),
         GetPage(name: '/instruction', page: () => const InstructionScreen()),
-        GetPage(name: '/notification', page: () => const NotificationScreen(), transition: Transition.rightToLeftWithFade),
+        GetPage(name: '/notification', page: () => const NotificationScreen(), transition: Transition.rightToLeftWithFade, transitionDuration: const Duration(milliseconds: 500)),
         GetPage(name: '/become_driver_success', page: () => const BecomeDriverSuccessScreen()),
         GetPage(name: '/become_driver_fail', page: () => const BecomeDriverFailScreen()),
         GetPage(name: '/auto_complete_text_field', page: () => const AutoCompleteTextField(), transition: Transition.downToUp),

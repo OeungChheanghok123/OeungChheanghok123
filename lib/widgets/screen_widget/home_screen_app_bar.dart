@@ -49,7 +49,7 @@ class HomeScreenAppBar extends StatelessWidget implements PreferredSize{
                 ),
               ),
             ),
-            homeController.notificationCount.value > 0 ? Obx(() => Positioned(
+            homeController.readAll.value ? Container() : Obx(() => Positioned(
               top: 15,
               right: 15,
               child: Container(
@@ -65,7 +65,7 @@ class HomeScreenAppBar extends StatelessWidget implements PreferredSize{
                   fontWeight: FontWeight.bold,
                 ),
               ),
-            )) : Container(),
+            )) ,
           ],
         ),
       ],

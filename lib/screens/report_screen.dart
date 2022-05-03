@@ -245,13 +245,19 @@ class _ReportScreenState extends State<ReportScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Container(
-            color: lightGray,
-            padding: const EdgeInsets.all(5),
-            child: const TextWidget(
-              isTitle: true,
-              text: 'Order Details',
-            ),
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(5),
+                child: const TextWidget(
+                  text: 'Fitter by Date:',
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const IconWidget(
+                icon: Icons.calendar_today,
+              ),
+            ],
           ),
           Row(
             children: [

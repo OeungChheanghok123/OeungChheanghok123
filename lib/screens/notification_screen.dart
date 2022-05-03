@@ -26,32 +26,34 @@ class _NotificationScreenState extends State<NotificationScreen> {
         extendBody: true,
         backgroundColor: white,
         appBar: AppBar(
-          backgroundColor: rabbit,
+          backgroundColor: white,
           elevation: 0,
           titleSpacing: 0,
-          centerTitle: true,
           leading: InkWell(
             onTap: () => Get.back(),
             child: const IconWidget(
               icon: Icons.arrow_back_ios,
-              color: white,
+              color: black,
               size: 24,
             ),
           ),
           title: TitleAppBarWidget(
             text: titleText,
-            color: white,
+            color: black,
           ),
           actions: [
             InkWell(
               splashColor: none,
               onTap: () => homeController.deleteNotification(),
               child: Container(
+                alignment: Alignment.center,
                 margin: const EdgeInsets.only(right: 10),
-                child: const IconWidget(
-                  icon: Icons.delete_rounded,
-                  color: white,
-                  size: 30,
+                child: Obx(
+                  () => TextWidget(
+                    text: 'Read all',
+                    color: homeController.readAll.value ? silver : rabbit,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),
@@ -67,15 +69,16 @@ class _NotificationScreenState extends State<NotificationScreen> {
   }
 
   Widget get _nonNotification {
-    return const Center(
-      child: IconWidget(
+    return Container(
+      color: lightGray,
+      alignment: Alignment.center,
+      child: const IconWidget(
         icon: Icons.notifications_off,
         size: 100,
         color: silver,
       ),
     );
   }
-
   Widget get _notification {
     return Container(
       padding: const EdgeInsets.all(10),
@@ -87,63 +90,92 @@ class _NotificationScreenState extends State<NotificationScreen> {
           return Card(
             color: white,
             elevation: 5,
-            child: Container(
-              margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Expanded(
-                    flex: 4,
-                    child: Container(
-                      margin: const EdgeInsets.only(right: 10),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.max,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
+            child: Stack(
+              children: [
+                Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        flex: 4,
+                        child: Container(
+                          margin: const EdgeInsets.only(right: 10),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.max,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const ImageIconWidget(
-                                image: 'assets/image/icon_promotion.png',
-                                size: 40,
-                                backgroundColor: white,
-                                borderColor: white,
+                              Row(
+                                children: [
+                                  const ImageIconWidget(
+                                    image: 'assets/image/icon_promotion.png',
+                                    size: 40,
+                                    backgroundColor: white,
+                                    borderColor: white,
+                                  ),
+                                  const Space(width: 15),
+                                  TextWidget(
+                                    //text: 'Big Discount "Green Tea"',
+                                    text: homeController.notificationModel[index].title.toString(),
+                                    fontWeight: FontWeight.bold,
+                                    size: 12,
+                                  ),
+                                ],
                               ),
-                              const Space(width: 15),
-                              TextWidget(
-                                //text: 'Big Discount "Green Tea"',
-                                text: homeController.notificationModel[index].title.toString(),
-                                fontWeight: FontWeight.bold,
-                                size: 12,
+                              Container(
+                                padding: const EdgeInsets.only(left: 8, bottom: 5),
+                                child: TextWidget(
+                                  //text: "Happy Khmer New Year 2022, Amazon store in Cambodia",
+                                  text: homeController.notificationModel[index].subTile.toString(),
+                                  size: 10,
+                                  textOverflow: TextOverflow.ellipsis,
+                                ),
                               ),
                             ],
                           ),
-                          Container(
-                            padding: const EdgeInsets.only(left: 8, bottom: 5),
-                            child: TextWidget(
-                              //text: "Happy Khmer New Year 2022, Amazon store in Cambodia",
-                              text: homeController.notificationModel[index].subTile.toString(),
-                              size: 10,
-                              textOverflow: TextOverflow.ellipsis,
-                            ),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 1,
+                        child: Container(
+                          alignment: Alignment.center,
+                          child: TextWidget(
+                            //text: '28 Feb',
+                            text: homeController.notificationModel[index].date.toString(),
+                            size: 12,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Positioned(
+                  top: 10,
+                  right: 10,
+                  child: Obx(
+                    () => Container(
+                      width: 5,
+                      height: 5,
+                      decoration: BoxDecoration(
+                        color: homeController.readAll.value ? white : rabbit,
+                        borderRadius: BorderRadius.circular(100),
+                        boxShadow: [
+                          BoxShadow(
+                            color: homeController.readAll.value
+                                ? white
+                                : rabbit.withOpacity(0.5),
+                            spreadRadius: 5,
+                            blurRadius: 10,
+                            offset: const Offset(
+                                3, 1,), // changes position of shadow
                           ),
                         ],
                       ),
                     ),
                   ),
-                  Expanded(
-                    flex: 1,
-                    child: Container(
-                      alignment: Alignment.center,
-                      child: TextWidget(
-                        //text: '28 Feb',
-                        text: homeController.notificationModel[index].date.toString(),
-                        size: 12,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
           );
         },

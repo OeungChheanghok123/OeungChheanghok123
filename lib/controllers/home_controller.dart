@@ -14,6 +14,7 @@ class HomeController extends GetxController {
   var notificationColor = rabbit.obs;
   var notificationCount = 0.obs;
   var totalEarnings = 0.00.obs;
+  var readAll = false.obs;
 
   @override
   void onInit() {
@@ -40,6 +41,7 @@ class HomeController extends GetxController {
   }
 
   void deleteNotification() {
-    notificationCount.value = 0;
+    //notificationCount.value = 0;
+    readAll.value = true;
   }
 }
