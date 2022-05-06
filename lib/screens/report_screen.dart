@@ -116,9 +116,9 @@ class _ReportScreenState extends State<ReportScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const TextWidget(
+          TextWidget(
             isTitle: true,
-            text: 'Stats',
+            text: 'Stats'.tr,
           ),
           Container(
             margin: const EdgeInsets.only(top: 10),
@@ -188,9 +188,9 @@ class _ReportScreenState extends State<ReportScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const TextWidget(
+        TextWidget(
           isTitle: true,
-          text: 'Breakdown',
+          text: 'Breakdown'.tr,
         ),
         Container(
           margin: const EdgeInsets.symmetric(vertical: 10),

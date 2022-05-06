@@ -62,7 +62,7 @@ class StartUpScreen extends StatelessWidget {
                       InkWell(
                         splashColor: none,
                         onTap: () {
-                          languagesController.changeLanguage('en', 'US');
+                          //languagesController.changeLanguage('en', 'US');
                           Get.offAllNamed('/log_in');
                         },
                         child: _buildLanguage('assets/image/uk_flag.svg', 'English', 'United kingdom Flag Logo',),
