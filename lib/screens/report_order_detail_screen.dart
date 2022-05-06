@@ -56,21 +56,8 @@ class _ReportOrderDetailScreenState extends State<ReportOrderDetailScreen> {
               _buildItemsOrderDetail,
               _buildStatusDetail,
               _buildYourEarning,
+              _buildButtonStatus,
             ],
-          ),
-        ),
-        bottomSheet: Container(
-          color: white,
-          margin: const EdgeInsets.symmetric(horizontal: 15),
-          child: ButtonWidget(
-            onPressed: () => Get.back(),
-            height: 40,
-            width: MediaQuery.of(context).size.width,
-            child: const TextWidget(
-              text: 'Delivered successfully to Sovongdy',
-              color: white,
-              fontWeight: FontWeight.bold,
-            ),
           ),
         ),
       ),
@@ -282,7 +269,7 @@ class _ReportOrderDetailScreenState extends State<ReportOrderDetailScreen> {
   }
   Widget get _buildYourEarning{
     return Container(
-      margin: const EdgeInsets.only(top: 5, right: 15, left: 15, bottom: 60),
+      margin: const EdgeInsets.only(top: 5, right: 15, left: 15),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -300,6 +287,22 @@ class _ReportOrderDetailScreenState extends State<ReportOrderDetailScreen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+  Widget get _buildButtonStatus{
+    return  Container(
+      color: white,
+      margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+      child: ButtonWidget(
+        onPressed: () => Get.back(),
+        height: 40,
+        width: MediaQuery.of(context).size.width,
+        child: const TextWidget(
+          text: 'Delivered successfully to Sovongdy',
+          color: white,
+          fontWeight: FontWeight.bold,
+        ),
       ),
     );
   }

@@ -65,7 +65,7 @@ class HomeScreenAppBar extends StatelessWidget implements PreferredSize{
                   fontWeight: FontWeight.bold,
                 ),
               ),
-            )) ,
+            ),) ,
           ],
         ),
       ],

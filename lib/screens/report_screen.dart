@@ -2,13 +2,11 @@ import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:loy_eat/controllers/report_controller.dart';
-import 'package:loy_eat/models/report_chart.dart';
 import 'package:loy_eat/widgets/layout_widget/color.dart';
 import 'package:loy_eat/widgets/layout_widget/icon_widget.dart';
 import 'package:loy_eat/widgets/layout_widget/space.dart';
 import 'package:loy_eat/widgets/layout_widget/text_widget.dart';
 import 'package:loy_eat/widgets/screen_widget/home_screen_bar_chart.dart';
-import 'package:charts_flutter/flutter.dart' as charts;
 
 class ReportScreen extends StatefulWidget {
   const ReportScreen({Key? key}) : super(key: key);
@@ -64,15 +62,6 @@ class _ReportScreenState extends State<ReportScreen> {
     );
   }
 
-  final List<ReportChart> data = [
-    ReportChart(date: '15\nMon', price: 12.45, barColor: charts.ColorUtil.fromDartColor(rabbit)),
-    ReportChart(date: '16\nTue', price: 30.00, barColor: charts.ColorUtil.fromDartColor(rabbit)),
-    ReportChart(date: '17\nWed', price: 15.00, barColor: charts.ColorUtil.fromDartColor(rabbit)),
-    ReportChart(date: '18\nThu', price: 30.05, barColor: charts.ColorUtil.fromDartColor(rabbit)),
-    ReportChart(date: '19\nFri', price: 40.00, barColor: charts.ColorUtil.fromDartColor(rabbit)),
-    ReportChart(date: '20\nSat', price: 0, barColor: charts.ColorUtil.fromDartColor(rabbit)),
-    ReportChart(date: '21\nSun', price: 0, barColor: charts.ColorUtil.fromDartColor(rabbit)),
-  ];
 
   Widget get _buildDateMonthReport{
     return Column(
@@ -118,7 +107,7 @@ class _ReportScreenState extends State<ReportScreen> {
       margin: const EdgeInsets.only(top: 15, bottom: 5),
       color: white,
       height: 180,
-      child: HomeScreenBarChart(data: data),
+      child: HomeScreenBarChart(data: reportController.data),
     );
   }
   Widget get _buildStatus {
@@ -254,8 +243,13 @@ class _ReportScreenState extends State<ReportScreen> {
                   fontWeight: FontWeight.w500,
                 ),
               ),
-              const IconWidget(
-                icon: Icons.calendar_today,
+              InkWell(
+                onTap: () => Get.toNamed('/'),
+                child: const IconWidget(
+                  icon: Icons.calendar_today,
+                  size: 20,
+                  color: black,
+                ),
               ),
             ],
           ),

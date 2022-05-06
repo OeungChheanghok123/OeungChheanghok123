@@ -96,7 +96,7 @@ class _HomeScreenState extends State<HomeScreen>{
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const TextWidget(isTitle: true, text: 'Stats'),
+          TextWidget(isTitle: true, text: 'Stats'.tr),
           Container(
             margin: const EdgeInsets.symmetric(vertical: 10),
             child: Row(
@@ -200,7 +200,7 @@ class _HomeScreenState extends State<HomeScreen>{
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const TextWidget(isTitle: true, text: 'Breakdown'),
+          TextWidget(isTitle: true, text: 'Breakdown'.tr),
           Container(
             margin: const EdgeInsets.symmetric(vertical: 10),
             child: Column(

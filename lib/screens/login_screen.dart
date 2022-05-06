@@ -38,8 +38,8 @@ class LoginScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  _buildButton("Log In", rabbit, '/verify_phone_number'),
-                  _buildButton("Become a Driver?", carrot, '/become_driver'),
+                  _buildButton("Log In".tr, rabbit, '/verify_phone_number'),
+                  _buildButton("Become a Driver?".tr, carrot, '/become_driver'),
                 ],
               ),
             ),

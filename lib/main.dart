@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/get_navigation.dart';
+import 'package:loy_eat/models/languages.dart';
 import 'package:loy_eat/screens/become_driver_fail_screen.dart';
 import 'package:loy_eat/screens/become_driver_screen.dart';
 import 'package:loy_eat/screens/become_driver_success_screen.dart';
@@ -27,6 +28,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
+      translations: Languages(),
+      locale: const Locale('en', 'US'),
+      fallbackLocale: const Locale('en', 'US'),
       title: "Loy Eat driver app for BuyLoy.com",
       initialRoute: "/",
       defaultTransition: Transition.noTransition,

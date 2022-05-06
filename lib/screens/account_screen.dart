@@ -109,12 +109,12 @@ class _AccountScreenState extends State<AccountScreen> {
       margin: const EdgeInsets.fromLTRB(20, 25, 20, 30),
       child: Column(
         children: [
-          _buildMenuItem(Icons.person_rounded, 'Edit Profile', '/edit_profile'),
-          _buildMenuItem(Icons.reviews_rounded, 'Rating Score', '/rating_score'),
-          _buildMenuItem(Icons.loyalty_outlined, 'Invite Friends to Earn Points', '/invite_friend'),
-          _buildMenuItem(Icons.help_outlined, 'Need a Support', '/support'),
-          _buildMenuItem(Icons.rate_review_outlined, 'Feedback Us', '/feedback_us'),
-          _buildLanguage(Icons.language_outlined, 'Language'),
+          _buildMenuItem(Icons.person_rounded, 'Edit Profile'.tr, '/edit_profile'),
+          _buildMenuItem(Icons.reviews_rounded, 'Rating Score'.tr, '/rating_score'),
+          _buildMenuItem(Icons.loyalty_outlined, 'Invite Friends to Earn Points'.tr, '/invite_friend'),
+          _buildMenuItem(Icons.help_outlined, 'Need a Support'.tr, '/support'),
+          _buildMenuItem(Icons.rate_review_outlined, 'Feedback Us'.tr, '/feedback_us'),
+          _buildLanguage(Icons.language_outlined, 'Language'.tr),
         ],
       ),
     );
@@ -127,9 +127,9 @@ class _AccountScreenState extends State<AccountScreen> {
         height: 40,
         width: MediaQuery.of(context).size.width,
         color: lightGray,
-        child: const TextWidget(
+        child: TextWidget(
           isTitle: true,
-          text: 'Logout',
+          text: 'Logout'.tr,
           color: rabbit,
         ),
       ),

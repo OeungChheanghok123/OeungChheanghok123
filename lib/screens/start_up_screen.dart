@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:loy_eat/controllers/languages_controller.dart';
 import 'package:loy_eat/widgets/layout_widget/color.dart';
 import 'package:loy_eat/widgets/layout_widget/space.dart';
 import 'package:loy_eat/widgets/layout_widget/svg_picture_widget.dart';
@@ -11,6 +12,7 @@ class StartUpScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    LanguagesController languagesController = Get.put(LanguagesController());
     
     return Scaffold(
       extendBody: true,
@@ -50,14 +52,20 @@ class StartUpScreen extends StatelessWidget {
                     children: [
                       InkWell(
                         splashColor: none,
-                        onTap: () => Get.offAllNamed(''),
-                        child: _buildLanguage('assets/image/cambodia_flag.svg', 'ខ្មែរ', 'Cambodia Flag Logo'),
+                        onTap: () {
+                          languagesController.changeLanguage('kh', 'KH');
+                          Get.offAllNamed('/log_in');
+                        },
+                        child: _buildLanguage('assets/image/cambodia_flag.svg', 'ខ្មែរ', 'Cambodia Flag Logo',),
                       ),
                       const Space(width: 35),
                       InkWell(
                         splashColor: none,
-                        onTap: () => Get.offAllNamed('/log_in'),
-                        child: _buildLanguage('assets/image/uk_flag.svg', 'English', 'United kingdom Flag Logo'),
+                        onTap: () {
+                          languagesController.changeLanguage('en', 'US');
+                          Get.offAllNamed('/log_in');
+                        },
+                        child: _buildLanguage('assets/image/uk_flag.svg', 'English', 'United kingdom Flag Logo',),
                       ),
                     ],
                   ),
