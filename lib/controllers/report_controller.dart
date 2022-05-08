@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:loy_eat/models/report_chart.dart';
 import 'package:loy_eat/models/report_model.dart';
 import 'package:loy_eat/widgets/layout_widget/color.dart';
@@ -17,6 +18,7 @@ class ReportController extends GetxController{
   var colorRadioCanceledStatus = white.obs;
   var colorTextDeliveredStatus = rabbit.obs;
   var colorRadioDeliveredStatus = rabbit.obs;
+  var dataDatePicker = ''.obs;
 
   List<String> orderWeek = ['20 Dec - 26 Dec', '27 Dec - 2 Jan', '3 Jan - 9 Jan'];
   List<String> orderNo = ['211220', '211220', '211221', '211223', '211224', '211226'];

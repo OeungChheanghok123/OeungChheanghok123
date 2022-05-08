@@ -1,6 +1,7 @@
 import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:loy_eat/controllers/report_controller.dart';
 import 'package:loy_eat/widgets/layout_widget/color.dart';
 import 'package:loy_eat/widgets/layout_widget/icon_widget.dart';
@@ -61,7 +62,6 @@ class _ReportScreenState extends State<ReportScreen> {
       ),
     );
   }
-
 
   Widget get _buildDateMonthReport{
     return Column(
@@ -243,14 +243,32 @@ class _ReportScreenState extends State<ReportScreen> {
                   fontWeight: FontWeight.w500,
                 ),
               ),
-              InkWell(
-                onTap: () => Get.toNamed('/'),
-                child: const IconWidget(
+              Obx(() => InkWell(
+                onTap: () {
+                  showDatePicker(
+                    context: context,
+                    initialDate: DateTime.now(),
+                    firstDate: DateTime(2020),
+                    lastDate: DateTime(2030),
+                  ).then((DateTime? value) {
+                    if (value != null) {
+                      DateTime _fromDate = DateTime.now();
+                      _fromDate = value;
+                      var outputFormat = DateFormat('dd MMM');
+                      final String date = outputFormat.format(_fromDate);
+                      reportController.dataDatePicker.value = date;
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Selected date: $date')),
+                      );
+                    }
+                  });
+                },
+                child: reportController.dataDatePicker.value == '' ? const IconWidget(
                   icon: Icons.calendar_today,
                   size: 20,
                   color: black,
-                ),
-              ),
+                ) : TextWidget(text: reportController.dataDatePicker.value),
+              ),),
             ],
           ),
           Row(

@@ -73,7 +73,7 @@ class HomeScreenAppBar extends StatelessWidget implements PreferredSize{
   }
 
   @override
-  Size get preferredSize => const Size.fromHeight(55.0);
+  Size get preferredSize => const Size.fromHeight(50.0);
 
   @override
   Widget get child => throw UnimplementedError();

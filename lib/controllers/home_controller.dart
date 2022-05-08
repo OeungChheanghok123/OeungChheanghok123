@@ -39,9 +39,12 @@ class HomeController extends GetxController {
       notificationColor.value = rabbit;
     }
   }
-
   void deleteNotification() {
     //notificationCount.value = 0;
     readAll.value = true;
+  }
+  Future<Widget> wait3SecAndLoadData() async {
+    await Future.delayed(const Duration(seconds: 3));
+    return Container();
   }
 }

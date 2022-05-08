@@ -30,18 +30,33 @@ class _HomeScreenState extends State<HomeScreen>{
         extendBody: true,
         backgroundColor: white,
         appBar: const HomeScreenAppBar(),
-        body: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: Container(
-            width: size.width,
-            margin: const EdgeInsets.all(15.0),
-            child: Column(
-              children: <Widget>[
-                _buildDatePicker,
-                _buildChart,
-                _buildStatus,
-                _buildBreakDown,
-              ],
+        body: Center(
+          child: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: FutureBuilder<Widget>(
+              future: homeController.wait3SecAndLoadData(),
+              builder: (context, snapshot){
+                if (snapshot.hasError){
+                  final error = snapshot.error;
+                  return TextWidget(text: "$error");
+                } else if (snapshot.hasData){
+                  return Container(
+                    width: size.width,
+                    alignment: Alignment.topCenter,
+                    margin: const EdgeInsets.fromLTRB(15, 0, 15, 15),
+                    child: Column(
+                      children: [
+                        _buildDatePicker,
+                        _buildChart,
+                        _buildStatus,
+                        _buildBreakDown,
+                      ],
+                    ),
+                  );
+                } else {
+                  return const CircularProgressIndicator();
+                }
+              },
             ),
           ),
         ),
@@ -60,25 +75,20 @@ class _HomeScreenState extends State<HomeScreen>{
   ];
 
   Widget get _buildDatePicker {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        SizedBox(
-          width: 250,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: const <Widget> [
-              TextWidget(text: '15 - Nov - 2021'),
-              Space(width: 5),
-              IconWidget(icon: Icons.arrow_right_alt, color: black),
-              Space(width: 5),
-              TextWidget(text: '21 - Nov - 2021'),
-              Space(width: 5),
-              IconWidget(icon: Icons.arrow_drop_down, color: black),
-            ],
-          ),
-        ),
-      ],
+    return Container(
+      margin: const EdgeInsets.only(bottom: 5),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: const <Widget> [
+          TextWidget(text: '15 - Nov - 2021'),
+          Space(width: 5),
+          IconWidget(icon: Icons.arrow_right_alt, color: black),
+          Space(width: 5),
+          TextWidget(text: '21 - Nov - 2021'),
+          Space(width: 5),
+          IconWidget(icon: Icons.arrow_drop_down, color: black),
+        ],
+      ),
     );
   }
   Widget get _buildChart {
