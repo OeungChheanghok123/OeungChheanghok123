@@ -2,13 +2,11 @@ import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:loy_eat/controllers/home_controller.dart';
-import 'package:loy_eat/models/report_chart.dart';
 import 'package:loy_eat/widgets/layout_widget/color.dart';
 import 'package:loy_eat/widgets/layout_widget/icon_widget.dart';
 import 'package:loy_eat/widgets/layout_widget/space.dart';
 import 'package:loy_eat/widgets/layout_widget/text_widget.dart';
 import 'package:loy_eat/widgets/screen_widget/home_screen_app_bar.dart';
-import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:loy_eat/widgets/screen_widget/home_screen_bar_chart.dart';
 
 class HomeScreen extends StatefulWidget{
@@ -28,58 +26,52 @@ class _HomeScreenState extends State<HomeScreen>{
     return SafeArea(
       child: Scaffold(
         extendBody: true,
-        backgroundColor: white,
+        backgroundColor: lightGray,
         appBar: const HomeScreenAppBar(),
-        body: Center(
-          child: SingleChildScrollView(
-            scrollDirection: Axis.vertical,
-            child: FutureBuilder<Widget>(
-              future: homeController.wait3SecAndLoadData(),
-              builder: (context, snapshot){
-                if (snapshot.hasError){
-                  final error = snapshot.error;
-                  return TextWidget(text: "$error");
-                } else if (snapshot.hasData){
-                  return Container(
-                    width: size.width,
-                    alignment: Alignment.topCenter,
-                    margin: const EdgeInsets.fromLTRB(15, 0, 15, 15),
-                    child: Column(
-                      children: [
-                        _buildDatePicker,
-                        _buildChart,
-                        _buildStatus,
-                        _buildBreakDown,
-                      ],
-                    ),
-                  );
-                } else {
-                  return const CircularProgressIndicator();
-                }
-              },
-            ),
+        body: SingleChildScrollView(
+          physics: const NeverScrollableScrollPhysics(),
+          scrollDirection: Axis.vertical,
+          padding: const EdgeInsets.all(0),
+          child: FutureBuilder<Widget>(
+            future: homeController.wait3SecAndLoadData(),
+            builder: (context, snapshot){
+              if (snapshot.hasError){
+                final error = snapshot.error;
+                return TextWidget(text: "$error");
+              } else if (snapshot.hasData){
+                return Container(
+                  width: size.width,
+                  alignment: Alignment.topCenter,
+                  //margin: const EdgeInsets.fromLTRB(15, 0, 15, 15),
+                  child: Column(
+                    children: [
+                      _buildDatePicker,
+                      _buildChart,
+                      _buildStatus,
+                      _buildBreakDown,
+                    ],
+                  ),
+                );
+              } else {
+                return Container(
+                  height: MediaQuery.of(context).size.height - 55,
+                  alignment: Alignment.center,
+                  child: const CircularProgressIndicator(color: rabbit),
+                );
+              }
+            },
           ),
         ),
       ),
     );
   }
 
-  final List<ReportChart> data = [
-    ReportChart(date: '15\nMon', price: 12.45, barColor: charts.ColorUtil.fromDartColor(rabbit)),
-    ReportChart(date: '16\nTue', price: 30.00, barColor: charts.ColorUtil.fromDartColor(rabbit)),
-    ReportChart(date: '17\nWed', price: 15.00, barColor: charts.ColorUtil.fromDartColor(rabbit)),
-    ReportChart(date: '18\nThu', price: 30.05, barColor: charts.ColorUtil.fromDartColor(rabbit)),
-    ReportChart(date: '19\nFri', price: 40.00, barColor: charts.ColorUtil.fromDartColor(rabbit)),
-    ReportChart(date: '20\nSat', price: 0, barColor: charts.ColorUtil.fromDartColor(rabbit)),
-    ReportChart(date: '21\nSun', price: 0, barColor: charts.ColorUtil.fromDartColor(rabbit)),
-  ];
-
   Widget get _buildDatePicker {
     return Container(
-      margin: const EdgeInsets.only(bottom: 5),
+      margin: const EdgeInsets.only(bottom: 10, top: 15),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: const <Widget> [
+        children: const [
           TextWidget(text: '15 - Nov - 2021'),
           Space(width: 5),
           IconWidget(icon: Icons.arrow_right_alt, color: black),
@@ -93,110 +85,100 @@ class _HomeScreenState extends State<HomeScreen>{
   }
   Widget get _buildChart {
     return Container(
-      margin: const EdgeInsets.only(top: 5, bottom: 5),
-      color: white,
+      margin: const EdgeInsets.only(top: 5, bottom: 5, left: 15, right: 15),
+      color: lightGray,
       height: 180,
-      child:  HomeScreenBarChart(data: data),
+      child: Card(
+        elevation: 2,
+        color: white,
+        margin: const EdgeInsets.all(0),
+        shape: RoundedRectangleBorder(
+          side: BorderSide(color: white.withOpacity(0.5), width: 1),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Container(
+          alignment: Alignment.center,
+          padding: const EdgeInsets.fromLTRB(10, 15, 0, 15),
+          child: HomeScreenBarChart(data: homeController.data),
+        ),
+      ),
     );
   }
   Widget get _buildStatus {
     return Container(
-      margin: const EdgeInsets.fromLTRB(10, 15, 10, 15),
+      margin: const EdgeInsets.fromLTRB(15, 15, 15, 0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          TextWidget(isTitle: true, text: 'Stats'.tr),
-          Container(
-            margin: const EdgeInsets.symmetric(vertical: 10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const TextWidget(text: 'Online'),
-                        const Space(),
-                        Container(
-                          padding: const EdgeInsets.only(left: 1.5),
-                          child: Obx(() => _buildDetailText(homeController.homeModel.value.online)),
+          TextWidget(isTitle: true, text: 'States'.tr),
+          Card(
+            color: white,
+            elevation: 2,
+            margin: const EdgeInsets.only(bottom: 20, top: 10),
+            shape: RoundedRectangleBorder(
+              side: BorderSide(color: white.withOpacity(0.5), width: 1),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Container(
+              margin: const EdgeInsets.symmetric(vertical: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Obx(
+                        () => _buildCard(
+                          title: 'Online',
+                          subTitle: homeController.homeModel.value.online,
                         ),
-                      ],
-                    ),
-                    const Space(height: 20),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const TextWidget(text: 'Distance'),
-                        const Space(),
-                        Container(
-                          padding: const EdgeInsets.only(left: 1.5),
-                          child: Obx(() => _buildDetailText(homeController.homeModel.value.distance)),
+                      ),
+                      Obx(
+                            () => _buildCard(
+                          title: 'Distance',
+                          subTitle: homeController.homeModel.value.distance,
                         ),
-                      ],
-                    ),
-                  ],
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const TextWidget(text: 'Trips'),
-                        const Space(),
-                        Container(
-                          padding: const EdgeInsets.only(left: 1.5),
-                          child: Obx(() => _buildDetailText(homeController.homeModel.value.trips.toString())),
+                      ),
+                    ],
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Obx(
+                        () => _buildCard(
+                          title: 'Trips',
+                          subTitle: homeController.homeModel.value.trips.toStringAsFixed(0),
                         ),
-                      ],
-                    ),
-                    const Space(height: 20),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const TextWidget(text: 'Customer'),
-                        const Space(),
-                        Container(
-                          padding: const EdgeInsets.only(left: 1.5),
-                          child: Obx(() => _buildDetailText(homeController.homeModel.value.customerRating)),
+                      ),
+                      Obx(
+                        () => _buildCard(
+                          title: 'Customer',
+                          subTitle: homeController.homeModel.value.customerRating,
                         ),
-                      ],
-                    ),
-                  ],
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const TextWidget(text: 'Points'),
-                        const Space(),
-                        Container(
-                          padding: const EdgeInsets.only(left: 1.5),
-                          child: Obx(() => _buildDetailText(homeController.homeModel.value.points.toString())),
+                      ),
+                    ],
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Obx(
+                        () => _buildCard(
+                          title: 'Points',
+                          subTitle: homeController.homeModel.value.points
+                              .toStringAsFixed(0),
                         ),
-                      ],
-                    ),
-                    const Space(height: 20),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const TextWidget(text: 'Merchant'),
-                        const Space(),
-                        Container(
-                          padding: const EdgeInsets.only(left: 1.5),
-                          child: Obx(() => _buildDetailText(homeController.homeModel.value.merchantRating)),
+                      ),
+                      Obx(
+                        () => _buildCard(
+                          title: 'Merchant',
+                          subTitle: homeController.homeModel.value.merchantRating,
                         ),
-                      ],
-                    ),
-                  ],
-                ),
-              ],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ],
@@ -206,73 +188,139 @@ class _HomeScreenState extends State<HomeScreen>{
   Widget get _buildBreakDown {
     const space = Space(height: 8);
     return Container(
-      margin: const EdgeInsets.fromLTRB(10, 0, 10, 15),
+      margin: const EdgeInsets.fromLTRB(15, 0, 15, 0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           TextWidget(isTitle: true, text: 'Breakdown'.tr),
-          Container(
-            margin: const EdgeInsets.symmetric(vertical: 10),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const TextWidget(text: 'Net delivery fee'),
-                    Obx(() => TextWidget(text: '\$${homeController.homeModel.value.deliveryFee.toStringAsFixed(2)}')),
-                  ],
-                ),
-                space,
-                const DottedLine(
-                  dashLength: 1.5,
-                  lineThickness: 2,
-                  dashColor: silver,
-                ),
-                space,
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const TextWidget(text: 'Bonus'),
-                    Obx(() => TextWidget(text: '\$${homeController.homeModel.value.bonus.toStringAsFixed(2)}')),
-                  ],
-                ),
-                space,
-                const DottedLine(
-                  dashLength: 1.5,
-                  lineThickness: 2,
-                  dashColor: silver,
-                ),
-                space,
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const TextWidget(text: 'Tip'),
-                    Obx(() => TextWidget(text: '\$${homeController.homeModel.value.tip.toStringAsFixed(2)}')),
-                  ],
-                ),
-                space,
-                Container(
-                  height: 1,
-                  color: silver,
-                ),
-                space,
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const TextWidget(text: 'Total Earnings'),
-                    Container(
-                      color: rabbit,
-                      child: TextWidget(text: '\$${homeController.totalEarnings.value.toStringAsFixed(2)}', fontWeight: FontWeight.bold, color: white),
-                    ),
-                  ],
-                ),
-              ],
+          Card(
+            elevation: 2,
+            margin: const EdgeInsets.only(top: 10),
+            color: white,
+            shape: RoundedRectangleBorder(
+              side: BorderSide(color: white.withOpacity(0.5), width: 1),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Container(
+              margin: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const TextWidget(text: 'Net delivery fee'),
+                      Obx(() => TextWidget(text: '\$${homeController.homeModel.value.deliveryFee.toStringAsFixed(2)}')),
+                    ],
+                  ),
+                  space,
+                  DottedLine(
+                    dashLength: 1.5,
+                    lineThickness: 2,
+                    dashColor: silver.withOpacity(0.5),
+                  ),
+                  space,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const TextWidget(text: 'Bonus'),
+                      Obx(() => TextWidget(text: '\$${homeController.homeModel.value.bonus.toStringAsFixed(2)}')),
+                    ],
+                  ),
+                  space,
+                  DottedLine(
+                    dashLength: 1.5,
+                    lineThickness: 2,
+                    dashColor: silver.withOpacity(0.5),
+                  ),
+                  space,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const TextWidget(text: 'Tip'),
+                      Obx(() => TextWidget(text: '\$${homeController.homeModel.value.tip.toStringAsFixed(2)}')),
+                    ],
+                  ),
+                  space,
+                  Container(
+                    height: 1,
+                    color: silver.withOpacity(0.5),
+                  ),
+                  space,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const TextWidget(text: 'Total Earnings'),
+                      Container(
+                        padding: const EdgeInsets.all(3),
+                        decoration: BoxDecoration(
+                          color: rabbit.withOpacity(0.5),
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        child: TextWidget(
+                          text: '\$${homeController.totalEarnings.value.toStringAsFixed(2)}',
+                          fontWeight: FontWeight.bold,
+                          color: black.withOpacity(0.8),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ],
       ),
     );
   }
+  // Widget _buildCard({required String title, required String subTitle}) {
+  //   return Card(
+  //     color: white,
+  //     elevation: 2,
+  //     margin: const EdgeInsets.only(bottom: 10),
+  //     shape: RoundedRectangleBorder(
+  //       side: BorderSide(color: white.withOpacity(0.5), width: 1),
+  //       borderRadius: BorderRadius.circular(10),
+  //     ),
+  //     child: Container(
+  //       alignment: Alignment.center,
+  //       width: 95,
+  //       padding: const EdgeInsets.all(5),
+  //       child: Column(
+  //         crossAxisAlignment: CrossAxisAlignment.center,
+  //         mainAxisAlignment: MainAxisAlignment.center,
+  //         children: [
+  //           TextWidget(text: title),
+  //           const Space(),
+  //           Container(
+  //             padding: const EdgeInsets.only(left: 1.5),
+  //             child: _buildDetailText(subTitle),
+  //           ),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
+
+  Widget _buildCard({required String title, required String subTitle}) {
+    return Container(
+      //alignment: Alignment.center,
+      width: 95,
+      padding: const EdgeInsets.fromLTRB(10, 10, 0, 10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          TextWidget(text: title),
+          const Space(),
+          Container(
+            padding: const EdgeInsets.only(left: 1.5),
+            child: _buildDetailText(subTitle),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildDetailText(String text) {
     return TextWidget(text: text, fontWeight: FontWeight.bold);
   }

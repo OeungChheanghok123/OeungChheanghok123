@@ -29,8 +29,9 @@ class HomeScreenBarChart extends StatelessWidget {
       animate: true,
       barRendererDecorator: charts.BarLabelDecorator<String>(
         outsideLabelStyleSpec: const charts.TextStyleSpec(
-          fontSize: 9,
+          fontSize: 8,
         ),
+        labelPosition: charts.BarLabelPosition.outside,
         labelPadding: 5,
         labelAnchor: charts.BarLabelAnchor.end,
       ),

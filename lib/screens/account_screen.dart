@@ -25,36 +25,38 @@ class _AccountScreenState extends State<AccountScreen> {
     return SafeArea(
       child: Scaffold(
         extendBody: true,
-        backgroundColor: white,
+        backgroundColor: lightGray,
         appBar: null,
         body: SingleChildScrollView(
           padding: const EdgeInsets.all(15),
           child: Column(
-            mainAxisSize: MainAxisSize.max,
             children: [
               _buildDriverDetail,
-              _buildMenu,
-              _buildButtonLogout,
+              Card(
+                elevation: 2,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15.0),
+                ),
+                margin: const EdgeInsets.only(top: 20),
+                child: Column(
+                  children: [
+                    _buildMenu,
+                    _buildVersion,
+                  ],
+                ),
+              ),
             ],
           ),
         ),
-        bottomSheet: Container(
-          color: white,
-          width: MediaQuery.of(context).size.width,
-          height: 50,
-          alignment: Alignment.topCenter,
-          child: const TextWidget(
-            text: 'Version 0.1.0',
-            color: silver,
-          ),
-        ),
+        bottomSheet: _buildButtonLogout,
       ),
     );
   }
 
   Widget get _buildDriverDetail{
     return Card(
-      elevation: 5,
+      margin: const EdgeInsets.all(0),
+      elevation: 2,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15.0),
       ),
@@ -64,31 +66,43 @@ class _AccountScreenState extends State<AccountScreen> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Container(
-                  width: 50,
-                  height: 50,
-                  margin: const EdgeInsets.only(bottom: 5),
-                  decoration: BoxDecoration(
-                    color: rabbit,
-                    borderRadius: BorderRadius.circular(50),
-                    image: DecorationImage(
-                      fit: BoxFit.cover,
-                      image: AssetImage(accountController.userProfile.value),
+            InkWell(
+              splashColor: none,
+              highlightColor: none,
+              onTap: (){},
+              child: Stack(
+                children: [
+                  Container(
+                    width: 50,
+                    height: 50,
+                    margin: const EdgeInsets.only(bottom: 5),
+                    decoration: BoxDecoration(
+                      color: rabbit,
+                      borderRadius: BorderRadius.circular(50),
+                      image: DecorationImage(
+                        fit: BoxFit.cover,
+                        image: AssetImage(accountController.userProfile.value),
+                      ),
                     ),
                   ),
-                ),
-                Row(
-                  children: const [
-                    IconWidget(icon: Icons.image_rounded, size: 16, color: silver),
-                    Space(),
-                    IconWidget(icon: Icons.photo_camera_rounded, size: 16, color: silver),
-                  ],
-                ),
-              ],
+                  Positioned(
+                    bottom: 5,
+                    right: 0,
+                    child: Container(
+                      padding: const EdgeInsets.all(3),
+                      decoration: BoxDecoration(
+                        color: silver,
+                        borderRadius: BorderRadius.circular(100),
+                      ),
+                      child: const IconWidget(
+                          icon: Icons.photo_camera_rounded,
+                          size: 12,
+                          color: black,
+                        ),
+                      )
+                  ),
+                ],
+              ),
             ),
             const Space(width: 20),
             Column(
@@ -119,19 +133,43 @@ class _AccountScreenState extends State<AccountScreen> {
       ),
     );
   }
+  Widget get _buildVersion{
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      height: 35,
+      alignment: Alignment.topCenter,
+      child: const TextWidget(
+        text: 'Version 0.1.0',
+        color: silver,
+      ),
+    );
+  }
   Widget get _buildButtonLogout{
     return Container(
-      margin: const EdgeInsets.fromLTRB(40, 10, 40, 0),
+      color: lightGray,
+      width: MediaQuery.of(context).size.width,
+      padding: const EdgeInsets.fromLTRB(40, 0, 40, 30),
       child: ButtonWidget(
         onPressed: () => exit(0),
-        height: 40,
         width: MediaQuery.of(context).size.width,
-        color: lightGray,
-        child: TextWidget(
-          isTitle: true,
-          text: 'Logout'.tr,
-          color: rabbit,
-        ),
+        color: platinum.withOpacity(0.8),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            IconWidget(
+              icon: Icons.logout,
+              color: black.withOpacity(0.5),
+              size: 18,
+            ),
+            const Space(width: 10),
+            TextWidget(
+              text: 'Log out'.tr,
+              color: black.withOpacity(0.5),
+              size: 14,
+              fontWeight: FontWeight.w500,
+            ),
+          ],
+        )
       ),
     );
   }
@@ -185,17 +223,17 @@ class _AccountScreenState extends State<AccountScreen> {
                     TextWidget(text: text),
                   ],
                 ),
-                const IconWidget(
+                IconWidget(
                   icon: Icons.arrow_forward_ios_rounded,
-                  size: 22,
-                  color: black,
+                  size: 14,
+                  color: black.withOpacity(0.5),
                 ),
               ],
             ),
           ),
         ),
         Container(
-          color: silver,
+          color: silver.withOpacity(0.5),
           height: 1,
           margin: const EdgeInsets.only(bottom: 5),
         ),
@@ -224,18 +262,18 @@ class _AccountScreenState extends State<AccountScreen> {
                 Row(
                   children: [
                     Obx(() => Container(
-                      width: 35,
+                      width: 30,
                       height: 20,
-                      margin: const EdgeInsets.only(right: 10),
+                      margin: const EdgeInsets.only(right: 15),
                       child: SvgPictureWidget(
                         imageString: accountController.defaultLanguage.value,
                         label: 'default language',
                       ),
                     ),),
-                    const IconWidget(
+                    IconWidget(
                       icon: Icons.arrow_forward_ios_rounded,
-                      size: 22,
-                      color: black,
+                      color: black.withOpacity(0.5),
+                      size: 14,
                     ),
                   ],
                 ),
@@ -244,7 +282,7 @@ class _AccountScreenState extends State<AccountScreen> {
           ),
         ),
         Container(
-          color: silver,
+          color: silver.withOpacity(0.5),
           height: 1,
         ),
       ],

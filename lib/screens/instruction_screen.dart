@@ -41,7 +41,7 @@ class _InstructionScreenState extends State<InstructionScreen> {
         currentIndex: _currentTabIndex,
         type: BottomNavigationBarType.fixed,
         fixedColor: rabbit,
-        backgroundColor: white,
+        backgroundColor: lightGray,
         elevation: 0,
         onTap: (int index) {
           setState(() {

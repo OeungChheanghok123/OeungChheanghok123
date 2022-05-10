@@ -13,7 +13,7 @@ class ButtonWidget extends StatelessWidget {
   const ButtonWidget({
     Key? key,
     this.width = 150,
-    this.height = 50,
+    this.height = 40,
     this.color = rabbit,
     this.borderSide = BorderSide.none,
     this.borderRadius = 10,
