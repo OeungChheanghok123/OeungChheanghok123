@@ -248,9 +248,10 @@ class _BecomeDriverScreenState extends State<BecomeDriverScreen> {
             height: 120,
             onPressed: () => print('take photo is clicked'), // ignore_for_file: avoid_print
             color: platinum,
-            child: const IconWidget(
+            child: IconWidget(
               icon: Icons.photo_camera,
               size: 48,
+              color: black.withOpacity(0.3),
             ),
           ),
         ),
@@ -285,7 +286,6 @@ class _BecomeDriverScreenState extends State<BecomeDriverScreen> {
       width: MediaQuery.of(context).size.width,
       margin: const EdgeInsets.fromLTRB(25, 15, 25, 0),
       child:  ButtonWidget(
-        height: 40,
         onPressed: () {
           if (becomeDriverController.phoneNumberController.text == "") {
             Get.offAllNamed('/become_driver_fail');
@@ -293,11 +293,11 @@ class _BecomeDriverScreenState extends State<BecomeDriverScreen> {
             Get.offAllNamed('/become_driver_success');
           }
         },
-        borderRadius: 25,
         child: const TextWidget(
-          isTitle: true,
           text: 'Submit',
           color: white,
+          size: 14,
+          fontWeight: FontWeight.w500,
         ),
       ),
     );

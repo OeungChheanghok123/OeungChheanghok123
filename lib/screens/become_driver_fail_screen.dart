@@ -62,9 +62,13 @@ class BecomeDriverFailScreen extends StatelessWidget {
                     ButtonWidget(
                       onPressed: () => Get.offAllNamed('/log_in'),
                       width: size.width - 100,
-                      height: 40,
                       color: carrot,
-                      child: const TextWidget(text: 'Got it', color: white, isTitle: true),
+                      child: const TextWidget(
+                        text: 'Got it',
+                        color: white,
+                        size: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ],
                 ),

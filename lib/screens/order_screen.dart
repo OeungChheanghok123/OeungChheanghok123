@@ -16,7 +16,7 @@ class _OrderScreenState extends State<OrderScreen> {
     return const SafeArea(
       child: Scaffold(
         extendBody: true,
-        backgroundColor: white,
+        backgroundColor: lightGray,
         appBar: HomeScreenAppBar(),
         body: NewOrderScreen(),
       ),

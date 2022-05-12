@@ -76,7 +76,6 @@ class VerifyPhoneNumberScreen extends StatelessWidget {
           margin: const EdgeInsets.symmetric(vertical: 10),
           padding: const EdgeInsets.symmetric(horizontal: 15),
           child: TextFieldWidget(
-            key: key,
             controller: controller,
             height: 50,
             inputType: TextInputType.number,
@@ -87,23 +86,19 @@ class VerifyPhoneNumberScreen extends StatelessWidget {
           ),
         ),
         ButtonWidget(
-          height: 40,
           onPressed: () => Get.offAllNamed('/enter_otp_code?phone=${controller.text}'),
-          borderRadius: 20,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              TextWidget(
-                key: key,
-                isTitle: true,
+              const TextWidget(
                 text: 'Next',
                 color: white,
+                size: 14,
+                fontWeight: FontWeight.w500,
               ),
               Space(key: key),
-              IconWidget(
-                key: key,
+              const IconWidget(
                 icon: Icons.double_arrow,
-                size: 20,
                 color: white,
               ),
             ],

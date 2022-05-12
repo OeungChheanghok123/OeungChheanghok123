@@ -51,14 +51,13 @@ class LoginScreen extends StatelessWidget {
 
   Widget _buildButton(String text, Color color, String page){
     return ButtonWidget(
-      width: 160,
-      height: 50,
       color: color,
       onPressed: () => Get.offAllNamed(page),
       child: TextWidget(
-        isTitle: true,
         text: text,
         color: white,
+        size: 14,
+        fontWeight: FontWeight.w500,
       ),
     );
   }

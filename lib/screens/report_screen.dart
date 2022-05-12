@@ -24,41 +24,92 @@ class _ReportScreenState extends State<ReportScreen> {
     return SafeArea(
       child: Scaffold(
         extendBody: true,
-        backgroundColor: white,
+        backgroundColor: lightGray,
         appBar: null,
-        body: CustomScrollView(
-          slivers: [
-            SliverAppBar(
-              pinned: true,
-              elevation: 1,
-              backgroundColor: white,
-              expandedHeight: 630,
-              excludeHeaderSemantics: true,
-              automaticallyImplyLeading: false,
-              flexibleSpace: FlexibleSpaceBar(
-                collapseMode: CollapseMode.pin,
-                background: Container(
-                  margin: const EdgeInsets.all(15),
-                  child: Column(
-                    children: [
-                      _buildDateMonthReport,
-                      _buildChart,
-                      _buildStatus,
-                      _buildBreakDown,
-                    ],
+        body:  FutureBuilder(
+          future: reportController.wait3SecAndLoadData(),
+          builder: (context, snapshot){
+            if (snapshot.hasError){
+              final error = snapshot.error;
+              return TextWidget(text: "$error");
+            } else if (snapshot.hasData){
+              return CustomScrollView(
+                slivers: [
+                  SliverAppBar(
+                    pinned: true,
+                    elevation: 1,
+                    backgroundColor: lightGray,
+                    expandedHeight: 630,
+                    excludeHeaderSemantics: true,
+                    automaticallyImplyLeading: false,
+                    flexibleSpace: FlexibleSpaceBar(
+                      collapseMode: CollapseMode.pin,
+                      background: Container(
+                        margin: const EdgeInsets.all(15),
+                        child: Column(
+                          children: [
+                            _buildDateMonthReport,
+                            _buildChart,
+                            _buildStatus,
+                            _buildBreakDown,
+                          ],
+                        ),
+                      ),
+                    ),
+                    bottom: PreferredSize(
+                      preferredSize: const Size.fromHeight(0),
+                      child: _buildDetailBar,
+                    ),
                   ),
-                ),
-              ),
-              bottom: PreferredSize(
-                preferredSize: const Size.fromHeight(0),
-                child: _buildDetailBar,
-              ),
-            ),
-            SliverToBoxAdapter(
-              child: _buildReportBody,
-            ),
-          ],
+                  SliverToBoxAdapter(
+                    child: _buildReportBody,
+                  ),
+                ],
+              );
+            } else {
+              return Container(
+                height: MediaQuery.of(context).size.height - 55,
+                alignment: Alignment.center,
+                child: const CircularProgressIndicator(color: rabbit),
+              );
+            }
+          },
         ),
+
+        // body: CustomScrollView(
+        //   slivers: [
+        //     SliverAppBar(
+        //       pinned: true,
+        //       elevation: 1,
+        //       backgroundColor: lightGray,
+        //       expandedHeight: 630,
+        //       excludeHeaderSemantics: true,
+        //       automaticallyImplyLeading: false,
+        //       flexibleSpace: FlexibleSpaceBar(
+        //         collapseMode: CollapseMode.pin,
+        //         background: Container(
+        //           margin: const EdgeInsets.all(15),
+        //           child: Column(
+        //             children: [
+        //               _buildDateMonthReport,
+        //               _buildChart,
+        //               _buildStatus,
+        //               _buildBreakDown,
+        //             ],
+        //           ),
+        //         ),
+        //       ),
+        //       bottom: PreferredSize(
+        //         preferredSize: const Size.fromHeight(0),
+        //         child: _buildDetailBar,
+        //       ),
+        //     ),
+        //     SliverToBoxAdapter(
+        //       child: _buildReportBody,
+        //     ),
+        //   ],
+        // ),
+
       ),
     );
   }
@@ -349,9 +400,13 @@ class _ReportScreenState extends State<ReportScreen> {
                         Obx(() => Expanded(
                           child: Container(
                             alignment: Alignment.center,
-                            margin: const EdgeInsets.symmetric(vertical: 2, horizontal: 3),
-                            color: reportController.isDelivered.value ? rabbit : carrot,
-                            child: const TextWidget(text: '\$12.00', fontWeight: FontWeight.bold, color: white,),
+                            padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 3),
+                            decoration: BoxDecoration(
+                              color: reportController.isDelivered.value ? rabbit.withOpacity(0.5) : carrot.withOpacity(0.5),
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            //margin: const EdgeInsets.symmetric(vertical: 2, horizontal: 3),
+                            child: TextWidget(text: '\$12.00', fontWeight: FontWeight.bold, color: black.withOpacity(0.8),),
                           ),
                         ),),
                       ],
@@ -447,9 +502,12 @@ class _ReportScreenState extends State<ReportScreen> {
           children: [
             TextWidget(text: text),
             noneLine ? Container(
-              color: rabbit,
-              padding: const EdgeInsets.only(left: 2),
-              child: TextWidget(text: value, color: white, fontWeight: FontWeight.bold),
+              padding: const EdgeInsets.all(3),
+              decoration: BoxDecoration(
+                color: rabbit.withOpacity(0.5),
+                borderRadius: BorderRadius.circular(5),
+              ),
+              child: TextWidget(text: value, color: black.withOpacity(0.8), fontWeight: FontWeight.bold,),
             ) : TextWidget(text: value),
           ],
         ),

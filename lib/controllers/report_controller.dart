@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:loy_eat/models/report_chart.dart';
 import 'package:loy_eat/models/report_model.dart';
 import 'package:loy_eat/widgets/layout_widget/color.dart';
@@ -49,8 +48,8 @@ class ReportController extends GetxController{
     }
 
     if (isCanceled.value == true){
-      colorTextCanceledStatus.value = rabbit;
-      colorRadioCanceledStatus.value = rabbit;
+      colorTextCanceledStatus.value = carrot;
+      colorRadioCanceledStatus.value = carrot;
       colorTextDeliveredStatus.value = black;
       colorRadioDeliveredStatus.value = white;
     } else {
@@ -59,5 +58,10 @@ class ReportController extends GetxController{
       colorTextDeliveredStatus.value = rabbit;
       colorRadioDeliveredStatus.value = rabbit;
     }
+  }
+
+  Future<Widget> wait3SecAndLoadData() async {
+    await Future.delayed(const Duration(seconds: 3));
+    return Container();
   }
 }

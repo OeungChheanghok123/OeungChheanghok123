@@ -32,7 +32,7 @@ class _HomeScreenState extends State<HomeScreen>{
           physics: const NeverScrollableScrollPhysics(),
           scrollDirection: Axis.vertical,
           padding: const EdgeInsets.all(0),
-          child: FutureBuilder<Widget>(
+          child: FutureBuilder(
             future: homeController.wait3SecAndLoadData(),
             builder: (context, snapshot){
               if (snapshot.hasError){
@@ -68,7 +68,7 @@ class _HomeScreenState extends State<HomeScreen>{
 
   Widget get _buildDatePicker {
     return Container(
-      margin: const EdgeInsets.only(bottom: 10, top: 15),
+      margin: const EdgeInsets.only(bottom: 5, top: 10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: const [
@@ -106,7 +106,7 @@ class _HomeScreenState extends State<HomeScreen>{
   }
   Widget get _buildStatus {
     return Container(
-      margin: const EdgeInsets.fromLTRB(15, 15, 15, 0),
+      margin: const EdgeInsets.fromLTRB(15, 10, 15, 0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -115,7 +115,7 @@ class _HomeScreenState extends State<HomeScreen>{
           Card(
             color: white,
             elevation: 2,
-            margin: const EdgeInsets.only(bottom: 20, top: 10),
+            margin: const EdgeInsets.only(bottom: 15, top: 5),
             shape: RoundedRectangleBorder(
               side: BorderSide(color: white.withOpacity(0.5), width: 1),
               borderRadius: BorderRadius.circular(10),
@@ -165,8 +165,7 @@ class _HomeScreenState extends State<HomeScreen>{
                       Obx(
                         () => _buildCard(
                           title: 'Points',
-                          subTitle: homeController.homeModel.value.points
-                              .toStringAsFixed(0),
+                          subTitle: homeController.homeModel.value.points.toStringAsFixed(0),
                         ),
                       ),
                       Obx(
@@ -195,7 +194,7 @@ class _HomeScreenState extends State<HomeScreen>{
           TextWidget(isTitle: true, text: 'Breakdown'.tr),
           Card(
             elevation: 2,
-            margin: const EdgeInsets.only(top: 10),
+            margin: const EdgeInsets.only(top: 5),
             color: white,
             shape: RoundedRectangleBorder(
               side: BorderSide(color: white.withOpacity(0.5), width: 1),
@@ -320,7 +319,6 @@ class _HomeScreenState extends State<HomeScreen>{
       ),
     );
   }
-
   Widget _buildDetailText(String text) {
     return TextWidget(text: text, fontWeight: FontWeight.bold);
   }

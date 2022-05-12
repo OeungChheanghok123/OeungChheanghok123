@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:loy_eat/widgets/layout_widget/color.dart';
 
 class NewOrderScreen extends StatefulWidget {
   const NewOrderScreen({Key? key}) : super(key: key);
@@ -23,17 +24,21 @@ class _NewOrderScreenState extends State<NewOrderScreen> {
       bearing: 192.8334901395799,
       target: LatLng(37.43296265331129, -122.08832357078792),
       tilt: 59.440717697143555,
-      zoom: 19.151926040649414);
+      zoom: 19.151926040649414,
+  );
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: GoogleMap(
-        mapType: MapType.normal,
-        initialCameraPosition: _kGooglePlex,
-        onMapCreated: (GoogleMapController controller) {
-          _controller.complete(controller);
-        },
+      body: Container(
+        color: lightGray,
+        child: GoogleMap(
+          mapType: MapType.normal,
+          initialCameraPosition: _kGooglePlex,
+          onMapCreated: (GoogleMapController controller) {
+            _controller.complete(controller);
+          },
+        ),
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _goToTheLake,
