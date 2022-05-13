@@ -98,7 +98,7 @@ class _HomeScreenState extends State<HomeScreen>{
         ),
         child: Container(
           alignment: Alignment.center,
-          padding: const EdgeInsets.fromLTRB(10, 15, 0, 15),
+          padding: const EdgeInsets.fromLTRB(10, 5, 0, 15),
           child: HomeScreenBarChart(data: homeController.data),
         ),
       ),
@@ -271,34 +271,6 @@ class _HomeScreenState extends State<HomeScreen>{
       ),
     );
   }
-  // Widget _buildCard({required String title, required String subTitle}) {
-  //   return Card(
-  //     color: white,
-  //     elevation: 2,
-  //     margin: const EdgeInsets.only(bottom: 10),
-  //     shape: RoundedRectangleBorder(
-  //       side: BorderSide(color: white.withOpacity(0.5), width: 1),
-  //       borderRadius: BorderRadius.circular(10),
-  //     ),
-  //     child: Container(
-  //       alignment: Alignment.center,
-  //       width: 95,
-  //       padding: const EdgeInsets.all(5),
-  //       child: Column(
-  //         crossAxisAlignment: CrossAxisAlignment.center,
-  //         mainAxisAlignment: MainAxisAlignment.center,
-  //         children: [
-  //           TextWidget(text: title),
-  //           const Space(),
-  //           Container(
-  //             padding: const EdgeInsets.only(left: 1.5),
-  //             child: _buildDetailText(subTitle),
-  //           ),
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
 
   Widget _buildCard({required String title, required String subTitle}) {
     return Container(

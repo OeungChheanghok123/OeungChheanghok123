@@ -9,14 +9,14 @@ import 'package:loy_eat/widgets/layout_widget/space.dart';
 import 'package:loy_eat/widgets/layout_widget/text_widget.dart';
 import 'package:loy_eat/widgets/screen_widget/home_screen_bar_chart.dart';
 
-class ReportScreen extends StatefulWidget {
+class ReportScreen extends StatefulWidget{
   const ReportScreen({Key? key}) : super(key: key);
 
   @override
   State<ReportScreen> createState() => _ReportScreenState();
 }
 
-class _ReportScreenState extends State<ReportScreen> {
+class _ReportScreenState extends State<ReportScreen>{
   ReportController reportController = Get.put(ReportController());
 
   @override
@@ -26,7 +26,7 @@ class _ReportScreenState extends State<ReportScreen> {
         extendBody: true,
         backgroundColor: lightGray,
         appBar: null,
-        body:  FutureBuilder(
+        body: FutureBuilder(
           future: reportController.wait3SecAndLoadData(),
           builder: (context, snapshot){
             if (snapshot.hasError){
@@ -39,13 +39,13 @@ class _ReportScreenState extends State<ReportScreen> {
                     pinned: true,
                     elevation: 1,
                     backgroundColor: lightGray,
-                    expandedHeight: 630,
+                    expandedHeight: 670,
                     excludeHeaderSemantics: true,
                     automaticallyImplyLeading: false,
                     flexibleSpace: FlexibleSpaceBar(
                       collapseMode: CollapseMode.pin,
                       background: Container(
-                        margin: const EdgeInsets.all(15),
+                        margin: const EdgeInsets.fromLTRB(15, 0, 15, 10),
                         child: Column(
                           children: [
                             _buildDateMonthReport,
@@ -75,95 +75,74 @@ class _ReportScreenState extends State<ReportScreen> {
             }
           },
         ),
-
-        // body: CustomScrollView(
-        //   slivers: [
-        //     SliverAppBar(
-        //       pinned: true,
-        //       elevation: 1,
-        //       backgroundColor: lightGray,
-        //       expandedHeight: 630,
-        //       excludeHeaderSemantics: true,
-        //       automaticallyImplyLeading: false,
-        //       flexibleSpace: FlexibleSpaceBar(
-        //         collapseMode: CollapseMode.pin,
-        //         background: Container(
-        //           margin: const EdgeInsets.all(15),
-        //           child: Column(
-        //             children: [
-        //               _buildDateMonthReport,
-        //               _buildChart,
-        //               _buildStatus,
-        //               _buildBreakDown,
-        //             ],
-        //           ),
-        //         ),
-        //       ),
-        //       bottom: PreferredSize(
-        //         preferredSize: const Size.fromHeight(0),
-        //         child: _buildDetailBar,
-        //       ),
-        //     ),
-        //     SliverToBoxAdapter(
-        //       child: _buildReportBody,
-        //     ),
-        //   ],
-        // ),
-
       ),
     );
   }
 
   Widget get _buildDateMonthReport{
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Obx(
-              () => TextWidget(
+    return Container(
+      margin: const EdgeInsets.fromLTRB(5, 15, 5, 0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Obx(() => TextWidget(
                 isTitle: true,
                 text: reportController.dateMonthReport.value,
-              ),
-            ),
-            const IconWidget(
-              icon: Icons.arrow_drop_down_sharp,
-              size: 20,
-              color: black,
-            ),
-          ],
-        ),
-        Container(
-          margin: const EdgeInsets.only(top: 10),
-          child: Row(
-            children: [
-              const TextWidget(
-                text: 'Total Earning: ',
-                fontWeight: FontWeight.bold,
-              ),
-              TextWidget(
-                text: '\$${reportController.totalEarning.value.toStringAsFixed(2)}',
-                fontWeight: FontWeight.bold,
-                color: rabbit,
+              )),
+              const IconWidget(
+                icon: Icons.arrow_drop_down_sharp,
+                size: 20,
+                color: black,
               ),
             ],
-          )
-        ),
-      ],
+          ),
+          Container(
+            margin: const EdgeInsets.only(top: 10, bottom: 5),
+            child: Row(
+              children: [
+                const TextWidget(
+                  text: 'Total Earning: ',
+                  fontWeight: FontWeight.bold,
+                ),
+                TextWidget(
+                  text: '\$${reportController.totalEarning.value.toStringAsFixed(2)}',
+                  fontWeight: FontWeight.bold,
+                  color: rabbit,
+                ),
+              ],
+            )
+          ),
+        ],
+      ),
     );
   }
   Widget get _buildChart {
-    return Container(
-      margin: const EdgeInsets.only(top: 15, bottom: 5),
-      color: white,
+    return  Container(
+      margin: const EdgeInsets.symmetric(vertical: 5),
+      color: lightGray,
       height: 180,
-      child: HomeScreenBarChart(data: reportController.data),
+      child: Card(
+        elevation: 2,
+        color: white,
+        margin: const EdgeInsets.all(0),
+        shape: RoundedRectangleBorder(
+          side: BorderSide(color: white.withOpacity(0.5), width: 1),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Container(
+          alignment: Alignment.center,
+          padding: const EdgeInsets.fromLTRB(10, 5, 0, 15),
+          child: HomeScreenBarChart(data: reportController.data),
+        ),
+      ),
     );
   }
   Widget get _buildStatus {
     return Container(
-      margin: const EdgeInsets.only(top: 10, bottom: 10),
+      margin: const EdgeInsets.only(top: 10, bottom: 0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -171,64 +150,72 @@ class _ReportScreenState extends State<ReportScreen> {
             isTitle: true,
             text: 'Stats'.tr,
           ),
-          Container(
-            margin: const EdgeInsets.only(top: 10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Obx(
-                      () => _buildColumnStats(
-                        'Online',
-                        reportController.reportModel.value.online,
+          Card(
+            color: white,
+            elevation: 2,
+            margin: const EdgeInsets.only(bottom: 15, top: 5),
+            shape: RoundedRectangleBorder(
+              side: BorderSide(color: white.withOpacity(0.5), width: 1),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child:  Container(
+              margin: const EdgeInsets.symmetric(vertical: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Obx(
+                            () => _buildCard(
+                          title: 'Online',
+                          subTitle: reportController.reportModel.value.online,
+                        ),
                       ),
-                    ),
-                    Obx(
-                      () => _buildColumnStats(
-                        'Distance',
-                        reportController.reportModel.value.distance,
+                      Obx(
+                            () => _buildCard(
+                          title: 'Distance',
+                          subTitle: reportController.reportModel.value.distance,
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Obx(
-                      () => _buildColumnStats(
-                        'Trips',
-                        reportController.reportModel.value.trips.toString(),
+                    ],
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Obx(
+                            () => _buildCard(
+                          title: 'Trips',
+                          subTitle: reportController.reportModel.value.trips.toStringAsFixed(0),
+                        ),
                       ),
-                    ),
-                    Obx(
-                      () => _buildColumnStats(
-                        'Customer',
-                        reportController.reportModel.value.customerRating,
+                      Obx(
+                            () => _buildCard(
+                          title: 'Customer',
+                          subTitle: reportController.reportModel.value.customerRating,
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Obx(
-                      () => _buildColumnStats(
-                        'Points',
-                        reportController.reportModel.value.points.toString(),
+                    ],
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Obx(
+                            () => _buildCard(
+                          title: 'Points',
+                          subTitle: reportController.reportModel.value.points.toStringAsFixed(0),
+                        ),
                       ),
-                    ),
-                    Obx(
-                      () => _buildColumnStats(
-                        'Merchant',
-                        reportController.reportModel.value.merchantRating,
+                      Obx(
+                            () => _buildCard(
+                          title: 'Merchant',
+                          subTitle: reportController.reportModel.value.merchantRating,
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              ],
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ],
@@ -243,37 +230,46 @@ class _ReportScreenState extends State<ReportScreen> {
           isTitle: true,
           text: 'Breakdown'.tr,
         ),
-        Container(
-          margin: const EdgeInsets.symmetric(vertical: 10),
-          child: Column(
-            children: [
-              Obx(
-                () => _buildColumnBreakdown(
-                  'Net delivery fee',
-                  '\$${reportController.reportModel.value.deliveryFee.toStringAsFixed(2)}',
-                ),
+        Card(
+          elevation: 2,
+          margin: const EdgeInsets.only(top: 5),
+          color: white,
+          shape: RoundedRectangleBorder(
+            side: BorderSide(color: white.withOpacity(0.5), width: 1),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Container(
+            margin: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+              child: Column(
+                children: [
+                  Obx(
+                    () => _buildColumnBreakdown(
+                      'Net delivery fee',
+                      '\$${reportController.reportModel.value.deliveryFee.toStringAsFixed(2)}',
+                    ),
+                  ),
+                  Obx(
+                    () => _buildColumnBreakdown(
+                      'Bonus',
+                      '\$${reportController.reportModel.value.bonus.toStringAsFixed(2)}',
+                    ),
+                  ),
+                  Obx(
+                    () => _buildColumnBreakdown(
+                      'tip',
+                      '\$${reportController.reportModel.value.tip.toStringAsFixed(2)}',
+                      dotLine: false,
+                    ),
+                  ),
+                  Obx(
+                    () => _buildColumnBreakdown(
+                      'Total Earning',
+                      '\$${reportController.totalEarning.toStringAsFixed(2)}',
+                      noneLine: true,
+                    ),
+                  ),
+                ],
               ),
-              Obx(
-                () => _buildColumnBreakdown(
-                  'Bonus',
-                  '\$${reportController.reportModel.value.bonus.toStringAsFixed(2)}',
-                ),
-              ),
-              Obx(
-                () => _buildColumnBreakdown(
-                  'tip',
-                  '\$${reportController.reportModel.value.tip.toStringAsFixed(2)}',
-                  dotLine: false,
-                ),
-              ),
-              Obx(
-                () => _buildColumnBreakdown(
-                  'Total Earning',
-                  '\$${reportController.totalEarning.toStringAsFixed(2)}',
-                  noneLine: true,
-                ),
-              ),
-            ],
           ),
         ),
       ],
@@ -378,11 +374,14 @@ class _ReportScreenState extends State<ReportScreen> {
         physics: const NeverScrollableScrollPhysics(),
         itemCount: reportController.orderNo.length,
         itemBuilder: (BuildContext context, int index){
-          return Column(
-            children: [
-              InkWell(
-                splashColor: none,
-                onTap: () => Get.toNamed('/report_order_detail?titleOrder=${reportController.orderNo[index]}'),
+          return Card(
+            elevation: 2,
+            margin: const EdgeInsets.only(bottom: 10),
+            child: InkWell(
+              splashColor: none,
+              onTap: () => Get.toNamed('/report_order_detail?titleOrder=${reportController.orderNo[index]}'),
+              child: Container(
+                padding: const EdgeInsets.all(10),
                 child: Column(
                   children: [
                     Row(
@@ -406,7 +405,7 @@ class _ReportScreenState extends State<ReportScreen> {
                               borderRadius: BorderRadius.circular(5),
                             ),
                             //margin: const EdgeInsets.symmetric(vertical: 2, horizontal: 3),
-                            child: TextWidget(text: '\$12.00', fontWeight: FontWeight.bold, color: black.withOpacity(0.8),),
+                            child: TextWidget(text: '\$12.00', size: 11, fontWeight: FontWeight.w600, color: black.withOpacity(0.8),),
                           ),
                         ),),
                       ],
@@ -440,15 +439,7 @@ class _ReportScreenState extends State<ReportScreen> {
                   ],
                 ),
               ),
-              Container(
-                margin: const EdgeInsets.symmetric(vertical: 15),
-                child: const DottedLine(
-                  dashLength: 1.5,
-                  lineThickness: 2,
-                  dashColor: silver,
-                ),
-              ),
-            ],
+            ),
           );
         },
       ),
@@ -478,21 +469,26 @@ class _ReportScreenState extends State<ReportScreen> {
       ],
     );
   }
-  Widget _buildColumnStats(String text, String value, {double height = 15}) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        TextWidget(text: text),
-        Container(
-          margin: const EdgeInsets.only(left: 1.5, top: 5),
-          child:TextWidget(
-            text: value,
-            fontWeight: FontWeight.bold,
+  Widget _buildCard({required String title, required String subTitle}) {
+    return Container(
+      width: 95,
+      padding: const EdgeInsets.fromLTRB(10, 10, 0, 10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          TextWidget(text: title),
+          const Space(),
+          Container(
+            padding: const EdgeInsets.only(left: 1.5),
+            child: _buildDetailText(subTitle),
           ),
-        ),
-        Space(height: height),
-      ],
+        ],
+      ),
     );
+  }
+  Widget _buildDetailText(String text) {
+    return TextWidget(text: text, fontWeight: FontWeight.bold);
   }
   Widget _buildColumnBreakdown(String text, String value, {bool dotLine = true, noneLine = false}) {
     return Column(

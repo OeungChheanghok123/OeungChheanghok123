@@ -89,7 +89,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
         itemBuilder: (BuildContext context, int index){
           return Card(
             color: white,
-            elevation: 5,
+            elevation: 2,
             child: Stack(
               children: [
                 Container(

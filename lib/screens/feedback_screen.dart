@@ -152,7 +152,6 @@ class _FeedbackUsScreenState extends State<FeedbackUsScreen> {
           Get.back();
         },
         width: 250,
-        borderRadius: 25.0,
         child: const TextWidget(
           isTitle: true,
           text: 'Submit',
