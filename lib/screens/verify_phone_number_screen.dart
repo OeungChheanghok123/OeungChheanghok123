@@ -86,7 +86,7 @@ class VerifyPhoneNumberScreen extends StatelessWidget {
           ),
         ),
         ButtonWidget(
-          onPressed: () => Get.offAllNamed('/enter_otp_code?phone=${controller.text}'),
+          onPressed: () => Get.toNamed('/enter_otp_code?phone=${controller.text}'),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

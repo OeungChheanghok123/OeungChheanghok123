@@ -89,8 +89,9 @@ class _HomeScreenState extends State<HomeScreen>{
       color: lightGray,
       height: 180,
       child: Card(
-        elevation: 2,
+        elevation: 1,
         color: white,
+        borderOnForeground: false,
         margin: const EdgeInsets.all(0),
         shape: RoundedRectangleBorder(
           side: BorderSide(color: white.withOpacity(0.5), width: 1),
@@ -112,72 +113,66 @@ class _HomeScreenState extends State<HomeScreen>{
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           TextWidget(isTitle: true, text: 'States'.tr),
-          Card(
-            color: white,
-            elevation: 2,
-            margin: const EdgeInsets.only(bottom: 15, top: 5),
-            shape: RoundedRectangleBorder(
-              side: BorderSide(color: white.withOpacity(0.5), width: 1),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Container(
-              margin: const EdgeInsets.symmetric(vertical: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Obx(
-                        () => _buildCard(
-                          title: 'Online',
-                          subTitle: homeController.homeModel.value.online,
-                        ),
+          Container(
+            margin: const EdgeInsets.symmetric(vertical: 10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Obx(
+                      () => _buildCard(
+                        title: 'Online',
+                        subTitle: homeController.homeModel.value.online,
                       ),
-                      Obx(
-                            () => _buildCard(
-                          title: 'Distance',
-                          subTitle: homeController.homeModel.value.distance,
-                        ),
+                    ),
+                    const Space(),
+                    Obx(
+                          () => _buildCard(
+                        title: 'Distance',
+                        subTitle: homeController.homeModel.value.distance,
                       ),
-                    ],
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Obx(
-                        () => _buildCard(
-                          title: 'Trips',
-                          subTitle: homeController.homeModel.value.trips.toStringAsFixed(0),
-                        ),
+                    ),
+                  ],
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Obx(
+                      () => _buildCard(
+                        title: 'Trips',
+                        subTitle: homeController.homeModel.value.trips.toStringAsFixed(0),
                       ),
-                      Obx(
-                        () => _buildCard(
-                          title: 'Customer',
-                          subTitle: homeController.homeModel.value.customerRating,
-                        ),
+                    ),
+                    const Space(),
+                    Obx(
+                      () => _buildCard(
+                        title: 'Customer',
+                        subTitle: homeController.homeModel.value.customerRating,
                       ),
-                    ],
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Obx(
-                        () => _buildCard(
-                          title: 'Points',
-                          subTitle: homeController.homeModel.value.points.toStringAsFixed(0),
-                        ),
+                    ),
+                  ],
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Obx(
+                      () => _buildCard(
+                        title: 'Points',
+                        subTitle: homeController.homeModel.value.points.toStringAsFixed(0),
                       ),
-                      Obx(
-                        () => _buildCard(
-                          title: 'Merchant',
-                          subTitle: homeController.homeModel.value.merchantRating,
-                        ),
+                    ),
+                    const Space(),
+                    Obx(
+                      () => _buildCard(
+                        title: 'Merchant',
+                        subTitle: homeController.homeModel.value.merchantRating,
                       ),
-                    ],
-                  ),
-                ],
-              ),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
         ],
@@ -193,7 +188,8 @@ class _HomeScreenState extends State<HomeScreen>{
         children: [
           TextWidget(isTitle: true, text: 'Breakdown'.tr),
           Card(
-            elevation: 2,
+            elevation: 1,
+            borderOnForeground: false,
             margin: const EdgeInsets.only(top: 5),
             color: white,
             shape: RoundedRectangleBorder(
@@ -273,21 +269,30 @@ class _HomeScreenState extends State<HomeScreen>{
   }
 
   Widget _buildCard({required String title, required String subTitle}) {
-    return Container(
-      //alignment: Alignment.center,
-      width: 95,
-      padding: const EdgeInsets.fromLTRB(10, 10, 0, 10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          TextWidget(text: title),
-          const Space(),
-          Container(
-            padding: const EdgeInsets.only(left: 1.5),
-            child: _buildDetailText(subTitle),
-          ),
-        ],
+    return Card(
+      color: white,
+      elevation: 1,
+      borderOnForeground: false,
+      margin: const EdgeInsets.only(bottom: 5),
+      shape: RoundedRectangleBorder(
+        side: BorderSide(color: white.withOpacity(0.5), width: 1),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Container(
+        width: 95,
+        padding: const EdgeInsets.fromLTRB(10, 10, 0, 10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            TextWidget(text: title),
+            const Space(),
+            Container(
+              padding: const EdgeInsets.only(left: 1.5),
+              child: _buildDetailText(subTitle),
+            ),
+          ],
+        ),
       ),
     );
   }

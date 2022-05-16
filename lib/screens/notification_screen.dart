@@ -88,8 +88,13 @@ class _NotificationScreenState extends State<NotificationScreen> {
         itemCount: homeController.notificationCount.value,
         itemBuilder: (BuildContext context, int index){
           return Card(
+            elevation: 1,
             color: white,
-            elevation: 2,
+            borderOnForeground: false,
+            shape: RoundedRectangleBorder(
+              side: BorderSide(color: white.withOpacity(0.5), width: 1),
+              borderRadius: BorderRadius.circular(10),
+            ),
             child: Stack(
               children: [
                 Container(

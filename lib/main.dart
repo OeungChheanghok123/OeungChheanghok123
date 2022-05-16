@@ -53,7 +53,7 @@ class MyApp extends StatelessWidget {
         GetPage(name: '/qr_code', page: () => const QRCodeScreen(), transition: Transition.rightToLeftWithFade),
         GetPage(name: '/report_order_detail', page: () => const ReportOrderDetailScreen(), transition: Transition.rightToLeftWithFade),
       ],
-      home: StartUpScreen(key: key),
+      home: const StartUpScreen(),
     );
   }
 }

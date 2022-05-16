@@ -246,7 +246,38 @@ class _BecomeDriverScreenState extends State<BecomeDriverScreen> {
           child: ButtonWidget(
             width: MediaQuery.of(context).size.width,
             height: 120,
-            onPressed: () => print('take photo is clicked'), // ignore_for_file: avoid_print
+            onPressed: () {
+              showBottomSheet<String>(
+                context: context,
+                builder: (BuildContext context) => Container(
+                  decoration: const BoxDecoration(
+                    border: Border(top: BorderSide(color: Colors.black12)),
+                  ),
+                  child: ListView(
+                    shrinkWrap: true,
+                    primary: false,
+                    children: <Widget>[
+                      const ListTile(
+                        dense: true,
+                        title: Text('This is a bottom sheet'),
+                      ),
+                      const ListTile(
+                        dense: true,
+                        title: Text('Click OK to dismiss'),
+                      ),
+                      ButtonBar(
+                        children: <Widget>[
+                          TextButton(
+                            onPressed: () => Navigator.pop(context),
+                            child: const Text('OK'),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
             color: platinum,
             child: IconWidget(
               icon: Icons.photo_camera,

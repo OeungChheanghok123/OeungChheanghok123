@@ -58,7 +58,7 @@ class _SupportScreenState extends State<SupportScreen> {
   Widget get _buildCardNumber {
     return Card(
       color: white,
-      elevation: 10,
+      elevation: 1,
       margin: const EdgeInsets.symmetric(horizontal: 40),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15.0),

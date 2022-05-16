@@ -33,9 +33,10 @@ class _AccountScreenState extends State<AccountScreen> {
             children: [
               _buildDriverDetail,
               Card(
-                elevation: 2,
+                elevation: 1,
+                borderOnForeground: false,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15.0),
+                  borderRadius: BorderRadius.circular(10.0),
                 ),
                 margin: const EdgeInsets.only(top: 20),
                 child: Column(
@@ -56,9 +57,10 @@ class _AccountScreenState extends State<AccountScreen> {
   Widget get _buildDriverDetail{
     return Card(
       margin: const EdgeInsets.all(0),
-      elevation: 2,
+      elevation: 1,
+      borderOnForeground: false,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15.0),
+        borderRadius: BorderRadius.circular(10.0),
       ),
       child: Container(
         padding: const EdgeInsets.fromLTRB(35, 20, 0, 10),

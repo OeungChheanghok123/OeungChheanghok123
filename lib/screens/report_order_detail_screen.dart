@@ -296,7 +296,6 @@ class _ReportOrderDetailScreenState extends State<ReportOrderDetailScreen> {
       margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
       child: ButtonWidget(
         onPressed: () => Get.back(),
-        height: 40,
         width: MediaQuery.of(context).size.width,
         child: const TextWidget(
           text: 'Delivered successfully to Sovongdy',
