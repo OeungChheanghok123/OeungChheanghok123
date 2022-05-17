@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:loy_eat/controllers/verify_phone_number_controller.dart';
 import 'package:loy_eat/widgets/layout_widget/button_widget.dart';
 import 'package:loy_eat/widgets/layout_widget/color.dart';
 import 'package:loy_eat/widgets/layout_widget/icon_widget.dart';
@@ -7,8 +8,15 @@ import 'package:loy_eat/widgets/layout_widget/space.dart';
 import 'package:loy_eat/widgets/layout_widget/text_field_widget.dart';
 import 'package:loy_eat/widgets/layout_widget/text_widget.dart';
 
-class VerifyPhoneNumberScreen extends StatelessWidget {
+class VerifyPhoneNumberScreen extends StatefulWidget {
   const VerifyPhoneNumberScreen({Key? key}) : super(key: key);
+
+  @override
+  State<VerifyPhoneNumberScreen> createState() => _VerifyPhoneNumberScreenState();
+}
+
+class _VerifyPhoneNumberScreenState extends State<VerifyPhoneNumberScreen> {
+  VerifyPhoneNumberController verifyPhoneNumberController = Get.put(VerifyPhoneNumberController());
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +32,7 @@ class VerifyPhoneNumberScreen extends StatelessWidget {
         margin: const EdgeInsets.fromLTRB(15, 5, 15, 15),
         child: Column(
           children: [
-            _buildLayout(1, SizedBox(key: key)),
+            _buildLayout(1, const SizedBox()),
             _buildLayout(5, _buildBody),
           ],
         ),
@@ -33,80 +41,84 @@ class VerifyPhoneNumberScreen extends StatelessWidget {
   }
 
   Widget get _buildBody {
-    TextEditingController controller = TextEditingController();
-
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Container(
-          width: 50,
-          height: 50,
-          margin: const EdgeInsets.only(bottom: 15),
-          decoration: BoxDecoration(
-            color: rabbit,
-            borderRadius: BorderRadius.circular(100),
-          ),
-          child: Center(
-            key: key,
-            child: IconWidget(
-              key: key,
-              icon: Icons.lock_open_outlined,
-              color: white,
-              size: 24,
-            ),
-          ),
-        ),
-        TextWidget(
-          key: key,
+        _buildImageLock,
+        const TextWidget(
           isTitle: true,
           text: 'Verify Phone Number',
         ),
         Container(
           width: 250,
           margin: const EdgeInsets.symmetric(vertical: 15),
-          child: TextWidget(
-            key: key,
+          child: const TextWidget(
             textAlign: TextAlign.center,
             text: 'Enter your mobile phone number to receive one-time password (OTP)',
           ),
         ),
-        Container(
-          width: 250,
-          margin: const EdgeInsets.symmetric(vertical: 10),
-          padding: const EdgeInsets.symmetric(horizontal: 15),
-          child: TextFieldWidget(
-            controller: controller,
-            height: 50,
-            inputType: TextInputType.number,
-            borderRadius: 20,
-            hintText: 'Enter your phone number',
-            isPrefixIcon: true,
-            prefixIcon: const Icon(Icons.phone, size: 20, color: rabbit),
-          ),
-        ),
-        ButtonWidget(
-          onPressed: () => Get.toNamed('/enter_otp_code?phone=${controller.text}'),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const TextWidget(
-                text: 'Next',
-                color: white,
-                size: 14,
-                fontWeight: FontWeight.w500,
-              ),
-              Space(key: key),
-              const IconWidget(
-                icon: Icons.double_arrow,
-                color: white,
-              ),
-            ],
-          ),
-        ),
+        _buildTextFieldPhoneNumber,
+        _buildButtonNext,
       ],
     );
   }
+  Widget get _buildImageLock {
+    return Container(
+      width: 50,
+      height: 50,
+      margin: const EdgeInsets.only(bottom: 15),
+      decoration: BoxDecoration(
+        color: rabbit,
+        borderRadius: BorderRadius.circular(100),
+      ),
+      child: const Center(
+        child: IconWidget(
+          icon: Icons.lock_open_outlined,
+          color: white,
+          size: 24,
+        ),
+      ),
+    );
+  }
+  Widget get _buildTextFieldPhoneNumber {
+    return Container(
+      width: 250,
+      margin: const EdgeInsets.symmetric(vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 15),
+      child: TextFieldWidget(
+        controller: verifyPhoneNumberController.phoneController,
+        height: 50,
+        inputType: TextInputType.number,
+        borderRadius: 10,
+        hintText: 'Enter phone number',
+        isPrefixIcon: true,
+        prefixIcon: const Icon(Icons.phone, size: 20, color: rabbit),
+      ),
+    );
+  }
+  Widget get _buildButtonNext {
+    return ButtonWidget(
+      onPressed: () => Get.toNamed('/enter_otp_code?phone=${verifyPhoneNumberController.phoneController.text}'),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: const [
+          TextWidget(
+            text: 'Next',
+            color: white,
+            size: 14,
+            fontWeight: FontWeight.w500,
+          ),
+          Space(),
+          IconWidget(
+            icon: Icons.double_arrow,
+            color: white,
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildLayout(int index, Widget widget) {
     return Expanded(
       flex: index,

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:loy_eat/widgets/layout_widget/color.dart';
+import 'package:loy_eat/widgets/layout_widget/icon_widget.dart';
+import 'package:loy_eat/widgets/layout_widget/space.dart';
+import 'package:loy_eat/widgets/layout_widget/text_widget.dart';
 
 class BecomeDriverController extends GetxController {
   TextEditingController driverNameController = TextEditingController();
@@ -119,5 +122,54 @@ class BecomeDriverController extends GetxController {
       eveningBackgroundScheduleColor.value = white;
       eveningBorderScheduleColor.value = silver;
     }
+  }
+  void getBottomSheet(BuildContext context) {
+    Get.bottomSheet(
+      Container(
+        margin: const EdgeInsets.symmetric(vertical: 10),
+        child: Wrap(
+          children: [
+            Container(
+              width: MediaQuery.of(context).size.width,
+              height: 5,
+              margin: const EdgeInsets.only(bottom: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    width: 50,
+                    decoration: BoxDecoration(
+                      color: silver,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.fromLTRB(15, 15, 0, 0),
+              child: Row(
+                children: const [
+                  IconWidget(icon: Icons.photo_library_outlined, size: 25, color: black,),
+                  Space(width: 15),
+                  TextWidget(isTitle: true, text: "Select picture from gallery"),
+                ],
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.fromLTRB(15, 15, 0, 0),
+              child: Row(
+                children: const [
+                  IconWidget(icon: Icons.add_a_photo, size: 25, color: black,),
+                  Space(width: 15),
+                  TextWidget(isTitle: true, text: "Open camera to take picture"),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+      backgroundColor: white,
+    );
   }
 }
