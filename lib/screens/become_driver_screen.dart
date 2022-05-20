@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:loy_eat/controllers/become_driver_controller.dart';
 import 'package:loy_eat/models/location_model.dart';
 import 'package:loy_eat/widgets/layout_widget/button_widget.dart';
@@ -22,6 +25,7 @@ class BecomeDriverScreen extends StatefulWidget {
 class _BecomeDriverScreenState extends State<BecomeDriverScreen> {
 
   BecomeDriverController becomeDriverController = Get.put(BecomeDriverController());
+  File? image;
 
   @override
   Widget build(BuildContext context) {
@@ -236,23 +240,74 @@ class _BecomeDriverScreenState extends State<BecomeDriverScreen> {
   Widget get _buildDriverIDCard{
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children:  <Widget>[
+      children: [
         const TextWidget(
           isTitle: true,
           text: 'Take your ID card photo:',
         ),
         Container(
+          width: MediaQuery.of(context).size.width,
+          height: 120,
           margin: const EdgeInsets.symmetric(vertical: 10),
-          child: ButtonWidget(
-            width: MediaQuery.of(context).size.width,
-            height: 120,
-            onPressed: () => becomeDriverController.getBottomSheet(context),
-            color: platinum,
-            child: IconWidget(
-              icon: Icons.photo_camera,
-              size: 48,
-              color: black.withOpacity(0.3),
-            ),
+          color: platinum,
+          child: Obx(() => becomeDriverController.selectImagePath.value == ''
+                ? ButtonWidget(
+                    width: MediaQuery.of(context).size.width,
+                    height: 120,
+                    onPressed: () {
+                      showModalBottomSheet(
+                        context: context,
+                        builder: (BuildContext context) => Container(
+                          margin: const EdgeInsets.symmetric(vertical: 10),
+                          child: Wrap(
+                            children: [
+                              Container(
+                                width: MediaQuery.of(context).size.width,
+                                height: 5,
+                                margin: const EdgeInsets.only(bottom: 15),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                      width: 50,
+                                      decoration: BoxDecoration(
+                                        color: silver,
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              _buildItemBottomSheet(
+                                iconData: Icons.photo_library_outlined,
+                                text: "Select picture from gallery",
+                                onTap: becomeDriverController.pickImage(ImageSource.camera),
+                              ),
+                              _buildItemBottomSheet(
+                                iconData: Icons.add_a_photo,
+                                text: "Open camera to take picture",
+                                onTap: becomeDriverController.pickImage(ImageSource.camera),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                    color: platinum,
+                    child: IconWidget(
+                      icon: Icons.photo_camera,
+                      size: 48,
+                      color: black.withOpacity(0.3),
+                    ),
+                  )
+                : SizedBox(
+                  width: 200,
+                  height: 120,
+                  child: Image.file(
+                      File(becomeDriverController.selectImagePath.value),
+                      fit: BoxFit.fitHeight,
+                    ),
+                ),
           ),
         ),
       ],
@@ -415,6 +470,35 @@ class _BecomeDriverScreenState extends State<BecomeDriverScreen> {
               borderRadius: BorderRadius.circular(5),
               borderSide: const BorderSide(),
             ),
+          ),
+        ),
+      ),
+    );
+  }
+  Widget _buildItemBottomSheet({required IconData iconData, required String text, required Future onTap}){
+    return Container(
+      padding: const EdgeInsets.only(top: 10),
+      child: GestureDetector(
+        onTap: () => onTap,
+        child: Padding(
+          padding: const EdgeInsets.only(left: 15, top: 5, bottom: 5),
+          child: Row(
+            children: [
+              Container(
+                margin: const EdgeInsets.only(right: 15),
+                decoration: BoxDecoration(
+                  color: silver.withOpacity(0.5),
+                  borderRadius: BorderRadius.circular(100),
+                ),
+                padding: const EdgeInsets.all(8),
+                child: IconWidget(
+                  icon: iconData,
+                  size: 25,
+                  color: black,
+                ),
+              ),
+              TextWidget(isTitle: true, text: text),
+            ],
           ),
         ),
       ),

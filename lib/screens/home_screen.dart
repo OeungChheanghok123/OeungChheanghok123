@@ -1,6 +1,7 @@
 import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:loy_eat/controllers/home_controller.dart';
 import 'package:loy_eat/widgets/layout_widget/color.dart';
 import 'package:loy_eat/widgets/layout_widget/icon_widget.dart';
@@ -69,17 +70,34 @@ class _HomeScreenState extends State<HomeScreen>{
   Widget get _buildDatePicker {
     return Container(
       margin: const EdgeInsets.only(bottom: 5, top: 10),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: const [
-          TextWidget(text: '15 - Nov - 2021'),
-          Space(width: 5),
-          IconWidget(icon: Icons.arrow_right_alt, color: black),
-          Space(width: 5),
-          TextWidget(text: '21 - Nov - 2021'),
-          Space(width: 5),
-          IconWidget(icon: Icons.arrow_drop_down, color: black),
-        ],
+      child: InkWell(
+        onTap: () {
+          showDateRangePicker(
+            context: context,
+            firstDate: DateTime(2021),
+            lastDate: DateTime(2025),
+          ).then((DateTimeRange? value) {
+            if (value != null) {
+              DateTimeRange _fromRange = DateTimeRange(start: DateTime.now(), end: DateTime.now());
+              _fromRange = value;
+              var dateFormat = DateFormat('dd-MMM-YYYY');
+              homeController.startDate.value = dateFormat.format(_fromRange.start);
+              homeController.endDate.value = dateFormat.format(_fromRange.end);
+            }
+          });
+        },
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Obx(() => TextWidget(text: homeController.startDate.value),),
+            const Space(),
+            const IconWidget(icon: Icons.arrow_right_alt, color: black),
+            const Space(),
+            Obx(() => TextWidget(text: homeController.endDate.value),),
+            const Space(),
+            const IconWidget(icon: Icons.arrow_drop_down, color: black),
+          ],
+        ),
       ),
     );
   }
@@ -121,15 +139,13 @@ class _HomeScreenState extends State<HomeScreen>{
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Obx(
-                      () => _buildCard(
+                    Obx(() => _buildCard(
                         title: 'Online',
                         subTitle: homeController.homeModel.value.online,
                       ),
                     ),
                     const Space(),
-                    Obx(
-                          () => _buildCard(
+                    Obx(() => _buildCard(
                         title: 'Distance',
                         subTitle: homeController.homeModel.value.distance,
                       ),
@@ -139,15 +155,13 @@ class _HomeScreenState extends State<HomeScreen>{
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Obx(
-                      () => _buildCard(
-                        title: 'Trips',
+                    Obx(() => _buildCard(
+                        title: 'Trip',
                         subTitle: homeController.homeModel.value.trips.toStringAsFixed(0),
                       ),
                     ),
                     const Space(),
-                    Obx(
-                      () => _buildCard(
+                    Obx(() => _buildCard(
                         title: 'Customer',
                         subTitle: homeController.homeModel.value.customerRating,
                       ),
@@ -157,15 +171,13 @@ class _HomeScreenState extends State<HomeScreen>{
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Obx(
-                      () => _buildCard(
-                        title: 'Points',
+                    Obx(() => _buildCard(
+                        title: 'Point',
                         subTitle: homeController.homeModel.value.points.toStringAsFixed(0),
                       ),
                     ),
                     const Space(),
-                    Obx(
-                      () => _buildCard(
+                    Obx(() => _buildCard(
                         title: 'Merchant',
                         subTitle: homeController.homeModel.value.merchantRating,
                       ),
@@ -280,23 +292,17 @@ class _HomeScreenState extends State<HomeScreen>{
       ),
       child: Container(
         width: 95,
-        padding: const EdgeInsets.fromLTRB(10, 10, 0, 10),
+        padding: const EdgeInsets.fromLTRB(00, 10, 0, 10),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             TextWidget(text: title),
             const Space(),
-            Container(
-              padding: const EdgeInsets.only(left: 1.5),
-              child: _buildDetailText(subTitle),
-            ),
+            TextWidget(text: subTitle, fontWeight: FontWeight.bold),
           ],
         ),
       ),
     );
-  }
-  Widget _buildDetailText(String text) {
-    return TextWidget(text: text, fontWeight: FontWeight.bold);
   }
 }

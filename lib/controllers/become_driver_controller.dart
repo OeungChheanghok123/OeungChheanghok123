@@ -1,11 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:loy_eat/widgets/layout_widget/color.dart';
-import 'package:loy_eat/widgets/layout_widget/icon_widget.dart';
-import 'package:loy_eat/widgets/layout_widget/space.dart';
-import 'package:loy_eat/widgets/layout_widget/text_widget.dart';
 
 class BecomeDriverController extends GetxController {
+
   TextEditingController driverNameController = TextEditingController();
   TextEditingController birthDayController = TextEditingController();
   TextEditingController phoneNumberController = TextEditingController();
@@ -41,6 +42,9 @@ class BecomeDriverController extends GetxController {
   var eveningTextScheduleColor  = black.obs;
   var eveningBorderScheduleColor = silver.obs;
   var eveningBackgroundScheduleColor = white.obs;
+
+  var selectImagePath = ''.obs;
+  var selectImageSize = ''.obs;
 
   void selectGender(int index) {
     radioGenderValue.value = index;
@@ -123,53 +127,13 @@ class BecomeDriverController extends GetxController {
       eveningBorderScheduleColor.value = silver;
     }
   }
-  void getBottomSheet(BuildContext context) {
-    Get.bottomSheet(
-      Container(
-        margin: const EdgeInsets.symmetric(vertical: 10),
-        child: Wrap(
-          children: [
-            Container(
-              width: MediaQuery.of(context).size.width,
-              height: 5,
-              margin: const EdgeInsets.only(bottom: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    width: 50,
-                    decoration: BoxDecoration(
-                      color: silver,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              margin: const EdgeInsets.fromLTRB(15, 15, 0, 0),
-              child: Row(
-                children: const [
-                  IconWidget(icon: Icons.photo_library_outlined, size: 25, color: black,),
-                  Space(width: 15),
-                  TextWidget(isTitle: true, text: "Select picture from gallery"),
-                ],
-              ),
-            ),
-            Container(
-              margin: const EdgeInsets.fromLTRB(15, 15, 0, 0),
-              child: Row(
-                children: const [
-                  IconWidget(icon: Icons.add_a_photo, size: 25, color: black,),
-                  Space(width: 15),
-                  TextWidget(isTitle: true, text: "Open camera to take picture"),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-      backgroundColor: white,
-    );
+  Future pickImage(ImageSource imageSource) async {
+    final pickedImage = await ImagePicker().pickImage(source: imageSource);
+    if (pickedImage != null){
+      selectImagePath.value = pickedImage.path;
+      selectImageSize.value = ((File(selectImagePath.value)).lengthSync()/1024/1024).toStringAsFixed(2) + " Mb";
+    } else {
+      Get.snackbar('Error', 'No Image selected', snackPosition: SnackPosition.BOTTOM, backgroundColor: white, colorText: black,);
+    }
   }
 }

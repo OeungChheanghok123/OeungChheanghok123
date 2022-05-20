@@ -159,15 +159,13 @@ class _ReportScreenState extends State<ReportScreen>{
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Obx(
-                          () => _buildCard(
+                    Obx(() => _buildCard(
                         title: 'Online',
                         subTitle: reportController.reportModel.value.online,
                       ),
                     ),
                     const Space(),
-                    Obx(
-                          () => _buildCard(
+                    Obx(() => _buildCard(
                         title: 'Distance',
                         subTitle: reportController.reportModel.value.distance,
                       ),
@@ -178,7 +176,7 @@ class _ReportScreenState extends State<ReportScreen>{
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Obx(() => _buildCard(
-                        title: 'Trips',
+                        title: 'Trip',
                         subTitle: reportController.reportModel.value.trips.toStringAsFixed(0),
                       ),
                     ),
@@ -194,7 +192,7 @@ class _ReportScreenState extends State<ReportScreen>{
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Obx(() => _buildCard(
-                        title: 'Points',
+                        title: 'Point',
                         subTitle: reportController.reportModel.value.points.toStringAsFixed(0),
                       ),
                     ),
@@ -474,24 +472,18 @@ class _ReportScreenState extends State<ReportScreen>{
       ),
       child: Container(
         width: 95,
-        padding: const EdgeInsets.fromLTRB(10, 10, 0, 10),
+        padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             TextWidget(text: title),
             const Space(),
-            Container(
-              padding: const EdgeInsets.only(left: 1.5),
-              child: _buildDetailText(subTitle),
-            ),
+            TextWidget(text: subTitle, fontWeight: FontWeight.bold),
           ],
         ),
       ),
     );
-  }
-  Widget _buildDetailText(String text) {
-    return TextWidget(text: text, fontWeight: FontWeight.bold);
   }
   Widget _buildColumnBreakdown(String text, String value, {bool dotLine = true, noneLine = false}) {
     return Column(

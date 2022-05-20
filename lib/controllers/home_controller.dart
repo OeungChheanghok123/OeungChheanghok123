@@ -18,6 +18,8 @@ class HomeController extends GetxController {
   var notificationCount = 0.obs;
   var totalEarnings = 0.00.obs;
   var readAll = false.obs;
+  var startDate  = 'Start Date'.obs;
+  var endDate = 'End Date'.obs;
 
   final List<ReportChart> data = [
     ReportChart(date: '15\nMon', price: 12.45, barColor: charts.ColorUtil.fromDartColor(rabbit)),
