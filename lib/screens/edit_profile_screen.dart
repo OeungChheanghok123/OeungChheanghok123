@@ -184,9 +184,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       width: MediaQuery.of(context).size.width,
       margin: const EdgeInsets.symmetric(horizontal: 35),
       child:  ButtonWidget(
-        height: 40,
         onPressed: () => Get.back(),
-        borderRadius: 25,
         child: const TextWidget(
           isTitle: true,
           text: 'Change',

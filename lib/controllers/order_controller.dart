@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:loy_eat/widgets/layout_widget/button_widget.dart';
 import 'package:loy_eat/widgets/layout_widget/color.dart';
 import 'package:loy_eat/widgets/layout_widget/icon_widget.dart';
@@ -17,6 +19,8 @@ class OrderController extends GetxController{
   var ratingStar = 0.0.obs;
   var starIcon = Icons.star_border.obs;
   var ratingComment = TextEditingController();
+  late GoogleMapController newGoogleMapController;
+  late LocationPermission permission;
 
   void showDialogRateToCustomer() {
     Get.defaultDialog(
@@ -132,5 +136,12 @@ class OrderController extends GetxController{
     comment = '';
     ratingComment.clear();
     ratingStar.value = 0;
+  }
+  void currentLocation() async{
+    permission = await Geolocator.requestPermission();
+    Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    LatLng latLngPosition = LatLng(position.latitude, position.longitude);
+    CameraPosition cameraPosition = CameraPosition(target: latLngPosition, zoom: 16);
+    newGoogleMapController.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
   }
 }

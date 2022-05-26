@@ -80,7 +80,7 @@ class _HomeScreenState extends State<HomeScreen>{
             if (value != null) {
               DateTimeRange _fromRange = DateTimeRange(start: DateTime.now(), end: DateTime.now());
               _fromRange = value;
-              var dateFormat = DateFormat('dd-MMM-YYYY');
+              var dateFormat = DateFormat('dd-MMM-yyyy');
               homeController.startDate.value = dateFormat.format(_fromRange.start);
               homeController.endDate.value = dateFormat.format(_fromRange.end);
             }
