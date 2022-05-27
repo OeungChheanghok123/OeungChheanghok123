@@ -22,11 +22,6 @@ class _NewOrderScreenState extends State<NewOrderScreen> {
   OrderController orderController = Get.put(OrderController());
   final Completer<GoogleMapController> _controller = Completer();
 
-  static const CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(37.42796133580664, -122.085749655962),
-    zoom: 14.4746,
-  );
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,7 +42,10 @@ class _NewOrderScreenState extends State<NewOrderScreen> {
     return GoogleMap(
       padding: const EdgeInsets.only(bottom: 0),
       mapType: MapType.normal,
-      initialCameraPosition: _kGooglePlex,
+      initialCameraPosition:  CameraPosition(
+        target: LatLng(orderController.latitude, orderController.longitude),
+        zoom: 15,
+      ),
       myLocationButtonEnabled: true,
       myLocationEnabled: true,
       zoomGesturesEnabled: true,
@@ -69,14 +67,14 @@ class _NewOrderScreenState extends State<NewOrderScreen> {
         width: MediaQuery.of(context).size.width,
         margin: const EdgeInsets.all(10),
         decoration: BoxDecoration(
-          color: white,
+          color: lightGray,
           borderRadius: BorderRadius.circular(5),
           boxShadow: [
             BoxShadow(
               color: Colors.grey.withOpacity(0.5),
               spreadRadius: 1,
               blurRadius: 10,
-              offset: const Offset(0, 3), // changes position of shadow
+              offset: const Offset(0, 3),
             ),
           ],
         ),
@@ -89,103 +87,27 @@ class _NewOrderScreenState extends State<NewOrderScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildLogo(),
-                      Container(
-                        margin: const EdgeInsets.only(left: 10),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            _buildText(
-                              text: 'From',
-                              size: 14,
-                              color: silver,
-                            ),
-                            _buildText(
-                              text: 'Cafe Amazon (PPIU)',
-                              size: 12,
-                              color: black,
-                            ),
-                            _buildText(
-                              text: '#36, St.169, Sangkat Veal Vong, Khan 7 Makara',
-                              size: 11,
-                              color: black,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+                  _buildDetailProfile(
+                    imageString: 'assets/image/loy_eat_logo.svg',
+                    labelString: 'merchant logo',
+                    status: 'From',
+                    titleString: 'Cafe Amazon (PPIU)',
+                    detailString: '#36, St. 169, Sangkat Veal Vong, Khan 7 Makara',
                   ),
-                  const Space(
-                    height: 30,
+                  _buildSpace(height: 25),
+                  _buildDetailProfile(
+                    imageString: 'assets/image/loy_eat_logo.svg',
+                    labelString: 'user logo',
+                    status: 'To',
+                    titleString: 'Moun Sovongdy',
+                    detailString: '#23, St. 344, Sangkat Dangkor, Khan Dangkor',
                   ),
-                  Expanded(
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _buildLogo(),
-                        Container(
-                          margin: const EdgeInsets.only(left: 10),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              _buildText(
-                                text: 'To',
-                                size: 14,
-                                color: silver,
-                              ),
-                              _buildText(
-                                text: 'Moun Sovongdy',
-                                size: 12,
-                                color: black,
-                              ),
-                              _buildText(
-                                text: '#23, St.344, Sangkat Dangkor, Khan Dangkor Khan Dangkor',
-                                size: 11,
-                                color: black,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    height: 1,
-                    width: MediaQuery.of(context).size.width,
-                    color: silver,
-                    margin: const EdgeInsets.symmetric(vertical: 15),
-                  ),
+                  _buildLine(),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 10),
-                        child: ButtonWidget(
-                          onPressed: () {},
-                          width: 130,
-                          color: white,
-                          borderSide: BorderSide(color: text.withOpacity(0.8)),
-                          child: const TextWidget(
-                            text: 'Reject',
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 10),
-                        child: ButtonWidget(
-                          onPressed: () {},
-                          width: 130,
-                          child: const TextWidget(
-                            text: 'Accept',
-                            color: white,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
+                      _buildButton('Reject', red),
+                      _buildButton('Accept', succeed),
                     ],
                   ),
                 ],
@@ -217,18 +139,56 @@ class _NewOrderScreenState extends State<NewOrderScreen> {
     );
   }
 
-  Widget _buildLogo() {
+  Widget _buildDetailProfile({required String imageString, required String labelString, required String status, required String titleString, required String detailString}) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: 35,
+          height: 35,
+          decoration: BoxDecoration(
+            color: rabbit,
+            borderRadius: BorderRadius.circular(100),
+          ),
+          child: SvgPictureWidget(
+            imageString: imageString,
+            label: labelString,
+          ),
+        ),
+        Expanded(
+          child: Container(
+            margin: const EdgeInsets.only(left: 10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildText(
+                  text: status,
+                  size: 14,
+                  color: silver,
+                ),
+                _buildText(
+                  text: titleString,
+                  size: 12,
+                  color: black,
+                ),
+                _buildText(
+                  text: detailString,
+                  size: 11,
+                  color: black,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+  Widget _buildLine() {
     return Container(
-      width: 35,
-      height: 35,
-      decoration: BoxDecoration(
-        color: rabbit,
-        borderRadius: BorderRadius.circular(100),
-      ),
-      child: const SvgPictureWidget(
-        imageString: 'assets/image/loy_eat_logo.svg',
-        label: 'logo',
-      ),
+      height: 1,
+      width: MediaQuery.of(context).size.width,
+      color: silver,
+      margin: const EdgeInsets.symmetric(vertical: 15),
     );
   }
   Widget _buildText({required String text, required Color color, required double size}) {
@@ -236,7 +196,26 @@ class _NewOrderScreenState extends State<NewOrderScreen> {
       text: text,
       size: size,
       color: color,
-      //textOverflow: TextOverflow.ellipsis,
+      textOverflow: TextOverflow.ellipsis,
+    );
+  }
+  Widget _buildSpace({required double height}) {
+    return Space(height: height);
+  }
+  Widget _buildButton(String buttonText, Color color) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 10),
+      child: ButtonWidget(
+        onPressed: () {},
+        width: 130,
+        color: color,
+        borderSide: BorderSide.none,
+        child: TextWidget(
+          text: buttonText,
+          fontWeight: FontWeight.w500,
+          color: white,
+        ),
+      ),
     );
   }
 }

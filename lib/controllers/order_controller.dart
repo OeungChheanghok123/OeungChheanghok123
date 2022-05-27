@@ -19,8 +19,11 @@ class OrderController extends GetxController{
   var ratingStar = 0.0.obs;
   var starIcon = Icons.star_border.obs;
   var ratingComment = TextEditingController();
+
   late GoogleMapController newGoogleMapController;
   late LocationPermission permission;
+  var latitude = 0.0;
+  var longitude = 0.0;
 
   void showDialogRateToCustomer() {
     Get.defaultDialog(
@@ -141,7 +144,9 @@ class OrderController extends GetxController{
     permission = await Geolocator.requestPermission();
     Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
     LatLng latLngPosition = LatLng(position.latitude, position.longitude);
-    CameraPosition cameraPosition = CameraPosition(target: latLngPosition, zoom: 16);
+    latitude = position.latitude;
+    longitude = position.longitude;
+    CameraPosition cameraPosition = CameraPosition(target: latLngPosition, zoom: 15);
     newGoogleMapController.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
   }
 }
