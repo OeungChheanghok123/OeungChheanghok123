@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:geolocator/geolocator.dart';
@@ -24,6 +26,20 @@ class OrderController extends GetxController{
   late LocationPermission permission;
   var latitude = 0.0;
   var longitude = 0.0;
+  late Timer _timer;
+  var startCounter = 5.obs;
+  var orderEmptyScreen = false;
+
+  @override
+  void onInit() {
+    super.onInit();
+    startTimer();
+  }
+  @override
+  void onClose() {
+    super.onClose();
+    closeTimer();
+  }
 
   void showDialogRateToCustomer() {
     Get.defaultDialog(
@@ -143,10 +159,44 @@ class OrderController extends GetxController{
   void currentLocation() async{
     permission = await Geolocator.requestPermission();
     Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-    LatLng latLngPosition = LatLng(position.latitude, position.longitude);
     latitude = position.latitude;
     longitude = position.longitude;
+    LatLng latLngPosition = LatLng(latitude, longitude);
     CameraPosition cameraPosition = CameraPosition(target: latLngPosition, zoom: 15);
     newGoogleMapController.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+  }
+  void startTimer() {
+    const oneSec = Duration(seconds: 1);
+    _timer = Timer.periodic(oneSec,
+          (Timer timer) {
+        if (startCounter.value == 0) {
+          timer.cancel();
+          Get.defaultDialog(
+            radius: 5,
+            title: '',
+            titleStyle: const TextStyle(fontSize: 10),
+            titlePadding: const EdgeInsets.all(0),
+            contentPadding: const EdgeInsets.all(15),
+            middleTextStyle: const TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.normal,
+            ),
+            middleText: 'The time is out, so your delivery will be rejected to another',
+            textConfirm: 'Confirm',
+            confirmTextColor: white,
+            buttonColor: rabbit,
+            onConfirm: (){
+              orderEmptyScreen = true;
+              Get.offNamed('/instruction');
+            }
+          );
+        } else {
+          startCounter--;
+        }
+      },
+    );
+  }
+  void closeTimer() {
+    _timer.cancel();
   }
 }

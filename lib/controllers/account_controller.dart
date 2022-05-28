@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:loy_eat/controllers/languages_controller.dart';
 import 'package:loy_eat/widgets/layout_widget/color.dart';
 
 class AccountController extends GetxController {
@@ -20,6 +21,8 @@ class AccountController extends GetxController {
   var isSelectedEnglish = true.obs;
   var radioColorKhmer = white.obs;
   var radioColorEnglish = rabbit.obs;
+
+  LanguagesController languagesController = Get.put(LanguagesController());
 
   @override
   void onInit() {
@@ -59,13 +62,17 @@ class AccountController extends GetxController {
           radioColorKhmer.value = rabbit;
           radioColorEnglish.value = white;
           _changeLanguage.value = khmerImage.value;
+
+          languagesController.changeLanguage('kh', 'KH');
         } else {
           radioColorKhmer.value = white;
           radioColorEnglish.value = rabbit;
           _changeLanguage.value = ukImage.value;
-        }
 
+          languagesController.changeLanguage('en', 'US');
+        }
         defaultLanguage.value = _changeLanguage.value;
+        Get.offAllNamed('/instruction');
         Get.back();
       },
     );

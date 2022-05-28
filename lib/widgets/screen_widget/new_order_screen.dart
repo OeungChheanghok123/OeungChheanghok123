@@ -6,6 +6,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:loy_eat/controllers/order_controller.dart';
 import 'package:loy_eat/widgets/layout_widget/button_widget.dart';
 import 'package:loy_eat/widgets/layout_widget/color.dart';
+import 'package:loy_eat/widgets/layout_widget/icon_widget.dart';
 import 'package:loy_eat/widgets/layout_widget/space.dart';
 import 'package:loy_eat/widgets/layout_widget/svg_picture_widget.dart';
 import 'package:loy_eat/widgets/layout_widget/text_widget.dart';
@@ -63,7 +64,7 @@ class _NewOrderScreenState extends State<NewOrderScreen> {
       left: 0,
       right: 0,
       child: Container(
-        height: 250,
+        height: 260,
         width: MediaQuery.of(context).size.width,
         margin: const EdgeInsets.all(10),
         decoration: BoxDecoration(
@@ -81,7 +82,7 @@ class _NewOrderScreenState extends State<NewOrderScreen> {
         child: Stack(
           children: [
             Container(
-              height: 250,
+              height: 260,
               width: MediaQuery.of(context).size.width,
               padding: const EdgeInsets.all(10),
               child: Column(
@@ -106,9 +107,35 @@ class _NewOrderScreenState extends State<NewOrderScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      _buildButton('Reject', red),
-                      _buildButton('Accept', succeed),
+                      _buildIconAndText(
+                        icon: Icons.access_time,
+                        title: '20 min',
+                      ),
+                      _buildIconAndText(
+                        icon: Icons.directions_bike,
+                        title: '1.2 km',
+                      ),
+                      _buildIconAndText(
+                        icon: Icons.monetization_on,
+                        title: '\$19.00',
+                        color: rabbit,
+                      ),
+                      _buildIconAndText(
+                        icon: Icons.directions_bike,
+                        title: 'Tip = \$1.00',
+                        showLine: false,
+                      ),
                     ],
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(top: 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        _buildButton('Reject', red),
+                        _buildButton('Accept', succeed),
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -123,13 +150,13 @@ class _NewOrderScreenState extends State<NewOrderScreen> {
                   color: carrot,
                   borderRadius: BorderRadius.circular(100),
                 ),
-                child: const Center(
-                  child: TextWidget(
-                    text: '1s',
+                child: Center(
+                  child: Obx(() => TextWidget(
+                    text: '${orderController.startCounter.value}',
                     size: 9,
                     color: white,
                     textAlign: TextAlign.center,
-                  ),
+                  ),),
                 ),
               ),
             ),
@@ -188,7 +215,7 @@ class _NewOrderScreenState extends State<NewOrderScreen> {
       height: 1,
       width: MediaQuery.of(context).size.width,
       color: silver,
-      margin: const EdgeInsets.symmetric(vertical: 15),
+      margin: const EdgeInsets.only(top: 10),
     );
   }
   Widget _buildText({required String text, required Color color, required double size}) {
@@ -201,6 +228,32 @@ class _NewOrderScreenState extends State<NewOrderScreen> {
   }
   Widget _buildSpace({required double height}) {
     return Space(height: height);
+  }
+  Widget _buildIconAndText({required IconData icon, required String title, Color color = black, bool showLine = true}){
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 10),
+      child: Row(
+        children: [
+          showLine ? IconWidget(
+            icon: icon,
+            size: 20,
+            color: color,
+          ) : const SizedBox.shrink(),
+          showLine ? _buildSpace(height: 5) : const SizedBox.shrink(),
+          TextWidget(
+            text: title,
+            color: color,
+            size: 11,
+          ),
+          showLine ? Container(
+            width: 1,
+            height: 15,
+            color: black,
+            margin: const EdgeInsets.symmetric(horizontal: 8),
+          ) : const SizedBox.shrink(),
+        ],
+      ),
+    );
   }
   Widget _buildButton(String buttonText, Color color) {
     return Container(

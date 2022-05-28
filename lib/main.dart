@@ -10,6 +10,7 @@ import 'package:loy_eat/screens/feedback_screen.dart';
 import 'package:loy_eat/screens/instruction_screen.dart';
 import 'package:loy_eat/screens/invite_friend_screen.dart';
 import 'package:loy_eat/screens/login_screen.dart';
+import 'package:loy_eat/screens/order_screen.dart';
 import 'package:loy_eat/screens/qr_code_screen.dart';
 import 'package:loy_eat/screens/rating_score_screen.dart';
 import 'package:loy_eat/screens/report_order_detail_screen.dart';
@@ -18,6 +19,7 @@ import 'package:loy_eat/screens/support_screen.dart';
 import 'package:loy_eat/screens/verify_phone_number_screen.dart';
 import 'package:loy_eat/screens/notification_screen.dart';
 import 'package:loy_eat/widgets/screen_widget/auto_complete_text_field.dart';
+import 'package:loy_eat/widgets/screen_widget/order_empty_screen.dart';
 
 void main() => runApp(const MyApp());
 
@@ -52,8 +54,10 @@ class MyApp extends StatelessWidget {
         GetPage(name: '/feedback_us', page: () => const FeedbackUsScreen(), transition: Transition.rightToLeftWithFade),
         GetPage(name: '/qr_code', page: () => const QRCodeScreen(), transition: Transition.rightToLeftWithFade),
         GetPage(name: '/report_order_detail', page: () => const ReportOrderDetailScreen(), transition: Transition.rightToLeftWithFade),
+        GetPage(name: '/order_empty', page: () => const OrderEmptyScreen()),
+        GetPage(name: '/order', page: () => const OrderScreen()),
       ],
-      home: const StartUpScreen(),
+      home: const InstructionScreen(),
     );
   }
 }

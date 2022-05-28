@@ -5,19 +5,19 @@ class Languages extends Translations {
   @override
   Map<String, Map<String, String>> get keys => {
 
-    // 'en_US' : {
-    //   'Log In' : 'Log In',
-    //   'Become a Driver?' : 'Become a Driver?',
-    //   'Stats' : 'Stats',
-    //   'Breakdown' : 'Breakdown',
-    //   'Edit Profile' : 'Edit Profile',
-    //   'Rating Score' : 'Rating Score',
-    //   'Invite Friends to Earn Points' : 'Invite Friends to Earn Points',
-    //   'Need a Support' : 'Need a Support',
-    //   'Feedback Us' : 'Feedback Us',
-    //   'Language' : 'Language',
-    //   'Logout' : 'Logout',
-    // },
+    'en_US' : {
+      'Log In' : 'Log In',
+      'Become a Driver?' : 'Become a Driver?',
+      'Stats' : 'Stats',
+      'Breakdown' : 'Breakdown',
+      'Edit Profile' : 'Edit Profile',
+      'Rating Score' : 'Rating Score',
+      'Invite Friends to Earn Points' : 'Invite Friends to Earn Points',
+      'Need a Support' : 'Need a Support',
+      'Feedback Us' : 'Feedback Us',
+      'Language' : 'Language',
+      'Logout' : 'Logout',
+    },
 
     'kh_KH' : {
       'Log In' : 'ចូល',
