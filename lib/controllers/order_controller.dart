@@ -27,7 +27,7 @@ class OrderController extends GetxController{
   var latitude = 0.0;
   var longitude = 0.0;
   late Timer _timer;
-  var startCounter = 5.obs;
+  var startCounter = 10.obs;
   var orderEmptyScreen = false;
 
   @override
@@ -181,14 +181,15 @@ class OrderController extends GetxController{
               fontSize: 14,
               fontWeight: FontWeight.normal,
             ),
-            middleText: 'The time is out, so your delivery will be rejected to another',
+            middleText: 'The time is out, the delivery are auto to reject.',
             textConfirm: 'Confirm',
             confirmTextColor: white,
             buttonColor: rabbit,
             onConfirm: (){
               orderEmptyScreen = true;
+              closeTimer();
               Get.offNamed('/instruction');
-            }
+            },
           );
         } else {
           startCounter--;
@@ -198,5 +199,32 @@ class OrderController extends GetxController{
   }
   void closeTimer() {
     _timer.cancel();
+  }
+  void showDialogReject() {
+    Get.defaultDialog(
+        radius: 5,
+        title: '',
+        titleStyle: const TextStyle(fontSize: 10),
+        titlePadding: const EdgeInsets.all(0),
+        contentPadding: const EdgeInsets.all(15),
+        middleTextStyle: const TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.normal,
+        ),
+        middleText: 'Are you sure to reject this delivery?',
+        textConfirm: 'Confirm',
+        textCancel: 'Cancel',
+        confirmTextColor: white,
+        cancelTextColor: rabbit,
+        buttonColor: rabbit,
+        onConfirm: (){
+          orderEmptyScreen = true;
+          closeTimer();
+          Get.offNamed('/instruction');
+        },
+        onCancel:(){
+          Get.back();
+        },
+    );
   }
 }

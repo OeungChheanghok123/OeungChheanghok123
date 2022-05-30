@@ -132,8 +132,16 @@ class _NewOrderScreenState extends State<NewOrderScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        _buildButton('Reject', red),
-                        _buildButton('Accept', succeed),
+                        _buildButton(
+                          buttonText: 'Reject',
+                          color: red,
+                          onPressed: () => orderController.showDialogReject(),
+                        ),
+                        _buildButton(
+                          buttonText: 'Accept',
+                          color: succeed,
+                          onPressed: () => orderController.showDialogReject(),
+                        ),
                       ],
                     ),
                   ),
@@ -255,11 +263,11 @@ class _NewOrderScreenState extends State<NewOrderScreen> {
       ),
     );
   }
-  Widget _buildButton(String buttonText, Color color) {
+  Widget _buildButton({required String buttonText, required Color color, required VoidCallback onPressed}) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 10),
       child: ButtonWidget(
-        onPressed: () {},
+        onPressed: onPressed,
         width: 130,
         color: color,
         borderSide: BorderSide.none,
