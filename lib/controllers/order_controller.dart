@@ -136,7 +136,10 @@ class OrderController extends GetxController{
                 height: 35,
                 width: 150,
                 borderRadius: 5,
-                onPressed: () => sendComment(ratingComment.text),
+                onPressed: (){
+                  sendComment(ratingComment.text);
+                  Get.put('/instruction');
+                },
                 child: const TextWidget(
                   isTitle: true,
                   text: "Submit",
