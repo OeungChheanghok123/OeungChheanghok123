@@ -10,6 +10,7 @@ import 'package:loy_eat/screens/feedback_screen.dart';
 import 'package:loy_eat/screens/instruction_screen.dart';
 import 'package:loy_eat/screens/invite_friend_screen.dart';
 import 'package:loy_eat/screens/login_screen.dart';
+import 'package:loy_eat/screens/order_accept.dart';
 import 'package:loy_eat/screens/order_screen.dart';
 import 'package:loy_eat/screens/qr_code_screen.dart';
 import 'package:loy_eat/screens/rating_score_screen.dart';
@@ -55,6 +56,7 @@ class MyApp extends StatelessWidget {
         GetPage(name: '/qr_code', page: () => const QRCodeScreen(), transition: Transition.rightToLeftWithFade),
         GetPage(name: '/report_order_detail', page: () => const ReportOrderDetailScreen(), transition: Transition.rightToLeftWithFade),
         GetPage(name: '/order_empty', page: () => const OrderEmptyScreen()),
+        GetPage(name: '/order_accept', page: () => const OrderAccept()),
         GetPage(name: '/order', page: () => const OrderScreen()),
       ],
       home: const InstructionScreen(),

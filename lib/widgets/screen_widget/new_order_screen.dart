@@ -1,8 +1,5 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:loy_eat/controllers/order_controller.dart';
 import 'package:loy_eat/widgets/layout_widget/button_widget.dart';
 import 'package:loy_eat/widgets/layout_widget/color.dart';
@@ -10,6 +7,7 @@ import 'package:loy_eat/widgets/layout_widget/icon_widget.dart';
 import 'package:loy_eat/widgets/layout_widget/space.dart';
 import 'package:loy_eat/widgets/layout_widget/svg_picture_widget.dart';
 import 'package:loy_eat/widgets/layout_widget/text_widget.dart';
+import 'package:loy_eat/widgets/screen_widget/google_map.dart';
 
 class NewOrderScreen extends StatefulWidget {
   const NewOrderScreen({Key? key}) : super(key: key);
@@ -21,7 +19,6 @@ class NewOrderScreen extends StatefulWidget {
 class _NewOrderScreenState extends State<NewOrderScreen> {
 
   OrderController orderController = Get.put(OrderController());
-  final Completer<GoogleMapController> _controller = Completer();
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +28,7 @@ class _NewOrderScreenState extends State<NewOrderScreen> {
         width: MediaQuery.of(context).size.width,
         child: Stack(
           children: [
-            _buildGoogleMap,
+            const GoogleMapWidget(),
             _buildCard,
           ],
         ),
@@ -39,25 +36,6 @@ class _NewOrderScreenState extends State<NewOrderScreen> {
     );
   }
 
-  Widget get _buildGoogleMap {
-    return GoogleMap(
-      padding: const EdgeInsets.only(bottom: 0),
-      mapType: MapType.normal,
-      initialCameraPosition:  CameraPosition(
-        target: LatLng(orderController.latitude, orderController.longitude),
-        zoom: 15,
-      ),
-      myLocationButtonEnabled: true,
-      myLocationEnabled: true,
-      zoomGesturesEnabled: true,
-      zoomControlsEnabled: true,
-      onMapCreated: (GoogleMapController controller) {
-        _controller.complete(controller);
-        orderController.newGoogleMapController = controller;
-        orderController.currentLocation();
-      },
-    );
-  }
   Widget get _buildCard {
     return Positioned(
       bottom: 0,
@@ -140,7 +118,10 @@ class _NewOrderScreenState extends State<NewOrderScreen> {
                         _buildButton(
                           buttonText: 'Accept',
                           color: succeed,
-                          onPressed: () => orderController.showDialogReject(),
+                          onPressed: () {
+                            orderController.closeTimer();
+                            Get.toNamed('/order_accept');
+                          },
                         ),
                       ],
                     ),
