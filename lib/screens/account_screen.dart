@@ -247,7 +247,16 @@ class _AccountScreenState extends State<AccountScreen> {
       children: [
         InkWell(
           splashColor: none,
-          onTap: () => showDialog,
+          onTap: (){
+            if(accountController.defaultLanguage.value == accountController.khmerImage.value){
+              accountController.radioColorKhmer.value = rabbit;
+              accountController.radioColorEnglish.value = white;
+            } else{
+              accountController.radioColorKhmer.value = white;
+              accountController.radioColorEnglish.value = rabbit;
+            }
+            showDialog;
+          },
           child: Container(
             padding: const EdgeInsets.only(top: 5, bottom: 10),
             child: Row(
