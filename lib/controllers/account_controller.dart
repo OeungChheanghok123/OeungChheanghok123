@@ -27,7 +27,6 @@ class AccountController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    _changeLanguage.value = ukImage.value;
     defaultLanguage.value = _changeLanguage.value;
   }
 
