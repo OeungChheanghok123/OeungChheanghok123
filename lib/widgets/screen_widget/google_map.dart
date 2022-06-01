@@ -6,11 +6,9 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:loy_eat/controllers/order_controller.dart';
 
 class GoogleMapWidget extends StatelessWidget {
-  final double paddingBottom;
 
   const GoogleMapWidget({
     Key? key,
-    this.paddingBottom = 0,
   }) : super(key: key);
 
   @override
@@ -20,7 +18,7 @@ class GoogleMapWidget extends StatelessWidget {
     final Completer<GoogleMapController> _controller = Completer();
 
     return GoogleMap(
-      padding: EdgeInsets.only(bottom: paddingBottom),
+      padding: const EdgeInsets.only(bottom: 0),
       mapType: MapType.normal,
       initialCameraPosition:  CameraPosition(
         target: LatLng(orderController.latitude, orderController.longitude),

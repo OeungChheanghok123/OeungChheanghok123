@@ -21,7 +21,10 @@ class OrderAccept extends StatelessWidget {
       child: Scaffold(
         body: Stack(
           children: [
-            const GoogleMapWidget(paddingBottom: 65),
+            Container(
+              margin: const EdgeInsets.only(bottom: 65),
+              child: const GoogleMapWidget(),
+            ),
             Positioned(
               bottom: 0,
               left: 0,

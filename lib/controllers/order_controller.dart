@@ -59,7 +59,10 @@ class OrderController extends GetxController{
               margin: const EdgeInsets.only(top: 8),
               child: InkWell(
                 splashColor: none,
-                onTap: () => Get.back(),
+                onTap: () {
+                  orderEmptyScreen = true;
+                  Get.offNamed('/instruction');
+                },
                 child: Container(
                   padding: const EdgeInsets.all(3),
                   decoration: BoxDecoration(
@@ -138,7 +141,8 @@ class OrderController extends GetxController{
                 borderRadius: 5,
                 onPressed: (){
                   sendComment(ratingComment.text);
-                  Get.put('/instruction');
+                  orderEmptyScreen = true;
+                  Get.offNamed('/instruction');
                 },
                 child: const TextWidget(
                   isTitle: true,
