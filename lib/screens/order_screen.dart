@@ -24,7 +24,7 @@ class _OrderScreenState extends State<OrderScreen> {
         extendBody: true,
         backgroundColor: lightGray,
         appBar: const HomeScreenAppBar(),
-        body: orderController.orderEmptyScreen ? const OrderEmptyScreen() : const NewOrderScreen(),
+        body: Obx(() => orderController.orderEmptyScreen.value ? const OrderEmptyScreen() : const NewOrderScreen(),),
       ),
     );
   }

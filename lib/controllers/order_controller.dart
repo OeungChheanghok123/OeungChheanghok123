@@ -28,7 +28,7 @@ class OrderController extends GetxController{
   var longitude = 0.0;
   late Timer _timer;
   var startCounter = 10.obs;
-  var orderEmptyScreen = false;
+  var orderEmptyScreen = false.obs;
 
   @override
   void onInit() {
@@ -60,7 +60,7 @@ class OrderController extends GetxController{
               child: InkWell(
                 splashColor: none,
                 onTap: () {
-                  orderEmptyScreen = true;
+                  orderEmptyScreen.value = true;
                   Get.offNamed('/instruction');
                 },
                 child: Container(
@@ -141,7 +141,7 @@ class OrderController extends GetxController{
                 borderRadius: 5,
                 onPressed: (){
                   sendComment(ratingComment.text);
-                  orderEmptyScreen = true;
+                  orderEmptyScreen.value = true;
                   Get.offNamed('/instruction');
                 },
                 child: const TextWidget(
@@ -193,9 +193,9 @@ class OrderController extends GetxController{
             confirmTextColor: white,
             buttonColor: rabbit,
             onConfirm: (){
-              orderEmptyScreen = true;
-              closeTimer();
+              orderEmptyScreen.value = true;
               Get.offNamed('/instruction');
+              Get.back();
             },
           );
         } else {
@@ -225,9 +225,10 @@ class OrderController extends GetxController{
         cancelTextColor: rabbit,
         buttonColor: rabbit,
         onConfirm: (){
-          orderEmptyScreen = true;
-          closeTimer();
+          orderEmptyScreen.value = true;
           Get.offNamed('/instruction');
+          Get.back();
+          closeTimer();
         },
         onCancel:(){
           Get.back();

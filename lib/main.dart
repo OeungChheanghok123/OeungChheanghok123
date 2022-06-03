@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:loy_eat/models/languages.dart';
@@ -19,10 +20,15 @@ import 'package:loy_eat/screens/start_up_screen.dart';
 import 'package:loy_eat/screens/support_screen.dart';
 import 'package:loy_eat/screens/verify_phone_number_screen.dart';
 import 'package:loy_eat/screens/notification_screen.dart';
+import 'package:loy_eat/widgets/layout_widget/color.dart';
 import 'package:loy_eat/widgets/screen_widget/auto_complete_text_field.dart';
 import 'package:loy_eat/widgets/screen_widget/order_empty_screen.dart';
 
-void main() => runApp(const MyApp());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(const MyApp());
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -35,6 +41,10 @@ class MyApp extends StatelessWidget {
       locale: const Locale('en', 'US'),
       fallbackLocale: const Locale('en', 'US'),
       title: "Loy Eat driver app for BuyLoy.com",
+      theme: ThemeData(
+        primaryColor: rabbit,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+      ),
       initialRoute: "/",
       defaultTransition: Transition.noTransition,
       getPages: [

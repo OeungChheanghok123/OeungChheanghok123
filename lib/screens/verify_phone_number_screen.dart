@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:loy_eat/controllers/verify_phone_number_controller.dart';
@@ -89,7 +90,7 @@ class _VerifyPhoneNumberScreenState extends State<VerifyPhoneNumberScreen> {
       child: TextFieldWidget(
         controller: verifyPhoneNumberController.phoneController,
         height: 50,
-        inputType: TextInputType.number,
+        inputType: TextInputType.phone,
         borderRadius: 10,
         hintText: 'Enter phone number',
         isPrefixIcon: true,
@@ -99,7 +100,10 @@ class _VerifyPhoneNumberScreenState extends State<VerifyPhoneNumberScreen> {
   }
   Widget get _buildButtonNext {
     return ButtonWidget(
-      onPressed: () => Get.toNamed('/enter_otp_code?phone=${verifyPhoneNumberController.phoneController.text}'),
+      onPressed: () {
+        verifyNumber();
+        Get.toNamed('/enter_otp_code?phone=${verifyPhoneNumberController.phoneController.text}');
+      },
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: const [
@@ -127,6 +131,24 @@ class _VerifyPhoneNumberScreenState extends State<VerifyPhoneNumberScreen> {
         color: white,
         child: widget,
       ),
+    );
+  }
+  void verifyNumber() {
+    verifyPhoneNumberController.auth.verifyPhoneNumber(
+      phoneNumber: verifyPhoneNumberController.phoneController.text,
+      verificationCompleted: (PhoneAuthCredential credential) async{
+        await verifyPhoneNumberController.auth.signInWithCredential(credential).then((value) => {
+
+        });
+      },
+      verificationFailed: (FirebaseAuthException exception){
+        // ignore: avoid_print
+        print(exception.message);
+      },
+      codeSent: (String verificationID, int? resendToken){
+        verifyPhoneNumberController.verificationIDReceived = verificationID;
+      },
+      codeAutoRetrievalTimeout: (String verificationID){},
     );
   }
 }
