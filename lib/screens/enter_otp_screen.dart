@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:loy_eat/controllers/enter_otp_code_controller.dart';
+import 'package:loy_eat/controllers/verify_phone_number_controller.dart';
 import 'package:loy_eat/widgets/layout_widget/color.dart';
 import 'package:loy_eat/widgets/layout_widget/icon_widget.dart';
 import 'package:loy_eat/widgets/layout_widget/space.dart';
 import 'package:loy_eat/widgets/layout_widget/text_widget.dart';
+
 
 class EnterOTPCodeScreen extends StatefulWidget {
   const EnterOTPCodeScreen({Key? key}) : super(key: key);
@@ -16,6 +18,7 @@ class EnterOTPCodeScreen extends StatefulWidget {
 class _EnterOTPCodeScreenState extends State<EnterOTPCodeScreen> {
 
   OTPCodeController otpCodeController = Get.put(OTPCodeController());
+  VerifyPhoneNumberController verifyPhoneNumberController = Get.put(VerifyPhoneNumberController());
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +64,7 @@ class _EnterOTPCodeScreenState extends State<EnterOTPCodeScreen> {
                       margin: const EdgeInsets.symmetric(vertical: 15),
                       child: TextWidget(
                         textAlign: TextAlign.center,
-                        text: 'Enter your one-time password (OTP) sent to ${Get.parameters['phone']}',
+                        text: 'Enter your one-time password (OTP) sent to ${verifyPhoneNumberController.phoneController.text}',
                       ),
                     ),
                     Container(
@@ -77,6 +80,7 @@ class _EnterOTPCodeScreenState extends State<EnterOTPCodeScreen> {
                             onTap: () {
                               otpCodeController.closeTimer();
                               otpCodeController.start.value = 60;
+                              //verifyNumber();
                               otpCodeController.startTimer();
                             },
                             child: const TextWidget(text: 'Resend Code', color: rabbit,),
@@ -105,7 +109,11 @@ class _EnterOTPCodeScreenState extends State<EnterOTPCodeScreen> {
                       ),
                     ),
                     const Space(height: 10),
-                    Obx(() => TextWidget(text: 'Verification failed. Please try again', color: otpCodeController.isOTPError.value ? red : none, size: 10),),
+                    Obx(() => TextWidget(
+                      text: 'Verification failed. Please try again',
+                      color: otpCodeController.isOTPError.value ? red : none,
+                      size: 10,
+                    )),
                     Expanded(
                       child: Container(
                         color: white,

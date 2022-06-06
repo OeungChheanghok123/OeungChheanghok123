@@ -1,9 +1,13 @@
 import 'dart:async';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:loy_eat/controllers/verify_phone_number_controller.dart';
 
 class OTPCodeController extends GetxController {
+  VerifyPhoneNumberController verifyPhoneNumberController = Get.put(VerifyPhoneNumberController());
+  FirebaseAuth auth = FirebaseAuth.instance;
 
   final List<TextEditingController> listController = [];
   var otp1 = TextEditingController();
@@ -51,7 +55,7 @@ class OTPCodeController extends GetxController {
   void closeTimer() {
     _timer.cancel();
   }
-  void numberClick(int index) {
+  void numberClick(int index) async{
     if (index == 10){
       isOTPError.value = false;
       otp1.text = '';
@@ -80,13 +84,27 @@ class OTPCodeController extends GetxController {
     }
     otpNumber.value = (otp1.text + otp2.text + otp3.text + otp4.text + otp5.text + otp6.text).toString();
     if (otp6.text != ''){
-      if (otpNumber.value == '123456'){
+      PhoneAuthCredential credential = PhoneAuthProvider.credential(
+        verificationId: verifyPhoneNumberController.verificationIDReceived,
+        smsCode: otpNumber.value,
+      );
+
+      await auth.signInWithCredential(credential).then((value) {
+        if(otpNumber.value != credential.smsCode){
+          isOTPError.value = true;
+        }
         _timer.cancel();
         Get.offAllNamed('/instruction');
-      }
-      else {
-        isOTPError.value = true;
-      }
+        print('you are logged in successfully'); // ignore: avoid_print
+        print('code SMS: ${credential.smsCode}'); // ignore: avoid_print
+      });
+      // if (otpNumber.value == '123456'){
+      //   _timer.cancel();
+      //   Get.offAllNamed('/instruction');
+      // }
+      // else {
+      //   isOTPError.value = true;
+      // }
     }
   }
   void deleteNumberClick() {

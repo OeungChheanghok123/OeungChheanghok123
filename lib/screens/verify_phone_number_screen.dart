@@ -59,7 +59,26 @@ class _VerifyPhoneNumberScreenState extends State<VerifyPhoneNumberScreen> {
             text: 'Enter your mobile phone number to receive one-time password (OTP)',
           ),
         ),
-        _buildTextFieldPhoneNumber,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Container(
+              width: 70,
+              height: 50,
+              decoration: BoxDecoration(
+                color: white,
+                border: Border.all(color: black.withOpacity(0.5)),
+                borderRadius: BorderRadius.circular(5),
+              ),
+              child: const Center(
+                child: TextWidget(
+                  text: "+855",
+                ),
+              ),
+            ),
+            _buildTextFieldPhoneNumber,
+          ],
+        ),
         _buildButtonNext,
       ],
     );
@@ -84,14 +103,12 @@ class _VerifyPhoneNumberScreenState extends State<VerifyPhoneNumberScreen> {
   }
   Widget get _buildTextFieldPhoneNumber {
     return Container(
-      width: 250,
+      width: 200,
       margin: const EdgeInsets.symmetric(vertical: 10),
-      padding: const EdgeInsets.symmetric(horizontal: 15),
       child: TextFieldWidget(
         controller: verifyPhoneNumberController.phoneController,
         height: 50,
         inputType: TextInputType.phone,
-        borderRadius: 10,
         hintText: 'Enter phone number',
         isPrefixIcon: true,
         prefixIcon: const Icon(Icons.phone, size: 20, color: rabbit),
@@ -102,7 +119,8 @@ class _VerifyPhoneNumberScreenState extends State<VerifyPhoneNumberScreen> {
     return ButtonWidget(
       onPressed: () {
         verifyNumber();
-        Get.toNamed('/enter_otp_code?phone=${verifyPhoneNumberController.phoneController.text}');
+        print('phone number is ${verifyPhoneNumberController.phoneController.text}'); // ignore: avoid_print
+        Get.toNamed('/enter_otp_code');
       },
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -133,17 +151,24 @@ class _VerifyPhoneNumberScreenState extends State<VerifyPhoneNumberScreen> {
       ),
     );
   }
+
   void verifyNumber() {
+    List phone = verifyPhoneNumberController.phoneController.text.split("");
+    if(phone[0] == "0"){
+      phone.removeAt(0);
+    }
+    verifyPhoneNumberController.phoneController.text = "+855${phone.join()}";
+
     verifyPhoneNumberController.auth.verifyPhoneNumber(
       phoneNumber: verifyPhoneNumberController.phoneController.text,
+      timeout: const Duration(seconds: 20),
       verificationCompleted: (PhoneAuthCredential credential) async{
         await verifyPhoneNumberController.auth.signInWithCredential(credential).then((value) => {
-
+          print('You are logged in successfully') // ignore: avoid_print
         });
       },
       verificationFailed: (FirebaseAuthException exception){
-        // ignore: avoid_print
-        print(exception.message);
+        print(exception.message); // ignore: avoid_print
       },
       codeSent: (String verificationID, int? resendToken){
         verifyPhoneNumberController.verificationIDReceived = verificationID;
