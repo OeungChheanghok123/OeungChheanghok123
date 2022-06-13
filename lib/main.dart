@@ -69,7 +69,8 @@ class MyApp extends StatelessWidget {
         GetPage(name: '/order_accept', page: () => const OrderAccept()),
         GetPage(name: '/order', page: () => const OrderScreen()),
       ],
-      home: const StartUpScreen(),
+      //home: const StartUpScreen(),
+      home: const InstructionScreen(),
     );
   }
 }

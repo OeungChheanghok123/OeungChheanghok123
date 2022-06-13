@@ -140,12 +140,16 @@ class _HomeScreenState extends State<HomeScreen>{
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Obx(() => _buildCard(
+                        width: 100,
+                        iconData: Icons.access_time,
                         title: 'Online',
                         subTitle: homeController.homeModel.value.online,
                       ),
                     ),
                     const Space(),
                     Obx(() => _buildCard(
+                      width: 100,
+                      iconData: Icons.directions_run,
                         title: 'Distance',
                         subTitle: homeController.homeModel.value.distance,
                       ),
@@ -156,29 +160,37 @@ class _HomeScreenState extends State<HomeScreen>{
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Obx(() => _buildCard(
-                        title: 'Trip',
-                        subTitle: homeController.homeModel.value.trips.toStringAsFixed(0),
-                      ),
-                    ),
+                      width: 85,
+                      iconData: Icons.local_activity,
+                      title: 'Point',
+                      subTitle: homeController.homeModel.value.points.toStringAsFixed(0),
+                    ),),
                     const Space(),
                     Obx(() => _buildCard(
-                        title: 'Customer',
-                        subTitle: homeController.homeModel.value.customerRating,
-                      ),
-                    ),
+                      width: 85,
+                      iconData: Icons.motorcycle_rounded,
+                      title: 'Trip',
+                      subTitle: homeController.homeModel.value.trips.toStringAsFixed(0),
+                    ),),
                   ],
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+
                     Obx(() => _buildCard(
-                        title: 'Point',
-                        subTitle: homeController.homeModel.value.points.toStringAsFixed(0),
-                      ),
+                      width: 120,
+                      iconData: Icons.thumbs_up_down,
+                      title: 'Customer',
+                      subTitle: homeController.homeModel.value.customerRating,
                     ),
+                    ),
+
                     const Space(),
                     Obx(() => _buildCard(
-                        title: 'Merchant',
+                      width: 120,
+                      iconData: Icons.thumbs_up_down,
+                      title: 'Merchant',
                         subTitle: homeController.homeModel.value.merchantRating,
                       ),
                     ),
@@ -266,7 +278,7 @@ class _HomeScreenState extends State<HomeScreen>{
                         child: TextWidget(
                           text: '\$${homeController.totalEarnings.value.toStringAsFixed(2)}',
                           fontWeight: FontWeight.bold,
-                          color: black.withOpacity(0.8),
+                          color: black.withOpacity(0.7),
                         ),
                       ),
                     ],
@@ -280,7 +292,7 @@ class _HomeScreenState extends State<HomeScreen>{
     );
   }
 
-  Widget _buildCard({required String title, required String subTitle}) {
+  Widget _buildCard({required double width, required IconData iconData, required String title, required String subTitle}) {
     return Card(
       color: white,
       elevation: 1,
@@ -291,15 +303,21 @@ class _HomeScreenState extends State<HomeScreen>{
         borderRadius: BorderRadius.circular(10),
       ),
       child: Container(
-        width: 95,
-        padding: const EdgeInsets.fromLTRB(00, 10, 0, 10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.start,
+        width: width,
+        padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            TextWidget(text: title),
-            const Space(),
-            TextWidget(text: subTitle, fontWeight: FontWeight.bold),
+            IconWidget(icon: iconData, size: 24,),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                TextWidget(text: title, size: 10,),
+                const Space(),
+                TextWidget(text: subTitle, fontWeight: FontWeight.bold, color: rabbit, size: 10,),
+              ],
+            ),
           ],
         ),
       ),

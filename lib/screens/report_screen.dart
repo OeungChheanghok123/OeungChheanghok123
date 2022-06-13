@@ -49,6 +49,7 @@ class _ReportScreenState extends State<ReportScreen>{
                         child: Column(
                           children: [
                             _buildDateMonthReport,
+                            _buildTotalEarning,
                             _buildChart,
                             _buildStatus,
                             _buildBreakDown,
@@ -81,39 +82,18 @@ class _ReportScreenState extends State<ReportScreen>{
 
   Widget get _buildDateMonthReport{
     return Container(
-      margin: const EdgeInsets.fromLTRB(5, 15, 5, 0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      margin: const EdgeInsets.fromLTRB(5, 15, 5, 5),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Obx(() => TextWidget(
-                isTitle: true,
-                text: reportController.dateMonthReport.value,
-              )),
-              const IconWidget(
-                icon: Icons.arrow_drop_down_sharp,
-                size: 20,
-                color: black,
-              ),
-            ],
-          ),
-          Container(
-            margin: const EdgeInsets.only(top: 10, bottom: 5),
-            child: Row(
-              children: [
-                const TextWidget(
-                  text: 'Total Earning: ',
-                  fontWeight: FontWeight.bold,
-                ),
-                TextWidget(
-                  text: '\$${reportController.totalEarning.value.toStringAsFixed(2)}',
-                  fontWeight: FontWeight.bold,
-                  color: rabbit,
-                ),
-              ],
-            )
+          Obx(() => TextWidget(
+            isTitle: true,
+            text: reportController.dateMonthReport.value,
+          )),
+          const IconWidget(
+            icon: Icons.arrow_drop_down_sharp,
+            size: 20,
+            color: black,
           ),
         ],
       ),
@@ -141,6 +121,26 @@ class _ReportScreenState extends State<ReportScreen>{
       ),
     );
   }
+  Widget get _buildTotalEarning{
+    return Container(
+        margin: const EdgeInsets.only(top: 10, bottom: 5),
+        child: Row(
+          children: [
+            const IconWidget(icon: Icons.monetization_on, size: 20,),
+            const Space(),
+            const TextWidget(
+              text: 'Total Earning: ',
+              fontWeight: FontWeight.bold,
+            ),
+            TextWidget(
+              text: '\$${reportController.totalEarning.value.toStringAsFixed(2)}',
+              fontWeight: FontWeight.bold,
+              color: rabbit,
+            ),
+          ],
+        )
+    );
+  }
   Widget get _buildStatus {
     return Container(
       margin: const EdgeInsets.only(top: 10, bottom: 0),
@@ -160,48 +160,54 @@ class _ReportScreenState extends State<ReportScreen>{
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Obx(() => _buildCard(
-                        title: 'Online',
-                        subTitle: reportController.reportModel.value.online,
-                      ),
-                    ),
+                      width: 100,
+                      iconData: Icons.access_time,
+                      title: 'Online',
+                      subTitle: reportController.reportModel.value.online,
+                    ),),
                     const Space(),
                     Obx(() => _buildCard(
-                        title: 'Distance',
-                        subTitle: reportController.reportModel.value.distance,
-                      ),
-                    ),
+                      width: 100,
+                      iconData: Icons.directions_run,
+                      title: 'Distance',
+                      subTitle: reportController.reportModel.value.distance,
+                    ),),
                   ],
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Obx(() => _buildCard(
-                        title: 'Trip',
-                        subTitle: reportController.reportModel.value.trips.toStringAsFixed(0),
-                      ),
-                    ),
+                      width: 85,
+                      iconData: Icons.local_activity,
+                      title: 'Point',
+                      subTitle: reportController.reportModel.value.points.toStringAsFixed(0),
+                    ),),
                     const Space(),
                     Obx(() => _buildCard(
-                        title: 'Customer',
-                        subTitle: reportController.reportModel.value.customerRating,
-                      ),
-                    ),
+                      width: 85,
+                      iconData: Icons.motorcycle_rounded,
+                      title: 'Trip',
+                      subTitle: reportController.reportModel.value.trips.toStringAsFixed(0),
+                    ),),
                   ],
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Obx(() => _buildCard(
-                        title: 'Point',
-                        subTitle: reportController.reportModel.value.points.toStringAsFixed(0),
-                      ),
-                    ),
+                      width: 120,
+                      iconData: Icons.thumbs_up_down,
+                      title: 'Customer',
+                      subTitle: reportController.reportModel.value.customerRating,
+                    ),),
                     const Space(),
                     Obx(() => _buildCard(
-                        title: 'Merchant',
-                        subTitle: reportController.reportModel.value.merchantRating,
-                      ),
-                    ),
+                      width: 120,
+                      iconData: Icons.thumbs_up_down,
+                      title: 'Merchant',
+                      subTitle: reportController.reportModel.value.merchantRating,
+                    ),),
                   ],
                 ),
               ],
@@ -460,7 +466,7 @@ class _ReportScreenState extends State<ReportScreen>{
       ],
     );
   }
-  Widget _buildCard({required String title, required String subTitle}) {
+  Widget _buildCard({required double width, required IconData iconData,required String title, required String subTitle}) {
     return Card(
       color: white,
       elevation: 1,
@@ -471,15 +477,21 @@ class _ReportScreenState extends State<ReportScreen>{
         borderRadius: BorderRadius.circular(10),
       ),
       child: Container(
-        width: 95,
-        padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.start,
+        width: width,
+        padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+        child:Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            TextWidget(text: title),
-            const Space(),
-            TextWidget(text: subTitle, fontWeight: FontWeight.bold),
+            IconWidget(icon: iconData, size: 24,),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                TextWidget(text: title, size: 10,),
+                const Space(),
+                TextWidget(text: subTitle, fontWeight: FontWeight.bold, color: rabbit, size: 10,),
+              ],
+            ),
           ],
         ),
       ),

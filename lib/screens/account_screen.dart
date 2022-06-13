@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:loy_eat/controllers/account_controller.dart';
+import 'package:loy_eat/controllers/verify_phone_number_controller.dart';
 import 'package:loy_eat/widgets/layout_widget/button_widget.dart';
 import 'package:loy_eat/widgets/layout_widget/color.dart';
 import 'package:loy_eat/widgets/layout_widget/icon_widget.dart';
@@ -19,6 +20,7 @@ class AccountScreen extends StatefulWidget {
 class _AccountScreenState extends State<AccountScreen> {
 
   AccountController accountController = Get.put(AccountController());
+  VerifyPhoneNumberController verifyPhoneNumberController = Get.put(VerifyPhoneNumberController());
 
   @override
   Widget build(BuildContext context) {
@@ -112,7 +114,7 @@ class _AccountScreenState extends State<AccountScreen> {
               children: [
                 TextWidget(isTitle: true, text: accountController.driverName.value),
                 const Space(height: 10),
-                TextWidget(text: accountController.phoneNumber.value, color: silver),
+                TextWidget(text: '0${verifyPhoneNumberController.phoneNumber}', color: silver),
               ],
             ),
           ],
