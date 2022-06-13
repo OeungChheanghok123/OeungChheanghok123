@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 
 class VerifyPhoneNumberController extends GetxController {
   var phoneController = TextEditingController();
+  var phoneNumber = '';
   FirebaseAuth auth = FirebaseAuth.instance;
   var verificationIDReceived = '';
 }

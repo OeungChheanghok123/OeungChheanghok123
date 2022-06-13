@@ -157,10 +157,11 @@ class _VerifyPhoneNumberScreenState extends State<VerifyPhoneNumberScreen> {
     if(phone[0] == "0"){
       phone.removeAt(0);
     }
-    verifyPhoneNumberController.phoneController.text = "+855${phone.join()}";
+    verifyPhoneNumberController.phoneController.text = phone.join();
+    verifyPhoneNumberController.phoneNumber = phone.join();
 
     verifyPhoneNumberController.auth.verifyPhoneNumber(
-      phoneNumber: verifyPhoneNumberController.phoneController.text,
+      phoneNumber: "+855${verifyPhoneNumberController.phoneController.text}",
       timeout: const Duration(seconds: 20),
       verificationCompleted: (PhoneAuthCredential credential) async{
         await verifyPhoneNumberController.auth.signInWithCredential(credential).then((value) => {

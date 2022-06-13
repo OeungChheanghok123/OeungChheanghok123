@@ -10,6 +10,7 @@ import 'package:charts_flutter/flutter.dart' as charts;
 class HomeController extends GetxController {
   var homeModel = HomeModel().obs;
   var notificationModel = listNotification;
+  var notificationIndex = 0.obs;
   var toggleState = false.obs;
   var appBarColor = carrot.obs;
   var toggleIcon = Icons.toggle_off.obs;
@@ -18,6 +19,7 @@ class HomeController extends GetxController {
   var notificationCount = 0.obs;
   var totalEarnings = 0.00.obs;
   var readAll = false.obs;
+  var readOne = false.obs;
   var startDate  = 'Start Date'.obs;
   var endDate = 'End Date'.obs;
 
@@ -36,7 +38,7 @@ class HomeController extends GetxController {
   void onInit() {
     super.onInit();
     totalEarnings.value = homeModel.value.deliveryFee + homeModel.value.bonus  + homeModel.value.tip;
-    notificationCount.value = notificationModel.length;
+    notificationCount.value = listNotification.length;
   }
 
   void toggleClicked(){
@@ -55,8 +57,7 @@ class HomeController extends GetxController {
       notificationColor.value = rabbit;
     }
   }
-  void deleteNotification() {
-    //notificationCount.value = 0;
+  void readAllNotification() {
     readAll.value = true;
   }
   Future<Widget> wait3SecAndLoadData() async {

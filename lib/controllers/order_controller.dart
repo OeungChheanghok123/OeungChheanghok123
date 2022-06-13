@@ -181,6 +181,7 @@ class OrderController extends GetxController{
           Get.defaultDialog(
             radius: 5,
             title: '',
+            barrierDismissible: false,
             titleStyle: const TextStyle(fontSize: 10),
             titlePadding: const EdgeInsets.all(0),
             contentPadding: const EdgeInsets.all(15),
@@ -188,7 +189,7 @@ class OrderController extends GetxController{
               fontSize: 14,
               fontWeight: FontWeight.normal,
             ),
-            middleText: 'The time is out, the delivery are auto to reject.',
+            middleText: 'The time is out, the delivery will auto to reject.',
             textConfirm: 'Confirm',
             confirmTextColor: white,
             buttonColor: rabbit,

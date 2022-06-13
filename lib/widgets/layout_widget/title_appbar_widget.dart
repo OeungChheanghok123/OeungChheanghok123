@@ -7,6 +7,7 @@ class TitleAppBarWidget extends StatelessWidget {
   final double size;
   final FontWeight fontWeight;
   final Color color;
+  final TextOverflow textOverflow;
 
   const TitleAppBarWidget({
     Key? key,
@@ -15,11 +16,13 @@ class TitleAppBarWidget extends StatelessWidget {
     this.size = 16,
     this.fontWeight = FontWeight.bold,
     this.color = black,
+    this.textOverflow = TextOverflow.clip,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) => Text(text,
     textAlign: textAlign,
+    overflow: textOverflow,
     style: TextStyle(
       fontSize: size,
       fontWeight: fontWeight,

@@ -8,7 +8,7 @@ import 'package:charts_flutter/flutter.dart' as charts;
 class ReportController extends GetxController{
   var scrollController = ScrollController();
   var reportModel = ReportModel().obs;
-  var dateMonthReport = 'Dec 2021'.obs;
+  var dateMonthReport = 'Nov-2021'.obs;
   var totalEarning = 0.00.obs;
 
   var isCanceled = false.obs;
@@ -24,13 +24,11 @@ class ReportController extends GetxController{
 
 
   final List<ReportChart> data = [
-    ReportChart(date: '15\nMon', price: 12.45, barColor: charts.ColorUtil.fromDartColor(rabbit)),
-    ReportChart(date: '16\nTue', price: 30.00, barColor: charts.ColorUtil.fromDartColor(rabbit)),
-    ReportChart(date: '17\nWed', price: 15.00, barColor: charts.ColorUtil.fromDartColor(rabbit)),
-    ReportChart(date: '18\nThu', price: 30.05, barColor: charts.ColorUtil.fromDartColor(rabbit)),
-    ReportChart(date: '19\nFri', price: 40.00, barColor: charts.ColorUtil.fromDartColor(rabbit)),
-    ReportChart(date: '20\nSat', price: 0, barColor: charts.ColorUtil.fromDartColor(rabbit)),
-    ReportChart(date: '21\nSun', price: 0, barColor: charts.ColorUtil.fromDartColor(rabbit)),
+    ReportChart(date: '1-7', price: 12.45, barColor: charts.ColorUtil.fromDartColor(rabbit)),
+    ReportChart(date: '8-13', price: 30.00, barColor: charts.ColorUtil.fromDartColor(rabbit)),
+    ReportChart(date: '14-20', price: 15.00, barColor: charts.ColorUtil.fromDartColor(rabbit)),
+    ReportChart(date: '21-27', price: 30.05, barColor: charts.ColorUtil.fromDartColor(rabbit)),
+    ReportChart(date: '28-31', price: 40.00, barColor: charts.ColorUtil.fromDartColor(rabbit)),
   ];
 
   @override

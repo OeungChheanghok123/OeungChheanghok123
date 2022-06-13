@@ -42,8 +42,7 @@ class OTPCodeController extends GetxController {
 
   void startTimer() {
     const oneSec = Duration(seconds: 1);
-    _timer = Timer.periodic(oneSec,
-          (Timer timer) {
+    _timer = Timer.periodic(oneSec, (Timer timer) {
         if (start.value == 0) {
           timer.cancel();
         } else {

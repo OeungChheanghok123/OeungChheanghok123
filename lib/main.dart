@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_navigation/get_navigation.dart';
+import 'package:get/get.dart';
+import 'package:loy_eat/controllers/home_controller.dart';
 import 'package:loy_eat/models/languages.dart';
 import 'package:loy_eat/screens/become_driver_fail_screen.dart';
 import 'package:loy_eat/screens/become_driver_screen.dart';
@@ -8,9 +9,11 @@ import 'package:loy_eat/screens/become_driver_success_screen.dart';
 import 'package:loy_eat/screens/edit_profile_screen.dart';
 import 'package:loy_eat/screens/enter_otp_screen.dart';
 import 'package:loy_eat/screens/feedback_screen.dart';
+import 'package:loy_eat/screens/home_screen.dart';
 import 'package:loy_eat/screens/instruction_screen.dart';
 import 'package:loy_eat/screens/invite_friend_screen.dart';
 import 'package:loy_eat/screens/login_screen.dart';
+import 'package:loy_eat/screens/notification_detail_screen.dart';
 import 'package:loy_eat/screens/order_accept.dart';
 import 'package:loy_eat/screens/order_screen.dart';
 import 'package:loy_eat/screens/qr_code_screen.dart';
@@ -35,6 +38,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    HomeController homeController = Get.put(HomeController());
+
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       translations: Languages(),
@@ -54,7 +59,9 @@ class MyApp extends StatelessWidget {
         GetPage(name: '/verify_phone_number', page: () => const VerifyPhoneNumberScreen()),
         GetPage(name: '/enter_otp_code', page: () => const EnterOTPCodeScreen()),
         GetPage(name: '/instruction', page: () => const InstructionScreen()),
+        GetPage(name: '/home', page: () => const HomeScreen()),
         GetPage(name: '/notification', page: () => const NotificationScreen(), transition: Transition.rightToLeftWithFade, transitionDuration: const Duration(milliseconds: 500)),
+        GetPage(name: '/notification_detail', page: () => NotificationDetailScreen(notificationIndex: homeController.notificationIndex.value), transition: Transition.rightToLeftWithFade, transitionDuration: const Duration(milliseconds: 500)),
         GetPage(name: '/become_driver_success', page: () => const BecomeDriverSuccessScreen()),
         GetPage(name: '/become_driver_fail', page: () => const BecomeDriverFailScreen()),
         GetPage(name: '/auto_complete_text_field', page: () => const AutoCompleteTextField(), transition: Transition.downToUp),
@@ -69,7 +76,8 @@ class MyApp extends StatelessWidget {
         GetPage(name: '/order_accept', page: () => const OrderAccept()),
         GetPage(name: '/order', page: () => const OrderScreen()),
       ],
-      home: const StartUpScreen(),
+      //home: const StartUpScreen(),
+      home: const InstructionScreen(),
     );
   }
 }

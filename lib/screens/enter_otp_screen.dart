@@ -64,7 +64,7 @@ class _EnterOTPCodeScreenState extends State<EnterOTPCodeScreen> {
                       margin: const EdgeInsets.symmetric(vertical: 15),
                       child: TextWidget(
                         textAlign: TextAlign.center,
-                        text: 'Enter your one-time password (OTP) sent to ${verifyPhoneNumberController.phoneController.text}',
+                        text: 'Enter your one-time password (OTP) sent to +855${verifyPhoneNumberController.phoneNumber}',
                       ),
                     ),
                     Container(

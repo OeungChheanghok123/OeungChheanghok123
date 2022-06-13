@@ -120,7 +120,7 @@ class _NewOrderScreenState extends State<NewOrderScreen> {
                           color: succeed,
                           onPressed: () {
                             orderController.closeTimer();
-                            Get.toNamed('/order_accept');
+                            Get.offNamed('/order_accept');
                           },
                         ),
                       ],

@@ -2,12 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:loy_eat/controllers/languages_controller.dart';
+import 'package:loy_eat/controllers/verify_phone_number_controller.dart';
 import 'package:loy_eat/widgets/layout_widget/color.dart';
 
 class AccountController extends GetxController {
   var userProfile = 'assets/image/driver_profile.png'.obs;
   var driverName = 'Oeung Chheanghok'.obs;
-  var phoneNumber = '098 496 050'.obs;
 
   var defaultLanguage = ''.obs;
   final _changeLanguage = ''.obs;
@@ -23,6 +23,7 @@ class AccountController extends GetxController {
   var radioColorEnglish = rabbit.obs;
 
   LanguagesController languagesController = Get.put(LanguagesController());
+  VerifyPhoneNumberController verifyPhoneNumberController = Get.put(VerifyPhoneNumberController());
 
   @override
   void onInit() {

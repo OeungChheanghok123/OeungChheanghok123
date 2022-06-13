@@ -39,7 +39,7 @@ class HomeScreenAppBar extends StatelessWidget implements PreferredSize{
           children: [
             InkWell(
               splashColor: none,
-              onTap: () => Get.toNamed("/notification"),
+              onTap: () => Get.offNamed("/notification"),
               child: Container(
                 margin: const EdgeInsets.only(right: 10),
                 child: const IconWidget(
