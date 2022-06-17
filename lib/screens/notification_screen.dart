@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:loy_eat/controllers/home_controller.dart';
+import 'package:loy_eat/models/notification_model.dart';
 import 'package:loy_eat/widgets/layout_widget/color.dart';
 import 'package:loy_eat/widgets/layout_widget/icon_widget.dart';
 import 'package:loy_eat/widgets/layout_widget/image_icon_widget.dart';
@@ -17,6 +18,7 @@ class NotificationScreen extends StatefulWidget {
 class _NotificationScreenState extends State<NotificationScreen> {
   String titleText = "Notification";
   HomeController homeController = Get.put(HomeController());
+  Color notificationColor = rabbit;
 
   @override
   Widget build(BuildContext context) {
@@ -75,29 +77,28 @@ class _NotificationScreenState extends State<NotificationScreen> {
     );
   }
   Widget get _notification {
-    return Obx(() => Container(
+    return Container(
       padding: const EdgeInsets.all(10),
       color: lightGray,
       alignment: Alignment.center,
       child: ListView.builder(
         itemCount: homeController.notificationCount.value,
         itemBuilder: (BuildContext context, int index){
-          return _buildCardDetail(index, rabbit);
+          return Obx(() => _buildCardDetail(
+            index: index,
+            color: homeController.readAll.value ? homeController.notificationModel[index].color = white : homeController.notificationIndex.value == index ? homeController.notificationModel[index].color = white : rabbit,
+          ));
         },
       ),
-    ));
+    );
   }
 
-  Widget _buildCardDetail(int index, Color color){
+  Widget _buildCardDetail({required int index, required Color color}){
+    int countNotification = listNotification.length;
     return InkWell(
       onTap: (){
         homeController.notificationIndex.value = index;
-        if (index == homeController.notificationIndex.value){
-          color = white;
-        }
-        Get.toNamed('/notification_detail');
-        //Get.offNamed("/notification_detail");
-
+        //Get.toNamed("/notification_detail");
       },
       child: Card(
         elevation: 1,
@@ -173,15 +174,15 @@ class _NotificationScreenState extends State<NotificationScreen> {
             Positioned(
               top: 10,
               right: 10,
-              child:Container(
+              child: Container(
                 width: 5,
                 height: 5,
                 decoration: BoxDecoration(
-                  color: color,
+                  color: homeController.notificationModel[index].color,
                   borderRadius: BorderRadius.circular(100),
                   boxShadow: [
                     BoxShadow(
-                      color: color,
+                      color: homeController.notificationModel[index].color,
                       spreadRadius: 5,
                       blurRadius: 10,
                       offset: const Offset(3, 1), // changes position of shadow

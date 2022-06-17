@@ -10,7 +10,7 @@ import 'package:charts_flutter/flutter.dart' as charts;
 class HomeController extends GetxController {
   var homeModel = HomeModel().obs;
   var notificationModel = listNotification;
-  var notificationIndex = 0.obs;
+  var notificationIndex = 100.obs;
   var toggleState = false.obs;
   var appBarColor = carrot.obs;
   var toggleIcon = Icons.toggle_off.obs;
@@ -19,7 +19,6 @@ class HomeController extends GetxController {
   var notificationCount = 0.obs;
   var totalEarnings = 0.00.obs;
   var readAll = false.obs;
-  var readOne = false.obs;
   var startDate  = 'Start Date'.obs;
   var endDate = 'End Date'.obs;
 

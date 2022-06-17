@@ -1,12 +1,18 @@
+
+import 'package:flutter/material.dart';
+import 'package:loy_eat/widgets/layout_widget/color.dart';
+
 class NotificationModel {
   String title;
   String subTile;
   String date;
+  Color color;
 
   NotificationModel({
     required this.title,
     required this.subTile,
     required this.date,
+    this.color = rabbit,
   });
 }
 
