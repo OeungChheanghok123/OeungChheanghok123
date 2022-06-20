@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:loy_eat/controllers/home_controller.dart';
-import 'package:loy_eat/models/notification_model.dart';
 import 'package:loy_eat/widgets/layout_widget/color.dart';
 import 'package:loy_eat/widgets/layout_widget/icon_widget.dart';
 import 'package:loy_eat/widgets/layout_widget/image_icon_widget.dart';
@@ -31,7 +30,11 @@ class _NotificationScreenState extends State<NotificationScreen> {
           elevation: 0,
           titleSpacing: 0,
           leading: InkWell(
-            onTap: () => Get.offNamed('/instruction'),
+            onTap: () {
+              homeController.notificationIndex.value = homeController.notificationIndex.value - 1;
+
+              Get.offNamed('/instruction');
+              },
             child: const IconWidget(
               icon: Icons.arrow_back_ios,
               color: black,
@@ -94,11 +97,10 @@ class _NotificationScreenState extends State<NotificationScreen> {
   }
 
   Widget _buildCardDetail({required int index, required Color color}){
-    int countNotification = listNotification.length;
     return InkWell(
       onTap: (){
         homeController.notificationIndex.value = index;
-        //Get.toNamed("/notification_detail");
+        Get.toNamed("/notification_detail");
       },
       child: Card(
         elevation: 1,
