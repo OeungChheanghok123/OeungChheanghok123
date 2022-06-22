@@ -1,8 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:loy_eat/controllers/report_controller.dart';
+import 'package:loy_eat/models/report_model.dart';
 import 'package:loy_eat/widgets/layout_widget/color.dart';
 import 'package:loy_eat/widgets/layout_widget/icon_widget.dart';
 import 'package:loy_eat/widgets/layout_widget/space.dart';
@@ -26,56 +28,114 @@ class _ReportScreenState extends State<ReportScreen>{
         extendBody: true,
         backgroundColor: lightGray,
         appBar: null,
-        body: FutureBuilder(
-          future: reportController.wait3SecAndLoadData(),
+        body: StreamBuilder<QuerySnapshot>(
+          stream: FirebaseFirestore.instance.collection(ReportModel.collectionName).snapshots(),
           builder: (context, snapshot){
             if (snapshot.hasError){
-              final error = snapshot.error;
-              return TextWidget(text: "$error");
-            } else if (snapshot.hasData){
-              return CustomScrollView(
-                slivers: [
-                  SliverAppBar(
-                    pinned: true,
-                    elevation: 1,
-                    backgroundColor: lightGray,
-                    expandedHeight: 670,
-                    excludeHeaderSemantics: true,
-                    automaticallyImplyLeading: false,
-                    flexibleSpace: FlexibleSpaceBar(
-                      collapseMode: CollapseMode.pin,
-                      background: Container(
-                        margin: const EdgeInsets.fromLTRB(15, 0, 15, 10),
-                        child: Column(
-                          children: [
-                            _buildDateMonthReport,
-                            _buildTotalEarning,
-                            _buildChart,
-                            _buildStatus,
-                            _buildBreakDown,
-                          ],
-                        ),
-                      ),
-                    ),
-                    bottom: PreferredSize(
-                      preferredSize: const Size.fromHeight(0),
-                      child: _buildDetailBar,
-                    ),
-                  ),
-                  SliverToBoxAdapter(
-                    child: _buildReportBody,
-                  ),
-                ],
-              );
+              return TextWidget(text: "${snapshot.error}");
             } else {
-              return Container(
-                height: MediaQuery.of(context).size.height - 55,
-                alignment: Alignment.center,
-                child: const CircularProgressIndicator(color: rabbit),
-              );
+              if (snapshot.hasData){
+                return CustomScrollView(
+                  slivers: [
+                    _buildSilverAppBar(snapshot.data!.docs),
+                    SliverToBoxAdapter(
+                      child: _buildReportBody,
+                    ),
+                  ],
+                );
+              } else{
+                return Container(
+                  height: MediaQuery.of(context).size.height - 55,
+                  alignment: Alignment.center,
+                  child: const CircularProgressIndicator(color: rabbit),
+                );
+              }
             }
           },
         ),
+
+        // body: FutureBuilder(
+        //   future: reportController.wait3SecAndLoadData(),
+        //   builder: (context, snapshot){
+        //     if (snapshot.hasError){
+        //       final error = snapshot.error;
+        //       return TextWidget(text: "$error");
+        //     } else if (snapshot.hasData){
+        //       return CustomScrollView(
+        //         slivers: [
+        //           SliverAppBar(
+        //             pinned: true,
+        //             elevation: 1,
+        //             backgroundColor: lightGray,
+        //             expandedHeight: 670,
+        //             excludeHeaderSemantics: true,
+        //             automaticallyImplyLeading: false,
+        //             flexibleSpace: FlexibleSpaceBar(
+        //               collapseMode: CollapseMode.pin,
+        //               background: Container(
+        //                 margin: const EdgeInsets.fromLTRB(15, 0, 15, 10),
+        //                 child: Column(
+        //                   children: [
+        //                     _buildDateMonthReport,
+        //                     _buildTotalEarning,
+        //                     _buildChart,
+        //                     _buildStatus,
+        //                     _buildBreakDown,
+        //                   ],
+        //                 ),
+        //               ),
+        //             ),
+        //             bottom: PreferredSize(
+        //               preferredSize: const Size.fromHeight(0),
+        //               child: _buildDetailBar,
+        //             ),
+        //           ),
+        //           SliverToBoxAdapter(
+        //             child: _buildReportBody,
+        //           ),
+        //         ],
+        //       );
+        //     } else {
+        //       return Container(
+        //         height: MediaQuery.of(context).size.height - 55,
+        //         alignment: Alignment.center,
+        //         child: const CircularProgressIndicator(color: rabbit),
+        //       );
+        //     }
+        //   },
+        // ),
+      ),
+    );
+  }
+
+  Widget _buildSilverAppBar(List<DocumentSnapshot> documents){
+    List<ReportModel> modelList = documents.map((data) => ReportModel.fromSnapshot(data)).toList();
+
+    return SliverAppBar(
+      pinned: true,
+      elevation: 1,
+      backgroundColor: lightGray,
+      expandedHeight: 670,
+      excludeHeaderSemantics: true,
+      automaticallyImplyLeading: false,
+      flexibleSpace: FlexibleSpaceBar(
+        collapseMode: CollapseMode.pin,
+        background: Container(
+          margin: const EdgeInsets.fromLTRB(15, 0, 15, 10),
+          child: Column(
+            children: [
+              _buildDateMonthReport,
+              _buildTotalEarning(modelList[0]),
+              _buildChart,
+              _buildStatus(modelList[0]),
+              _buildBreakDown(modelList[0]),
+            ],
+          ),
+        ),
+      ),
+      bottom: PreferredSize(
+        preferredSize: const Size.fromHeight(0),
+        child: _buildDetailBar,
       ),
     );
   }
@@ -121,7 +181,9 @@ class _ReportScreenState extends State<ReportScreen>{
       ),
     );
   }
-  Widget get _buildTotalEarning{
+  Widget _buildTotalEarning(ReportModel reportModel){
+    double totalEarning = double.parse(reportModel.deliveryFee) + double.parse(reportModel.bonus) + double.parse(reportModel.tip) ;
+
     return Container(
         margin: const EdgeInsets.only(top: 10, bottom: 5),
         child: Row(
@@ -133,7 +195,7 @@ class _ReportScreenState extends State<ReportScreen>{
               fontWeight: FontWeight.bold,
             ),
             TextWidget(
-              text: '\$${reportController.totalEarning.value.toStringAsFixed(2)}',
+              text: '\$${totalEarning.toStringAsFixed(2)}',
               fontWeight: FontWeight.bold,
               color: rabbit,
             ),
@@ -141,7 +203,7 @@ class _ReportScreenState extends State<ReportScreen>{
         )
     );
   }
-  Widget get _buildStatus {
+  Widget _buildStatus(ReportModel reportModel) {
     return Container(
       margin: const EdgeInsets.only(top: 10, bottom: 0),
       child: Column(
@@ -159,55 +221,55 @@ class _ReportScreenState extends State<ReportScreen>{
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Obx(() => _buildCard(
-                      width: 100,
+                    _buildCard(
+                      width: 105,
                       iconData: Icons.access_time,
                       title: 'Online',
-                      subTitle: reportController.reportModel.value.online,
-                    ),),
+                      subTitle: reportModel.online,
+                    ),
                     const Space(),
-                    Obx(() => _buildCard(
-                      width: 100,
+                    _buildCard(
+                      width: 105,
                       iconData: Icons.directions_run,
                       title: 'Distance',
-                      subTitle: reportController.reportModel.value.distance,
-                    ),),
+                      subTitle: reportModel.distance,
+                    ),
                   ],
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Obx(() => _buildCard(
-                      width: 85,
+                    _buildCard(
+                      width: 105,
                       iconData: Icons.local_activity,
                       title: 'Point',
-                      subTitle: reportController.reportModel.value.points.toStringAsFixed(0),
-                    ),),
+                      subTitle: reportModel.point,
+                    ),
                     const Space(),
-                    Obx(() => _buildCard(
-                      width: 85,
+                    _buildCard(
+                      width: 105,
                       iconData: Icons.motorcycle_rounded,
                       title: 'Trip',
-                      subTitle: reportController.reportModel.value.trips.toStringAsFixed(0),
-                    ),),
+                      subTitle: reportModel.trip,
+                    ),
                   ],
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Obx(() => _buildCard(
-                      width: 120,
+                    _buildCard(
+                      width: 105,
                       iconData: Icons.thumbs_up_down,
                       title: 'Customer',
-                      subTitle: reportController.reportModel.value.customerRating,
-                    ),),
+                      subTitle: reportModel.customerRating,
+                    ),
                     const Space(),
-                    Obx(() => _buildCard(
-                      width: 120,
+                    _buildCard(
+                      width: 105,
                       iconData: Icons.thumbs_up_down,
                       title: 'Merchant',
-                      subTitle: reportController.reportModel.value.merchantRating,
-                    ),),
+                      subTitle: reportModel.merchantRating,
+                    ),
                   ],
                 ),
               ],
@@ -217,7 +279,9 @@ class _ReportScreenState extends State<ReportScreen>{
       ),
     );
   }
-  Widget get _buildBreakDown {
+  Widget _buildBreakDown(ReportModel reportModel) {
+    double totalEarning = double.parse(reportModel.deliveryFee) + double.parse(reportModel.bonus) + double.parse(reportModel.tip) ;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -238,31 +302,23 @@ class _ReportScreenState extends State<ReportScreen>{
             margin: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
               child: Column(
                 children: [
-                  Obx(
-                    () => _buildColumnBreakdown(
-                      'Net delivery fee',
-                      '\$${reportController.reportModel.value.deliveryFee.toStringAsFixed(2)}',
-                    ),
+                  _buildColumnBreakdown(
+                    'Net delivery fee',
+                    '\$${reportModel.deliveryFee}',
                   ),
-                  Obx(
-                    () => _buildColumnBreakdown(
-                      'Bonus',
-                      '\$${reportController.reportModel.value.bonus.toStringAsFixed(2)}',
-                    ),
+                  _buildColumnBreakdown(
+                    'Bonus',
+                    '\$${reportModel.bonus}',
                   ),
-                  Obx(
-                    () => _buildColumnBreakdown(
-                      'tip',
-                      '\$${reportController.reportModel.value.tip.toStringAsFixed(2)}',
-                      dotLine: false,
-                    ),
+                  _buildColumnBreakdown(
+                    'tip',
+                    '\$${reportModel.tip}',
+                    dotLine: false,
                   ),
-                  Obx(
-                    () => _buildColumnBreakdown(
-                      'Total Earning',
-                      '\$${reportController.totalEarning.toStringAsFixed(2)}',
-                      noneLine: true,
-                    ),
+                  _buildColumnBreakdown(
+                    'Total Earning',
+                    '\$${totalEarning.toStringAsFixed(2)}',
+                    noneLine: true,
                   ),
                 ],
               ),
@@ -271,6 +327,7 @@ class _ReportScreenState extends State<ReportScreen>{
       ],
     );
   }
+
   Widget get _buildDetailBar{
     return Container(
       margin: const EdgeInsets.only(left: 10, right: 15, bottom: 15),
@@ -480,7 +537,7 @@ class _ReportScreenState extends State<ReportScreen>{
         width: width,
         padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
         child:Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             IconWidget(icon: iconData, size: 24,),
             Column(

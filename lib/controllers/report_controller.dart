@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:loy_eat/models/report_chart.dart';
-import 'package:loy_eat/models/report_model.dart';
 import 'package:loy_eat/widgets/layout_widget/color.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 
 class ReportController extends GetxController{
   var scrollController = ScrollController();
-  var reportModel = ReportModel().obs;
   var dateMonthReport = 'Nov-2021'.obs;
-  var totalEarning = 0.00.obs;
-
   var isCanceled = false.obs;
   var isDelivered = true.obs;
   var colorTextCanceledStatus = black.obs;
@@ -31,11 +27,6 @@ class ReportController extends GetxController{
     ReportChart(date: '28-31', price: 40.00, barColor: charts.ColorUtil.fromDartColor(rabbit)),
   ];
 
-  @override
-  void onInit() {
-    super.onInit();
-    totalEarning.value = reportModel.value.deliveryFee + reportModel.value.bonus + reportModel.value.tip;
-  }
   void radioButtonBar(int index) {
     if (index == 1){
       isCanceled.value = true;
@@ -56,10 +47,5 @@ class ReportController extends GetxController{
       colorTextDeliveredStatus.value = rabbit;
       colorRadioDeliveredStatus.value = rabbit;
     }
-  }
-
-  Future<Widget> wait3SecAndLoadData() async {
-    await Future.delayed(const Duration(seconds: 3));
-    return Container();
   }
 }

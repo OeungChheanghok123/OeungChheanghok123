@@ -137,7 +137,7 @@ class _BecomeDriverScreenState extends State<BecomeDriverScreen> {
           TextFieldWidget(
             controller: becomeDriverController.phoneNumberController,
             height: 35,
-            inputType: TextInputType.number,
+            inputType: TextInputType.phone,
             hintText: 'Enter your phone number',
             hintColor: silver,
           ),
