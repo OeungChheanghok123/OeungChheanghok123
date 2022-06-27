@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:loy_eat/controllers/report_controller.dart';
-import 'package:loy_eat/models/report_model.dart';
+import 'package:loy_eat/models/deliver_model.dart';
+import 'package:loy_eat/models/order_model.dart';
+import 'package:loy_eat/models/order_report_model.dart';
 import 'package:loy_eat/widgets/layout_widget/color.dart';
 import 'package:loy_eat/widgets/layout_widget/icon_widget.dart';
 import 'package:loy_eat/widgets/layout_widget/space.dart';
@@ -29,7 +31,7 @@ class _ReportScreenState extends State<ReportScreen>{
         backgroundColor: lightGray,
         appBar: null,
         body: StreamBuilder<QuerySnapshot>(
-          stream: FirebaseFirestore.instance.collection(ReportModel.collectionName).snapshots(),
+          stream: FirebaseFirestore.instance.collection(OrderReportModel.collectionName).snapshots(),
           builder: (context, snapshot){
             if (snapshot.hasError){
               return TextWidget(text: "${snapshot.error}");
@@ -39,7 +41,20 @@ class _ReportScreenState extends State<ReportScreen>{
                   slivers: [
                     _buildSilverAppBar(snapshot.data!.docs),
                     SliverToBoxAdapter(
-                      child: _buildReportBody,
+                      child: StreamBuilder<QuerySnapshot>(
+                        stream: reportController.getCollection(OrderReportModel.collectionName),
+                        builder: (context, snapshot){
+                          if (snapshot.hasData){
+                            return _buildReportBody(snapshot.data!.docs);
+                          } else {
+                            return Container(
+                              height: MediaQuery.of(context).size.height - 55,
+                              alignment: Alignment.center,
+                              child: const CircularProgressIndicator(color: rabbit),
+                            );
+                          }
+                        },
+                      ),
                     ),
                   ],
                 );
@@ -53,63 +68,12 @@ class _ReportScreenState extends State<ReportScreen>{
             }
           },
         ),
-
-        // body: FutureBuilder(
-        //   future: reportController.wait3SecAndLoadData(),
-        //   builder: (context, snapshot){
-        //     if (snapshot.hasError){
-        //       final error = snapshot.error;
-        //       return TextWidget(text: "$error");
-        //     } else if (snapshot.hasData){
-        //       return CustomScrollView(
-        //         slivers: [
-        //           SliverAppBar(
-        //             pinned: true,
-        //             elevation: 1,
-        //             backgroundColor: lightGray,
-        //             expandedHeight: 670,
-        //             excludeHeaderSemantics: true,
-        //             automaticallyImplyLeading: false,
-        //             flexibleSpace: FlexibleSpaceBar(
-        //               collapseMode: CollapseMode.pin,
-        //               background: Container(
-        //                 margin: const EdgeInsets.fromLTRB(15, 0, 15, 10),
-        //                 child: Column(
-        //                   children: [
-        //                     _buildDateMonthReport,
-        //                     _buildTotalEarning,
-        //                     _buildChart,
-        //                     _buildStatus,
-        //                     _buildBreakDown,
-        //                   ],
-        //                 ),
-        //               ),
-        //             ),
-        //             bottom: PreferredSize(
-        //               preferredSize: const Size.fromHeight(0),
-        //               child: _buildDetailBar,
-        //             ),
-        //           ),
-        //           SliverToBoxAdapter(
-        //             child: _buildReportBody,
-        //           ),
-        //         ],
-        //       );
-        //     } else {
-        //       return Container(
-        //         height: MediaQuery.of(context).size.height - 55,
-        //         alignment: Alignment.center,
-        //         child: const CircularProgressIndicator(color: rabbit),
-        //       );
-        //     }
-        //   },
-        // ),
       ),
     );
   }
 
   Widget _buildSilverAppBar(List<DocumentSnapshot> documents){
-    List<ReportModel> modelList = documents.map((data) => ReportModel.fromSnapshot(data)).toList();
+    List<OrderReportModel> modelList = documents.map((data) => OrderReportModel.fromSnapshot(data)).toList();
 
     return SliverAppBar(
       pinned: true,
@@ -181,7 +145,7 @@ class _ReportScreenState extends State<ReportScreen>{
       ),
     );
   }
-  Widget _buildTotalEarning(ReportModel reportModel){
+  Widget _buildTotalEarning(OrderReportModel reportModel){
     double totalEarning = double.parse(reportModel.deliveryFee) + double.parse(reportModel.bonus) + double.parse(reportModel.tip) ;
 
     return Container(
@@ -203,7 +167,7 @@ class _ReportScreenState extends State<ReportScreen>{
         )
     );
   }
-  Widget _buildStatus(ReportModel reportModel) {
+  Widget _buildStatus(OrderReportModel reportModel) {
     return Container(
       margin: const EdgeInsets.only(top: 10, bottom: 0),
       child: Column(
@@ -279,7 +243,7 @@ class _ReportScreenState extends State<ReportScreen>{
       ),
     );
   }
-  Widget _buildBreakDown(ReportModel reportModel) {
+  Widget _buildBreakDown(OrderReportModel reportModel) {
     double totalEarning = double.parse(reportModel.deliveryFee) + double.parse(reportModel.bonus) + double.parse(reportModel.tip) ;
 
     return Column(
@@ -304,15 +268,15 @@ class _ReportScreenState extends State<ReportScreen>{
                 children: [
                   _buildColumnBreakdown(
                     'Net delivery fee',
-                    '\$${reportModel.deliveryFee}',
+                    '\$${double.parse(reportModel.deliveryFee).toStringAsFixed(2)}',
                   ),
                   _buildColumnBreakdown(
                     'Bonus',
-                    '\$${reportModel.bonus}',
+                    '\$${double.parse(reportModel.bonus).toStringAsFixed(2)}',
                   ),
                   _buildColumnBreakdown(
                     'tip',
-                    '\$${reportModel.tip}',
+                    '\$${double.parse(reportModel.tip).toStringAsFixed(2)}',
                     dotLine: false,
                   ),
                   _buildColumnBreakdown(
@@ -401,117 +365,148 @@ class _ReportScreenState extends State<ReportScreen>{
       ),
     );
   }
-  Widget get _buildReportBody{
+  Widget _buildReportBody(List<DocumentSnapshot> documents){
+    List<OrderModel> orderList = documents.map((data) => OrderModel.fromSnapshot(data)).toList();
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 15),
       child: ListView.builder(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
-        itemCount: reportController.orderWeek.length,
+        itemCount: 1,
         itemBuilder: (BuildContext context, int index){
           return Column(
             children: [
-              Obx(() => _buildDateAndTotalEarning(index),),
-              _buildItemOrder,
+              _buildDateAndTotalEarning(orderList[index]),
+              Container(
+                margin: const EdgeInsets.only(top: 5, bottom: 10),
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: orderList.length,
+                  itemBuilder: (BuildContext context, int index){
+                    return StreamBuilder<QuerySnapshot>(
+                      stream: reportController.getCollection(DeliverModel.collectionName),
+                      builder: (context, snapshot){
+                        if (snapshot.hasData){
+                          return _buildItemOrder(orderList[index], index, snapshot.data!.docs);
+                        } else {
+                          return Container(
+                            height: MediaQuery.of(context).size.height - 55,
+                            alignment: Alignment.center,
+                            child: const CircularProgressIndicator(color: rabbit),
+                          );
+                        }
+                      },
+                    );
+                    //return _buildItemOrder(orderList[index], index, deliverList[index]);
+                  },
+                ),
+              ),
             ],
           );
         },
       ),
     );
   }
-  Widget get _buildItemOrder{
-    return Container(
-      margin: const EdgeInsets.only(top: 5, bottom: 10),
-      child: ListView.builder(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        itemCount: reportController.orderNo.length,
-        itemBuilder: (BuildContext context, int index){
-          return Card(
-            elevation: 1,
-            borderOnForeground: false,
-            margin: const EdgeInsets.only(bottom: 10),
-            child: InkWell(
-              splashColor: none,
-              onTap: () => Get.toNamed('/report_order_detail?titleOrder=${reportController.orderNo[index]}'),
-              child: Container(
-                padding: const EdgeInsets.all(10),
-                child: Column(
-                  children: [
-                    Row(
+  Widget _buildItemOrder(OrderModel orderModel, int index, List<DocumentSnapshot> document){
+    List<DeliverModel> deliverList = document.map((data) => DeliverModel.fromSnapshot(data)).toList();
+
+    return Card(
+      elevation: 1,
+      borderOnForeground: false,
+      margin: const EdgeInsets.only(bottom: 10),
+      child: InkWell(
+        splashColor: none,
+        onTap: () => Get.toNamed('/report_order_detail?titleOrder=${orderModel.orderId}'),
+        child: Container(
+          padding: const EdgeInsets.all(10),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    flex: 0,
+                    child: TextWidget(text: '${index + 1}. '),
+                  ),
+                  Expanded(
+                    flex: 5,
+                    child: Row(
                       children: [
-                        Expanded(
-                          flex: 0,
-                          child: TextWidget(text: '${index+1}. '),
-                        ),
-                        Expanded(
-                          flex: 5,
-                          child: TextWidget(
-                            text: 'Order #: ${reportController.orderNo[index]}, your earning',
-                          ),
-                        ),
-                        Obx(() => Expanded(
-                          child: Container(
-                            alignment: Alignment.center,
-                            padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 3),
-                            decoration: BoxDecoration(
-                              color: reportController.isDelivered.value ? rabbit.withOpacity(0.5) : carrot.withOpacity(0.5),
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                            //margin: const EdgeInsets.symmetric(vertical: 2, horizontal: 3),
-                            child: TextWidget(text: '\$12.00', size: 11, fontWeight: FontWeight.w600, color: black.withOpacity(0.8),),
-                          ),
-                        ),),
+                        TextWidget(text: 'Order ${orderModel.orderId}'),
+                        TextWidget(text: '  ${orderModel.dateTime}', size: 10, color: silver,),
                       ],
                     ),
-                    const Space(height: 10),
-                    Row(
-                      children: [
-                        Expanded(
-                          flex: 0,
-                          child: TextWidget(text: '${index+1}. ', color: none),
-                        ),
-                        const Expanded(
-                          flex: 2,
-                          child: TextWidget(
-                              text: 'From Cafe Amazon (PPIU) to Sovongdy', size: 10, color: silver
-                          ),
-                        ),
-                        Expanded(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                _buildIconAndText(Icons.directions_bike_outlined, silver, '1.2km', 9),
-                                const Space(),
-                                _buildIconAndText(Icons.watch_later, silver, '20min', 9),
-                                const Space(),
-                              ],
-                            )
-                        ),
-                      ],
+                  ),
+                  Expanded(
+                    child: Container(
+                      alignment: Alignment.center,
+                      padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 3),
+                      decoration: BoxDecoration(
+                        color: reportController.isDelivered.value ? rabbit.withOpacity(0.5) : carrot.withOpacity(0.5),
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: TextWidget(
+                        text: '\$${double.parse(orderModel.deliveryFee).toStringAsFixed(2)}',
+                        size: 11,
+                        fontWeight: FontWeight.w600,
+                        color: black.withOpacity(0.8),
+                      ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ),
-          );
-        },
+              const Space(),
+              Row(
+                children: [
+                  Expanded(
+                    flex: 0,
+                    child: TextWidget(text: '${index + 1}. ', color: none),
+                  ),
+                  Expanded(
+                    flex: 2,
+                    child: TextWidget(
+                      text: '${orderModel.merchantId} to ${orderModel.customerId}', size: 10, color: text, fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  _buildTest(deliverList[index]),
+                ],
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
-
-  Widget _buildDateAndTotalEarning(int index) {
+  Widget _buildTest(DeliverModel deliverModel){
+    return Expanded(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          _buildIconAndText(
+            iconData: Icons.directions_bike_outlined,
+            text: deliverModel.distance,
+          ),
+          _buildIconAndText(
+            iconData: Icons.watch_later,
+            text: deliverModel.time,
+          ),
+        ],
+      ),
+    );
+  }
+  Widget _buildDateAndTotalEarning(OrderModel orderModel) {
     return Column(
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            TextWidget(
-              text: reportController.orderWeek[index],
+            Obx(() => TextWidget(
+              text: orderModel.dateTime,
               fontWeight: FontWeight.bold,
               color: reportController.isCanceled.value ? carrot : reportController.isDelivered.value ? black : rabbit,
-            ),
-            const TextWidget(text: 'Total Earning = \$50.00'),
+            ),),
+            TextWidget(text: 'Total Earning = \$${double.parse(orderModel.deliveryFee).toStringAsFixed(2)}'),
           ],
         ),
         Container(
@@ -618,14 +613,17 @@ class _ReportScreenState extends State<ReportScreen>{
       ),
     );
   }
-  Widget _buildIconAndText(IconData iconData, Color color, String text, double textSize){
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        IconWidget(icon: iconData, color: color, size: 12),
-        const Space(width: 1),
-        TextWidget(text: text, color: color, size: textSize),
-      ],
+  Widget _buildIconAndText({required IconData iconData, required String text}){
+    return Container(
+      margin: const EdgeInsets.only(left: 5),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          IconWidget(icon: iconData, color: silver, size: 12,),
+          const Space(width: 1),
+          TextWidget(text: text, color: silver, size: 9),
+        ],
+      ),
     );
   }
 }

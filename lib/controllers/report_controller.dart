@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:loy_eat/models/order_model.dart';
 import 'package:loy_eat/models/report_chart.dart';
 import 'package:loy_eat/widgets/layout_widget/color.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 
 class ReportController extends GetxController{
   var scrollController = ScrollController();
+  var orderModel = OrderModel();
   var dateMonthReport = 'Nov-2021'.obs;
   var isCanceled = false.obs;
   var isDelivered = true.obs;
@@ -15,9 +18,9 @@ class ReportController extends GetxController{
   var colorRadioDeliveredStatus = rabbit.obs;
   var dataDatePicker = ''.obs;
 
-  List<String> orderWeek = ['20 Dec - 26 Dec', '27 Dec - 2 Jan', '3 Jan - 9 Jan'];
-  List<String> orderNo = ['211220', '211220', '211221', '211223', '211224', '211226'];
-
+  getCollection(String collectionName){
+    FirebaseFirestore.instance.collection(collectionName).orderBy(orderModel.dateTime).get();
+  }
 
   final List<ReportChart> data = [
     ReportChart(date: '1-7', price: 12.45, barColor: charts.ColorUtil.fromDartColor(rabbit)),

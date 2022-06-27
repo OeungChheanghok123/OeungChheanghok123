@@ -1,31 +1,7 @@
-// class ReportModel{
-//   String online;
-//   int trips ;
-//   int points;
-//   String distance;
-//   String customerRating;
-//   String merchantRating;
-//   double deliveryFee;
-//   double bonus;
-//   double tip;
-//
-//   ReportModel({
-//     this.online = '60h:22m',
-//     this.trips = 50,
-//     this.points = 400,
-//     this.distance = '150Km',
-//     this.customerRating = '4.5/5 rating',
-//     this.merchantRating = '5/5 rating',
-//     this.deliveryFee = 120,
-//     this.bonus = 21.25,
-//     this.tip = 11,
-//   });
-// }
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class ReportModel {
-  static const String collectionName = "delivers";
+class OrderReportModel {
+  static const String collectionName = "order_report";
   static const String onlineString = "online";
   static const String tripString = "trip";
   static const String pointString = "point";
@@ -37,9 +13,9 @@ class ReportModel {
   static const String tipString = "tip";
 
   late String online, trip, point, distance, customerRating, merchantRating, deliveryFee, bonus, tip;
-  DocumentReference reference;
+  DocumentReference? reference;
 
-  ReportModel({
+  OrderReportModel({
     this.online = "no online",
     this.trip = "no trip",
     this.point = "no point",
@@ -49,10 +25,10 @@ class ReportModel {
     this.deliveryFee = "no delivery fee",
     this.bonus = "no bonus",
     this.tip = "no tip",
-    required this.reference,
+    this.reference,
   });
 
-  ReportModel.fromMap(Object? object, {required this.reference}){
+  OrderReportModel.fromMap(Object? object, {required this.reference}){
     Map<String, dynamic>? map = object as Map<String, dynamic>?;
     online = (map ?? {})[onlineString] ?? "no online";
     trip = (map ?? {})[tripString] ?? "no trip";
@@ -65,7 +41,7 @@ class ReportModel {
     tip = (map ?? {})[tipString] ?? "no tip";
   }
 
-  ReportModel.fromSnapshot(DocumentSnapshot snapshot): this.fromMap(snapshot.data(), reference: snapshot.reference);
+  OrderReportModel.fromSnapshot(DocumentSnapshot snapshot): this.fromMap(snapshot.data(), reference: snapshot.reference);
 
   Map<String, dynamic> get toMap => {
     onlineString : online,
