@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:loy_eat/controllers/report_controller.dart';
+import 'package:loy_eat/models/customer_model.dart';
 import 'package:loy_eat/models/deliver_model.dart';
 import 'package:loy_eat/models/order_model.dart';
 import 'package:loy_eat/models/order_report_model.dart';
@@ -42,7 +43,7 @@ class _ReportScreenState extends State<ReportScreen>{
                     _buildSilverAppBar(snapshot.data!.docs),
                     SliverToBoxAdapter(
                       child: StreamBuilder<QuerySnapshot>(
-                        stream: reportController.getCollection(OrderReportModel.collectionName),
+                        stream: FirebaseFirestore.instance.collection(OrderModel.collectionName).orderBy(OrderModel.dateTimeString, descending: true).snapshots(),
                         builder: (context, snapshot){
                           if (snapshot.hasData){
                             return _buildReportBody(snapshot.data!.docs);
@@ -367,6 +368,7 @@ class _ReportScreenState extends State<ReportScreen>{
   }
   Widget _buildReportBody(List<DocumentSnapshot> documents){
     List<OrderModel> orderList = documents.map((data) => OrderModel.fromSnapshot(data)).toList();
+    List<DeliverModel> deliverList = documents.map((data) => DeliverModel.fromSnapshot(data)).toList();
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 15),
@@ -377,7 +379,7 @@ class _ReportScreenState extends State<ReportScreen>{
         itemBuilder: (BuildContext context, int index){
           return Column(
             children: [
-              _buildDateAndTotalEarning(orderList[index]),
+              _buildDateAndTotalEarning(orderList[index], deliverList[index]),
               Container(
                 margin: const EdgeInsets.only(top: 5, bottom: 10),
                 child: ListView.builder(
@@ -386,20 +388,27 @@ class _ReportScreenState extends State<ReportScreen>{
                   itemCount: orderList.length,
                   itemBuilder: (BuildContext context, int index){
                     return StreamBuilder<QuerySnapshot>(
-                      stream: reportController.getCollection(DeliverModel.collectionName),
-                      builder: (context, snapshot){
-                        if (snapshot.hasData){
-                          return _buildItemOrder(orderList[index], index, snapshot.data!.docs);
-                        } else {
-                          return Container(
-                            height: MediaQuery.of(context).size.height - 55,
-                            alignment: Alignment.center,
-                            child: const CircularProgressIndicator(color: rabbit),
-                          );
-                        }
+                      stream: FirebaseFirestore.instance.collection(DeliverModel.collectionName).snapshots(),
+                      builder: (context, snapshot1){
+                        return StreamBuilder<QuerySnapshot>(
+                          stream: FirebaseFirestore.instance.collection(CustomerModel.collectionName).snapshots(),
+                          builder: (context, snapshot2){
+
+                            List<CustomerModel> cusList = getCustomerFromSnapshot(snapshot2.data!.docs);
+
+                            if (snapshot1.hasData && snapshot2.hasData){
+                              return _buildItemOrder(index, orderList[index], cusList, snapshot1.data!.docs);
+                            } else {
+                              return Container(
+                                height: MediaQuery.of(context).size.height - 55,
+                                alignment: Alignment.center,
+                                child: const CircularProgressIndicator(color: rabbit),
+                              );
+                            }
+                          },
+                        );
                       },
                     );
-                    //return _buildItemOrder(orderList[index], index, deliverList[index]);
                   },
                 ),
               ),
@@ -409,8 +418,8 @@ class _ReportScreenState extends State<ReportScreen>{
       ),
     );
   }
-  Widget _buildItemOrder(OrderModel orderModel, int index, List<DocumentSnapshot> document){
-    List<DeliverModel> deliverList = document.map((data) => DeliverModel.fromSnapshot(data)).toList();
+  Widget _buildItemOrder(int index, OrderModel orderModel, List<CustomerModel> cusModel, List<DocumentSnapshot> documents){
+    List<DeliverModel> deliverList = documents.map((data) => DeliverModel.fromSnapshot(data)).toList();
 
     return Card(
       elevation: 1,
@@ -438,22 +447,7 @@ class _ReportScreenState extends State<ReportScreen>{
                       ],
                     ),
                   ),
-                  Expanded(
-                    child: Container(
-                      alignment: Alignment.center,
-                      padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 3),
-                      decoration: BoxDecoration(
-                        color: reportController.isDelivered.value ? rabbit.withOpacity(0.5) : carrot.withOpacity(0.5),
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      child: TextWidget(
-                        text: '\$${double.parse(orderModel.deliveryFee).toStringAsFixed(2)}',
-                        size: 11,
-                        fontWeight: FontWeight.w600,
-                        color: black.withOpacity(0.8),
-                      ),
-                    ),
-                  ),
+                  _buildDeliverFee(deliverList[index]),
                 ],
               ),
               const Space(),
@@ -463,13 +457,8 @@ class _ReportScreenState extends State<ReportScreen>{
                     flex: 0,
                     child: TextWidget(text: '${index + 1}. ', color: none),
                   ),
-                  Expanded(
-                    flex: 2,
-                    child: TextWidget(
-                      text: '${orderModel.merchantId} to ${orderModel.customerId}', size: 10, color: text, fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  _buildTest(deliverList[index]),
+                  _buildCustomerAndMerChant(cusModel[0]),
+                  _buildDistanceAndTime(deliverList[index]),
                 ],
               ),
             ],
@@ -478,7 +467,7 @@ class _ReportScreenState extends State<ReportScreen>{
       ),
     );
   }
-  Widget _buildTest(DeliverModel deliverModel){
+  Widget _buildDistanceAndTime(DeliverModel deliverModel){
     return Expanded(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
@@ -495,7 +484,33 @@ class _ReportScreenState extends State<ReportScreen>{
       ),
     );
   }
-  Widget _buildDateAndTotalEarning(OrderModel orderModel) {
+  Widget _buildCustomerAndMerChant(CustomerModel customerModel){
+    return Expanded(
+      flex: 2,
+      child: TextWidget(
+        text: '${customerModel.gender} to ${customerModel.customerName}', size: 10, color: text, fontWeight: FontWeight.w500,
+      ),
+    );
+  }
+  Widget _buildDeliverFee(DeliverModel deliverModel){
+    return Expanded(
+      child: Container(
+        alignment: Alignment.center,
+        padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 3),
+        decoration: BoxDecoration(
+          color: reportController.isDelivered.value ? rabbit.withOpacity(0.5) : carrot.withOpacity(0.5),
+          borderRadius: BorderRadius.circular(5),
+        ),
+        child: TextWidget(
+          text: '\$${double.parse(deliverModel.deliveryFee).toStringAsFixed(2)}',
+          size: 11,
+          fontWeight: FontWeight.w600,
+          color: black.withOpacity(0.8),
+        ),
+      ),
+    );
+  }
+  Widget _buildDateAndTotalEarning(OrderModel orderModel, DeliverModel deliverModel) {
     return Column(
       children: [
         Row(
@@ -506,7 +521,8 @@ class _ReportScreenState extends State<ReportScreen>{
               fontWeight: FontWeight.bold,
               color: reportController.isCanceled.value ? carrot : reportController.isDelivered.value ? black : rabbit,
             ),),
-            TextWidget(text: 'Total Earning = \$${double.parse(orderModel.deliveryFee).toStringAsFixed(2)}'),
+            const TextWidget(text: 'Total Earning = \$1'),
+            // TextWidget(text: 'Total Earning = \$${double.parse(deliverModel.deliveryFee).toStringAsFixed(2)}'),
           ],
         ),
         Container(
@@ -518,7 +534,7 @@ class _ReportScreenState extends State<ReportScreen>{
       ],
     );
   }
-  Widget _buildCard({required double width, required IconData iconData,required String title, required String subTitle}) {
+  Widget _buildCard({required double width, required IconData iconData, required String title, required String subTitle}) {
     return Card(
       color: white,
       elevation: 1,

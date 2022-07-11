@@ -6,11 +6,10 @@ class OrderModel {
   static const String customerIdString = "cus_id";
   static const String merchantIdString = "mer_id";
   static const String dateTimeString = "date_time";
-  static const String deliveryFeeString = "delivery_fee";
   static const String statusString = "status";
   static const String totalDiscountString = "total_dis";
 
-  late String orderId, customerId, merchantId, dateTime, deliveryFee, status, totalDiscount;
+  late String orderId, customerId, merchantId, dateTime, status, totalDiscount;
   DocumentReference? reference;
 
   OrderModel({
@@ -18,7 +17,6 @@ class OrderModel {
     this.customerId = "no customerId",
     this.merchantId = "no merchantId",
     this.dateTime = "no dateTime",
-    this.deliveryFee = "no delivery fee",
     this.status = "no status",
     this.totalDiscount = "no total discount",
     this.reference,
@@ -30,7 +28,6 @@ class OrderModel {
     customerId = (map ?? {})[customerIdString] ?? "no customerId";
     merchantId = (map ?? {})[merchantIdString] ?? "no merchantId";
     dateTime = (map ?? {})[dateTimeString] ?? "no dateTime";
-    deliveryFee = (map ?? {})[deliveryFeeString] ?? "no delivery fee";
     status = (map ?? {})[statusString] ?? "no status";
     totalDiscount = (map ?? {})[totalDiscountString] ?? "no total discount";
   }
@@ -42,7 +39,6 @@ class OrderModel {
     customerIdString : customerId,
     merchantIdString : merchantId,
     dateTimeString : dateTime,
-    deliveryFeeString : deliveryFee,
     statusString : status,
     totalDiscountString : totalDiscount,
   };

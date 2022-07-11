@@ -48,6 +48,8 @@ dependencies:
   firebase_core: ^1.17.1
   firebase_auth: ^3.3.19
   cloud_firestore: ^3.1.18
+  firebase_messaging: ^11.4.4
+  flutter_local_notifications: ^9.6.1
 
 dev_dependencies:
   # The "flutter_lints" package below contains a set of recommended lints to

@@ -1,4 +1,6 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:loy_eat/models/notification_model.dart';
 import 'package:loy_eat/screens/account_screen.dart';
 import 'package:loy_eat/screens/home_screen.dart';
 import 'package:loy_eat/screens/order_screen.dart';
@@ -50,5 +52,32 @@ class _InstructionScreenState extends State<InstructionScreen> {
         },
       ),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    LocalNotificationService.initialize(context);
+
+    FirebaseMessaging.instance.getInitialMessage().then((message) {
+      if (message != null) {
+        final routeFromMessage = message.data["route"];
+        Navigator.of(context).pushNamed(routeFromMessage);
+      }
+    });
+
+    FirebaseMessaging.onMessage.listen((message) {
+      if (message.notification != null) {
+        print(message.notification!.body);   // ignore: avoid_print
+        print(message.notification!.title); // ignore: avoid_print
+      }
+
+      LocalNotificationService.display(message);
+    });
+
+    FirebaseMessaging.onMessageOpenedApp.listen((message) {
+      final routeFromMessage = message.data["route"];
+      Navigator.of(context).pushNamed(routeFromMessage);
+    });
   }
 }
