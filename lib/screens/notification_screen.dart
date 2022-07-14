@@ -60,7 +60,6 @@ class _NotificationScreenState extends State<NotificationScreen> {
                     notification.doc(element.id).update({'isRead': true});
                   })
                 });
-                notification.where('isRead', isEqualTo: true).orderBy('date', descending: true).snapshots();
               },
               child: Container(
                 alignment: Alignment.center,
@@ -78,7 +77,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
         ),
         //body: Obx(() => homeController.notificationCount.value > 0 ? _notification : _nonNotification),
         body: StreamBuilder<QuerySnapshot>(
-          stream: FirebaseFirestore.instance.collection('notification').orderBy('date', descending: true).snapshots(),
+          stream: FirebaseFirestore.instance.collection('notification').orderBy('date').snapshots(),
           builder: (context, snapshot){
             if (snapshot.hasError) {
               return const Center(child: TextWidget(text: 'Something went wrong'));
