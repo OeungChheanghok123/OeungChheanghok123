@@ -1,52 +1,46 @@
-import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:loy_eat/widgets/layout_widget/color.dart';
 
 class LocalNotificationService {
-  static final FlutterLocalNotificationsPlugin _notificationsPlugin = FlutterLocalNotificationsPlugin();
+  static final FlutterLocalNotificationsPlugin notificationsPlugin = FlutterLocalNotificationsPlugin();
 
-  static void initialize(BuildContext context) {
-    const InitializationSettings initializationSettings = InitializationSettings(android: AndroidInitializationSettings("@mipmap/ic_launcher"));
+  static late BuildContext myContext;
 
-    _notificationsPlugin.initialize(initializationSettings, onSelectNotification: (String? route) async {
-      if (route != null) {
-        Navigator.pushNamed(context, route);
-      }
-    });
+  static Future<void> initNotification(BuildContext context) async {
+    myContext = context;
+    var initAndroid = const AndroidInitializationSettings("@mipmap/ic_launcher");
+    var initIOS = const IOSInitializationSettings(
+        requestSoundPermission: true,
+        requestBadgePermission: true,
+        requestAlertPermission: true,
+        onDidReceiveLocalNotification: onDidReceiveLocalNotification,
+    );
+
+    var initSetting = InitializationSettings(android: initAndroid,iOS: initIOS);
+
+    notificationsPlugin.initialize(initSetting, onSelectNotification: onSelectNotification);
   }
 
-  static void display(RemoteMessage message) async {
-    try{
-      final id = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+  static Future onSelectNotification(String? payload){
+    throw payload!;
+  }
 
-      const NotificationDetails  notificationDetails = NotificationDetails(
-        android: AndroidNotificationDetails(
-          "One Sala",
-          "One Sala",
-          importance: Importance.max,
-          priority: Priority.high,
+  static Future onDidReceiveLocalNotification(int? id,String? title,String? body, String? payload) async {
+    showDialog(context: myContext, builder: (context) => CupertinoAlertDialog(
+      title: Text(title!),
+      content: Text(body!),
+      actions: [
+        CupertinoDialogAction(
+          isDefaultAction: true,
+          child: const Text("OK"),
+          onPressed: () => Navigator.of(context,rootNavigator: true).pop(),
         ),
-      );
-
-      await _notificationsPlugin.show(
-        id, message.notification!.title,
-        message.notification!.body, notificationDetails,
-        payload: message.data["route"],
-      );
-
-    } on Exception catch(e) {
-      print(e); // ignore: avoid_print
-    }
+      ],
+    ));
   }
 }
-
-
-
-
-
-
-
 
 class NotificationModel {
   String title;

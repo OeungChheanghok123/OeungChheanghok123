@@ -10,7 +10,6 @@ import 'package:loy_eat/screens/home_screen.dart';
 import 'package:loy_eat/screens/instruction_screen.dart';
 import 'package:loy_eat/screens/invite_friend_screen.dart';
 import 'package:loy_eat/screens/login_screen.dart';
-import 'package:loy_eat/screens/notification_detail_screen.dart';
 import 'package:loy_eat/screens/order_accept.dart';
 import 'package:loy_eat/screens/order_screen.dart';
 import 'package:loy_eat/screens/qr_code_screen.dart';
@@ -34,7 +33,7 @@ List<GetPage<dynamic>>? getRoutPage = [
   GetPage(name: '/instruction', page: () => const InstructionScreen()),
   GetPage(name: '/home', page: () => const HomeScreen()),
   GetPage(name: '/notification', page: () => const NotificationScreen(), transition: Transition.rightToLeftWithFade, transitionDuration: const Duration(milliseconds: 500)),
-  GetPage(name: '/notification_detail', page: () => NotificationDetailScreen(notificationIndex: homeController.notificationIndex.value), transition: Transition.rightToLeftWithFade, transitionDuration: const Duration(milliseconds: 500)),
+  //GetPage(name: '/notification_detail', page: () => NotificationDetailScreen(notificationIndex: homeController.notificationIndex.value), transition: Transition.rightToLeftWithFade, transitionDuration: const Duration(milliseconds: 500)),
   GetPage(name: '/become_driver_success', page: () => const BecomeDriverSuccessScreen()),
   GetPage(name: '/become_driver_fail', page: () => const BecomeDriverFailScreen()),
   GetPage(name: '/auto_complete_text_field', page: () => const AutoCompleteTextField(), transition: Transition.downToUp),

@@ -57,7 +57,7 @@ class _InstructionScreenState extends State<InstructionScreen> {
   @override
   void initState() {
     super.initState();
-    LocalNotificationService.initialize(context);
+    LocalNotificationService.initNotification(context);
 
     FirebaseMessaging.instance.getInitialMessage().then((message) {
       if (message != null) {
@@ -68,11 +68,11 @@ class _InstructionScreenState extends State<InstructionScreen> {
 
     FirebaseMessaging.onMessage.listen((message) {
       if (message.notification != null) {
-        print(message.notification!.body);   // ignore: avoid_print
-        print(message.notification!.title); // ignore: avoid_print
+        print(message.notification!.title);   // ignore: avoid_print
+        print(message.notification!.body); // ignore: avoid_print
       }
 
-      LocalNotificationService.display(message);
+     // LocalNotificationService.onDidReceiveLocalNotification(message);
     });
 
     FirebaseMessaging.onMessageOpenedApp.listen((message) {
