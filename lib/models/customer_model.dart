@@ -1,53 +1,66 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
-List<CustomerModel> getCustomerFromSnapshot(List<QueryDocumentSnapshot> docs){
-  return docs.map((e) => CustomerModel.fromSnapshot(e)).toList();
-}
+import 'dart:convert';
 
 class CustomerModel {
   static const String collectionName = "customers";
-  static const String customerIdString = "cus_id";
-  static const String customerNameString = "cus_name";
+  static const String customerIdString = "customer_id";
+  static const String customerNameString = "customer_name";
+  static const String imageString = "image";
   static const String genderString = "gender";
   static const String locationString = "location";
   static const String telString = "tel";
   static const String createAtString = "create_at";
-  static const String updateAtString = "update_at";
+  static const String createTimeString = "create_time";
 
-  late String customerId, customerName, gender, location, tel, createAt, updateAt;
-  DocumentReference? reference;
+  String customerId; 
+  String customerName;
+  String image;
+  String gender; 
+  String location; 
+  String tel; 
+  String createAt;
+  String createTime;
 
   CustomerModel({
-    this.customerId = "no cus_id",
-    this.customerName = "no cus_name",
-    this.gender = "no gender",
-    this.location = "no location",
-    this.tel = "no tel",
-    this.createAt = "no create_at",
-    this.updateAt = "no update_at",
-    this.reference,
+    required this.customerId,
+    required this.customerName,
+    required this.image,
+    required this.gender,
+    required this.location,
+    required this.tel,
+    required this.createAt,
+    required this.createTime,
   });
 
-  CustomerModel.fromMap(Object? object, {required this.reference}){
-    Map<String, dynamic>? map = object as Map<String, dynamic>?;
-    customerId = (map ?? {})[customerIdString] ?? "no cus_id";
-    customerName = (map ?? {})[customerNameString] ?? "no cus_name";
-    gender = (map ?? {})[genderString] ?? "no gender";
-    location = (map ?? {})[locationString] ?? "no location";
-    tel = (map ?? {})[telString] ?? "no tel";
-    createAt = (map ?? {})[createAtString] ?? "no create_at";
-    updateAt = (map ?? {})[updateAtString] ?? "no update_at";
+
+  Map<String, dynamic> toMap() {
+    final result = <String, dynamic>{};
+  
+    result.addAll({customerIdString: customerId});
+    result.addAll({customerNameString: customerName});
+    result.addAll({imageString: image});
+    result.addAll({genderString: gender});
+    result.addAll({locationString: location});
+    result.addAll({telString: tel});
+    result.addAll({createAtString: createAt});
+    result.addAll({createTimeString: createTime});
+
+    return result;
   }
 
-  CustomerModel.fromSnapshot(DocumentSnapshot snapshot): this.fromMap(snapshot.data(), reference: snapshot.reference);
+  factory CustomerModel.fromMap(Map<String, dynamic> map) {
+    return CustomerModel(
+      customerId: map[customerIdString] ?? '',
+      customerName: map[customerNameString] ?? '',
+      image: map[imageString] ?? '',
+      gender: map[genderString] ?? '',
+      location: map[locationString] ?? '',
+      tel: map[telString] ?? '',
+      createAt: map[createAtString] ?? '',
+      createTime: map[createTimeString] ?? '',
+    );
+  }
 
-  Map<String, dynamic> get toMap => {
-    customerIdString : customerId,
-    customerNameString : customerName,
-    genderString : gender,
-    locationString : location,
-    telString : tel,
-    createAtString : createAt,
-    updateAtString : updateAt,
-  };
+  String toJson() => json.encode(toMap());
+
+  factory CustomerModel.fromJson(String source) => CustomerModel.fromMap(json.decode(source));
 }

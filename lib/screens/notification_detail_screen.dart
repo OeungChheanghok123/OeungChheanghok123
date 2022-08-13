@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app_badger/flutter_app_badger.dart';
 import 'package:get/get.dart';
-import 'package:loy_eat/controllers/home_controller.dart';
 import 'package:loy_eat/widgets/layout_widget/color.dart';
 import 'package:loy_eat/widgets/layout_widget/icon_widget.dart';
 import 'package:loy_eat/widgets/layout_widget/title_appbar_widget.dart';
@@ -46,7 +45,7 @@ class _NotificationDetailScreenState extends State<NotificationDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    HomeController homeController = Get.put(HomeController());
+    //HomeController homeController = Get.put(HomeController());
     return SafeArea(
       child: Scaffold(
         extendBody: true,

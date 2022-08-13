@@ -5,8 +5,8 @@ import 'package:loy_eat/widgets/layout_widget/color.dart';
 import 'package:loy_eat/widgets/layout_widget/icon_widget.dart';
 import 'package:loy_eat/widgets/layout_widget/text_widget.dart';
 
-class ReportScreenAppBar extends StatelessWidget implements PreferredSize {
-  const ReportScreenAppBar({Key? key}) : super(key: key);
+class ReportScreenAppBars extends StatelessWidget implements PreferredSize {
+  const ReportScreenAppBars({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -5,7 +5,7 @@ class ReportOrderDetailController extends GetxController{
 
   var customer = CustomerProfile();
   var remarkController = TextEditingController();
-
+  var getOrderNo = ''.obs;
 }
 
 class CustomerProfile{

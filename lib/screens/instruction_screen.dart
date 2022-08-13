@@ -19,9 +19,9 @@ class _InstructionScreenState extends State<InstructionScreen> {
   int _currentTabIndex = 0;
 
   final _listTabPages = <Widget>[
-    const HomeScreen(),
-    const ReportScreen(),
-    const OrderScreen(),
+    HomeScreen(),
+    ReportScreen(),
+    OrderScreen(),
     const AccountScreen(),
   ];
 

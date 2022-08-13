@@ -1,45 +1,75 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:convert';
 
 class OrderModel {
   static const String collectionName = "orders";
+  static const String customerIdString = "customer_id";
+  static const String customerNameString = "customer_name";
+  static const String dateString = "date";
+  static const String isNewString = "is_new";
+  static const String merchantIdString = "merchant_id";
+  static const String merchantNameString = "merchant_name";
   static const String orderIdString = "order_id";
-  static const String customerIdString = "cus_id";
-  static const String merchantIdString = "mer_id";
-  static const String dateTimeString = "date_time";
   static const String statusString = "status";
-  static const String totalDiscountString = "total_dis";
+  static const String timeString = "time";
+  static const String totalDiscountString = "total_discount";
 
-  late String orderId, customerId, merchantId, dateTime, status, totalDiscount;
-  DocumentReference? reference;
+  String customerId;
+  String customerName;
+  String date;
+  bool isNew;
+  String merchantId;
+  String merchantName;
+  String orderId;
+  String status;
+  String time;
+  String totalDiscount;
 
   OrderModel({
-    this.orderId = "no orderId",
-    this.customerId = "no customerId",
-    this.merchantId = "no merchantId",
-    this.dateTime = "no dateTime",
-    this.status = "no status",
-    this.totalDiscount = "no total discount",
-    this.reference,
+    required this.customerId,
+    required this.customerName,
+    required this.date,
+    required this.isNew,
+    required this.merchantId,
+    required this.merchantName,
+    required this.orderId,
+    required this.status,
+    required this.time,
+    required this.totalDiscount,
   });
 
-  OrderModel.fromMap(Object? object, {required this.reference}){
-    Map<String, dynamic>? map = object as Map<String, dynamic>?;
-    orderId = (map ?? {})[orderIdString] ?? "no orderId";
-    customerId = (map ?? {})[customerIdString] ?? "no customerId";
-    merchantId = (map ?? {})[merchantIdString] ?? "no merchantId";
-    dateTime = (map ?? {})[dateTimeString] ?? "no dateTime";
-    status = (map ?? {})[statusString] ?? "no status";
-    totalDiscount = (map ?? {})[totalDiscountString] ?? "no total discount";
+  Map<String, dynamic> toMap() {
+    final result = <String, dynamic>{};
+  
+    result.addAll({customerIdString: customerId});
+    result.addAll({customerNameString: customerName});
+    result.addAll({dateString: date});
+    result.addAll({isNewString: isNew});
+    result.addAll({merchantIdString: merchantId});
+    result.addAll({merchantNameString: merchantName});
+    result.addAll({orderIdString: orderId});
+    result.addAll({statusString: status});
+    result.addAll({timeString: time});
+    result.addAll({totalDiscountString: totalDiscount});
+  
+    return result;
   }
 
-  OrderModel.fromSnapshot(DocumentSnapshot snapshot): this.fromMap(snapshot.data(), reference: snapshot.reference);
+  factory OrderModel.fromMap(Map<String, dynamic> map) {
+    return OrderModel(
+      customerId: map[customerIdString] ?? '',
+      customerName: map[customerNameString] ?? '',
+      date: map[dateString] ?? '',
+      isNew: map[isNewString] ?? false,
+      merchantId: map[merchantIdString] ?? '',
+      merchantName: map[merchantNameString] ?? '',
+      orderId: map[orderIdString] ?? '',
+      status: map[statusString] ?? '',
+      time: map[timeString] ?? '',
+      totalDiscount: map[totalDiscountString] ?? '',
+    );
+  }
 
-  Map<String, dynamic> get toMap => {
-    orderIdString : orderId,
-    customerIdString : customerId,
-    merchantIdString : merchantId,
-    dateTimeString : dateTime,
-    statusString : status,
-    totalDiscountString : totalDiscount,
-  };
+  String toJson() => json.encode(toMap());
+
+  factory OrderModel.fromJson(String source) => OrderModel.fromMap(json.decode(source));
 }

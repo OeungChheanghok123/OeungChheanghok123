@@ -1,10 +1,9 @@
-import 'dart:async';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:loy_eat/models/order_model.dart';
+import 'package:loy_eat/models/remote_data.dart';
 import 'package:loy_eat/widgets/layout_widget/button_widget.dart';
 import 'package:loy_eat/widgets/layout_widget/color.dart';
 import 'package:loy_eat/widgets/layout_widget/icon_widget.dart';
@@ -12,6 +11,8 @@ import 'package:loy_eat/widgets/layout_widget/text_field_widget.dart';
 import 'package:loy_eat/widgets/layout_widget/text_widget.dart';
 
 class OrderController extends GetxController{
+  var isNewOrder = false.obs;
+  var orderId = ''.obs;
 
   var orderEmpty = "Sorry, No order yet!";
   var orderCancelByCustomer = "You won't be paid for this delivery, but we will try to find another trip.";
@@ -22,24 +23,8 @@ class OrderController extends GetxController{
   var starIcon = Icons.star_border.obs;
   var ratingComment = TextEditingController();
 
-  late GoogleMapController newGoogleMapController;
-  late LocationPermission permission;
-  var latitude = 0.0;
-  var longitude = 0.0;
-  late Timer _timer;
-  var startCounter = 10.obs;
-  var orderEmptyScreen = false.obs;
-
-  @override
-  void onInit() {
-    super.onInit();
-    startTimer();
-  }
-  @override
-  void onClose() {
-    super.onClose();
-    closeTimer();
-  }
+  final _orderData = RemoteData<List<OrderModel>>(status: RemoteDataStatus.processing, data: null).obs;
+  RemoteData<List<OrderModel>> get orderData => _orderData.value;
 
   void showDialogRateToCustomer() {
     Get.defaultDialog(
@@ -60,7 +45,7 @@ class OrderController extends GetxController{
               child: InkWell(
                 splashColor: none,
                 onTap: () {
-                  orderEmptyScreen.value = true;
+                  isNewOrder.value = true;
                   Get.offNamed('/instruction');
                 },
                 child: Container(
@@ -141,7 +126,7 @@ class OrderController extends GetxController{
                 borderRadius: 5,
                 onPressed: (){
                   sendComment(ratingComment.text);
-                  orderEmptyScreen.value = true;
+                  isNewOrder.value = false;
                   Get.offNamed('/instruction');
                 },
                 child: const TextWidget(
@@ -163,77 +148,30 @@ class OrderController extends GetxController{
     ratingComment.clear();
     ratingStar.value = 0;
   }
-  void currentLocation() async{
-    permission = await Geolocator.requestPermission();
-    Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-    latitude = position.latitude;
-    longitude = position.longitude;
-    LatLng latLngPosition = LatLng(latitude, longitude);
-    CameraPosition cameraPosition = CameraPosition(target: latLngPosition, zoom: 15);
-    newGoogleMapController.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+
+  @override
+  void onInit() {
+    _loadOrderData();
+    super.onInit();
   }
-  void startTimer() {
-    const oneSec = Duration(seconds: 1);
-    _timer = Timer.periodic(oneSec,
-          (Timer timer) {
-        if (startCounter.value == 0) {
-          timer.cancel();
-          Get.defaultDialog(
-            radius: 5,
-            title: '',
-            barrierDismissible: false,
-            titleStyle: const TextStyle(fontSize: 10),
-            titlePadding: const EdgeInsets.all(0),
-            contentPadding: const EdgeInsets.all(15),
-            middleTextStyle: const TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.normal,
-            ),
-            middleText: 'The time is out, the delivery will auto to reject.',
-            textConfirm: 'Confirm',
-            confirmTextColor: white,
-            buttonColor: rabbit,
-            onConfirm: (){
-              orderEmptyScreen.value = true;
-              Get.offNamed('/instruction');
-              Get.back();
-            },
-          );
+  void _loadOrderData() {
+    try {
+      final data = FirebaseFirestore.instance.collection(OrderModel.collectionName).where(OrderModel.isNewString, isEqualTo: true).snapshots();
+      data.listen((result) {
+        final orders = result.docs.map((e) => OrderModel.fromMap(e.data())).toList();
+        final newOrder = orders;
+        _orderData.value = RemoteData<List<OrderModel>>(status: RemoteDataStatus.success, data: newOrder);
+        if(orders.isNotEmpty){
+          isNewOrder.value = true;
+          orderId.value = orders[0].orderId;
         } else {
-          startCounter--;
+          isNewOrder.value = false;
+          orderId.value = '';
         }
-      },
-    );
-  }
-  void closeTimer() {
-    _timer.cancel();
-  }
-  void showDialogReject() {
-    Get.defaultDialog(
-        radius: 5,
-        title: '',
-        titleStyle: const TextStyle(fontSize: 10),
-        titlePadding: const EdgeInsets.all(0),
-        contentPadding: const EdgeInsets.all(15),
-        middleTextStyle: const TextStyle(
-          fontSize: 14,
-          fontWeight: FontWeight.normal,
-        ),
-        middleText: 'Are you sure to reject this delivery?',
-        textConfirm: 'Confirm',
-        textCancel: 'Cancel',
-        confirmTextColor: white,
-        cancelTextColor: rabbit,
-        buttonColor: rabbit,
-        onConfirm: (){
-          orderEmptyScreen.value = true;
-          Get.offNamed('/instruction');
-          Get.back();
-          closeTimer();
-        },
-        onCancel:(){
-          Get.back();
-        },
-    );
+        debugPrint('order ID : ${orderId.value}');
+      });
+    } catch (ex) {
+      _orderData.value = RemoteData<List<OrderModel>>(status: RemoteDataStatus.error, data: null);
+    }
   }
 }

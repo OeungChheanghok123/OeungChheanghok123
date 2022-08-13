@@ -1,5 +1,4 @@
 import 'package:get/get.dart';
-import 'package:loy_eat/controllers/home_controller.dart';
 import 'package:loy_eat/screens/become_driver_fail_screen.dart';
 import 'package:loy_eat/screens/become_driver_screen.dart';
 import 'package:loy_eat/screens/become_driver_success_screen.dart';
@@ -22,8 +21,6 @@ import 'package:loy_eat/screens/notification_screen.dart';
 import 'package:loy_eat/widgets/screen_widget/auto_complete_text_field.dart';
 import 'package:loy_eat/widgets/screen_widget/order_empty_screen.dart';
 
-HomeController homeController = Get.put(HomeController());
-
 List<GetPage<dynamic>>? getRoutPage = [
   GetPage(name: '/start_up', page: () => const StartUpScreen()),
   GetPage(name: '/log_in', page: () => const LoginScreen()),
@@ -31,7 +28,7 @@ List<GetPage<dynamic>>? getRoutPage = [
   GetPage(name: '/verify_phone_number', page: () => const VerifyPhoneNumberScreen()),
   GetPage(name: '/enter_otp_code', page: () => const EnterOTPCodeScreen()),
   GetPage(name: '/instruction', page: () => const InstructionScreen()),
-  GetPage(name: '/home', page: () => const HomeScreen()),
+  GetPage(name: '/home', page: () => HomeScreen()),
   GetPage(name: '/notification', page: () => const NotificationScreen(), transition: Transition.rightToLeftWithFade, transitionDuration: const Duration(milliseconds: 500)),
   //GetPage(name: '/notification_detail', page: () => NotificationDetailScreen(notificationIndex: homeController.notificationIndex.value), transition: Transition.rightToLeftWithFade, transitionDuration: const Duration(milliseconds: 500)),
   GetPage(name: '/become_driver_success', page: () => const BecomeDriverSuccessScreen()),
@@ -43,8 +40,8 @@ List<GetPage<dynamic>>? getRoutPage = [
   GetPage(name: '/support', page: () => const SupportScreen(), transition: Transition.rightToLeftWithFade),
   GetPage(name: '/feedback_us', page: () => const FeedbackUsScreen(), transition: Transition.rightToLeftWithFade),
   GetPage(name: '/qr_code', page: () => const QRCodeScreen(), transition: Transition.rightToLeftWithFade),
-  GetPage(name: '/report_order_detail', page: () => const ReportOrderDetailScreen(), transition: Transition.rightToLeftWithFade),
-  GetPage(name: '/order_empty', page: () => const OrderEmptyScreen()),
-  GetPage(name: '/order_accept', page: () => const OrderAccept()),
-  GetPage(name: '/order', page: () => const OrderScreen()),
+  GetPage(name: '/report_order_detail', page: () => ReportOrderDetailScreen(), transition: Transition.rightToLeftWithFade),
+  GetPage(name: '/order_empty', page: () => OrderEmptyScreen()),
+  GetPage(name: '/order_accept', page: () => OrderAccept()),
+  GetPage(name: '/order', page: () => OrderScreen()),
 ];

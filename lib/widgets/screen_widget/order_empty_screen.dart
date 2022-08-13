@@ -5,16 +5,10 @@ import 'package:loy_eat/widgets/layout_widget/color.dart';
 import 'package:loy_eat/widgets/layout_widget/icon_widget.dart';
 import 'package:loy_eat/widgets/layout_widget/text_widget.dart';
 
-class OrderEmptyScreen extends StatefulWidget {
-  const OrderEmptyScreen({Key? key}) : super(key: key);
+class OrderEmptyScreen extends StatelessWidget {
+  OrderEmptyScreen({Key? key}) : super(key: key);
 
-  @override
-  State<OrderEmptyScreen> createState() => _OrderEmptyScreenState();
-}
-
-class _OrderEmptyScreenState extends State<OrderEmptyScreen> {
-
-  OrderController orderController = Get.put(OrderController());
+  final controller = Get.put(OrderController());
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +29,7 @@ class _OrderEmptyScreenState extends State<OrderEmptyScreen> {
             margin: const EdgeInsets.only(top: 10),
             padding: const EdgeInsets.symmetric(horizontal: 10),
             child: TextWidget(
-              text: orderController.orderEmpty,
+              text: controller.orderEmpty,
               fontWeight: FontWeight.w600,
               textAlign: TextAlign.center,
             ),

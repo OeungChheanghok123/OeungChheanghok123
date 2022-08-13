@@ -10,19 +10,16 @@ import 'package:loy_eat/widgets/layout_widget/text_field_widget.dart';
 import 'package:loy_eat/widgets/layout_widget/text_widget.dart';
 import 'package:loy_eat/widgets/layout_widget/title_appbar_widget.dart';
 
-class ReportOrderDetailScreen extends StatefulWidget {
-  const ReportOrderDetailScreen({Key? key}) : super(key: key);
 
-  @override
-  State<ReportOrderDetailScreen> createState() => _ReportOrderDetailScreenState();
-}
+class ReportOrderDetailScreen extends StatelessWidget {
+  ReportOrderDetailScreen({Key? key}) : super(key: key);
 
-class _ReportOrderDetailScreenState extends State<ReportOrderDetailScreen> {
-
-  ReportOrderDetailController reportOrderDetailController = Get.put(ReportOrderDetailController());
+  final controller = Get.put(ReportOrderDetailController());
 
   @override
   Widget build(BuildContext context) {
+    controller.getOrderNo.value = Get.arguments['order'];
+
     return SafeArea(
       child: Scaffold(
         extendBody: true,
@@ -41,7 +38,7 @@ class _ReportOrderDetailScreenState extends State<ReportOrderDetailScreen> {
             ),
           ),
           title: TitleAppBarWidget(
-            text: 'Order ID: ${Get.parameters['titleOrder']}',
+            text: 'Order ID: ${controller.getOrderNo.value}',
           ),
         ),
         body: SingleChildScrollView(
@@ -87,7 +84,7 @@ class _ReportOrderDetailScreenState extends State<ReportOrderDetailScreen> {
                       borderRadius: BorderRadius.circular(50),
                       image: DecorationImage(
                         fit: BoxFit.cover,
-                        image: AssetImage(reportOrderDetailController.customer.image),
+                        image: AssetImage(controller.customer.image),
                       ),
                     ),
                   ),
@@ -99,9 +96,9 @@ class _ReportOrderDetailScreenState extends State<ReportOrderDetailScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        TextWidget(text: reportOrderDetailController.customer.name),
+                        TextWidget(text: controller.customer.name),
                         const Space(),
-                        TextWidget(text: reportOrderDetailController.customer.address),
+                        TextWidget(text: controller.customer.address),
                       ],
                     ),
                   ),
@@ -110,38 +107,38 @@ class _ReportOrderDetailScreenState extends State<ReportOrderDetailScreen> {
             ),
           ),
           Expanded(
-            flex: 0,
-            child: Stack(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: rabbit,
-                    borderRadius: BorderRadius.circular(100),
-                  ),
-                  child: const IconWidget(
-                    icon: Icons.call,
-                    color: white,
-                    size: 25,
-                  ),
-                ),
-                Positioned(
-                  right: 0,
-                  top: 0,
-                  child: Container(
-                    width: 20,
-                    height: 20,
-                    alignment: Alignment.center,
-                    decoration: const BoxDecoration(
-                      color: none,
-                      image: DecorationImage(
-                        image: AssetImage('assets/image/smart_icon.png'),
-                      )
+              flex: 0,
+              child: Stack(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: rabbit,
+                      borderRadius: BorderRadius.circular(100),
+                    ),
+                    child: const IconWidget(
+                      icon: Icons.call,
+                      color: white,
+                      size: 25,
                     ),
                   ),
-                ),
-              ],
-            )
+                  Positioned(
+                    right: 0,
+                    top: 0,
+                    child: Container(
+                      width: 20,
+                      height: 20,
+                      alignment: Alignment.center,
+                      decoration: const BoxDecoration(
+                          color: none,
+                          image: DecorationImage(
+                            image: AssetImage('assets/image/smart_icon.png'),
+                          )
+                      ),
+                    ),
+                  ),
+                ],
+              )
           ),
         ],
       ),
@@ -179,7 +176,7 @@ class _ReportOrderDetailScreenState extends State<ReportOrderDetailScreen> {
             fontWeight: FontWeight.bold,
           ),
           TextFieldWidget(
-            controller: reportOrderDetailController.remarkController,
+            controller: controller.remarkController,
             height: 45,
             inputType: TextInputType.text,
             readOnly: true,
@@ -205,39 +202,39 @@ class _ReportOrderDetailScreenState extends State<ReportOrderDetailScreen> {
             itemCount: 5,
             itemBuilder: (BuildContext context, int index){
               return Container(
-                margin: const EdgeInsets.only(top: 10),
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            TextWidget(text: '${index+1}. '),
-                            TextWidget(text: 'Product ${index+1}'),
-                          ],
-                        ),
-                        const TextWidget(
-                          text: '\$3.00',
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        TextWidget(text: '${index+1}. ', color: none,),
-                        const TextWidget(text: '1 X \$3.00', color: silver,),
-                      ],
-                    ),
-                    index == 4 ? const SizedBox.shrink() : Container(
-                      margin: const EdgeInsets.only(top: 5),
-                      child: const DottedLine(
-                        dashLength: 1.5,
-                        lineThickness: 2,
-                        dashColor: silver,
+                  margin: const EdgeInsets.only(top: 10),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              TextWidget(text: '${index+1}. '),
+                              TextWidget(text: 'Product ${index+1}'),
+                            ],
+                          ),
+                          const TextWidget(
+                            text: '\$3.00',
+                          ),
+                        ],
                       ),
-                    ),
-                  ],
-                )
+                      Row(
+                        children: [
+                          TextWidget(text: '${index+1}. ', color: none,),
+                          const TextWidget(text: '1 X \$3.00', color: silver,),
+                        ],
+                      ),
+                      index == 4 ? const SizedBox.shrink() : Container(
+                        margin: const EdgeInsets.only(top: 5),
+                        child: const DottedLine(
+                          dashLength: 1.5,
+                          lineThickness: 2,
+                          dashColor: silver,
+                        ),
+                      ),
+                    ],
+                  )
               );
             },
           ),
@@ -296,7 +293,7 @@ class _ReportOrderDetailScreenState extends State<ReportOrderDetailScreen> {
       margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
       child: ButtonWidget(
         onPressed: () => Get.back(),
-        width: MediaQuery.of(context).size.width,
+        width: double.infinity,
         child: const TextWidget(
           text: 'Delivered successfully to Sovongdy',
           color: white,

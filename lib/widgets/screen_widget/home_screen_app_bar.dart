@@ -39,7 +39,7 @@ class HomeScreenAppBar extends StatelessWidget implements PreferredSize{
           children: [
             InkWell(
               splashColor: none,
-              onTap: () => Get.offNamed("/notification"),
+              onTap: () => Get.toNamed("/notification"),
               child: Container(
                 margin: const EdgeInsets.only(right: 10),
                 child: const IconWidget(
@@ -49,7 +49,7 @@ class HomeScreenAppBar extends StatelessWidget implements PreferredSize{
                 ),
               ),
             ),
-            homeController.readAll.value ? Container() : Obx(() => Positioned(
+            homeController.notificationCount.value == 0  ? Container() : Obx(() => Positioned(
               top: 15,
               right: 15,
               child: Container(

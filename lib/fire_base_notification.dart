@@ -56,36 +56,36 @@ class FirebaseNotifications {
       lastMessageId = remoteMessage.messageId!;
     });
     FirebaseMessaging.onMessageOpenedApp.listen((remoteMessage) {
-      if (Platform.isAndroid) {
-        if (lastMessageId != remoteMessage.messageId) {
-          notification.add({
-            'title': remoteMessage.data['title'],
-            'body': remoteMessage.data['body'],
-            'isRead': false,
-            'ref_id':remoteMessage.data['ref_id'],
-            'date': remoteMessage.data['date'],
-            'dri_id': remoteMessage.data['dri_id'],
-          }).then((value) => print("User Added")).catchError((error) => print("Failed to add user: $error")); // ignore: avoid_print
-          notification.where("isRead", isEqualTo: false).get().then((value) => FlutterAppBadger.updateBadgeCount(value.docs.length));
-        }
-      }
-      if (Platform.isIOS) {
-        if (lastMessageId != remoteMessage.messageId) {
-          notification.add({
-            'title':remoteMessage.data['title'], // John Doe
-            'body': "Testing body", // Stokes and Sons
-            'isRead': false,
-            'ref_id':remoteMessage.data['ref_id'],
-            'date': remoteMessage.data['date'],
-            'dri_id': remoteMessage.data['dri_id'],
-          }).then((value) => print("User Added")).catchError((error) => print("Failed to add user: $error")); // ignore: avoid_print
-          notification.where("isRead", isEqualTo: false).get().then((value) => FlutterAppBadger.updateBadgeCount(value.docs.length));
-        }
-      }
-
-      lastMessageId = remoteMessage.messageId!;
-
       Future.delayed(const Duration(seconds: 2), () {
+        if (Platform.isAndroid) {
+          if (lastMessageId != remoteMessage.messageId) {
+            notification.add({
+              'title': remoteMessage.data['title'],
+              'body': remoteMessage.data['body'],
+              'isRead': false,
+              'ref_id':remoteMessage.data['ref_id'],
+              'date': remoteMessage.data['date'],
+              'dri_id': remoteMessage.data['dri_id'],
+            }).then((value) => print("User Added")).catchError((error) => print("Failed to add user: $error")); // ignore: avoid_print
+            notification.where("isRead", isEqualTo: false).get().then((value) => FlutterAppBadger.updateBadgeCount(value.docs.length));
+          }
+        }
+        if (Platform.isIOS) {
+          if (lastMessageId != remoteMessage.messageId) {
+            notification.add({
+              'title':remoteMessage.data['title'], // John Doe
+              'body': "Testing body", // Stokes and Sons
+              'isRead': false,
+              'ref_id':remoteMessage.data['ref_id'],
+              'date': remoteMessage.data['date'],
+              'dri_id': remoteMessage.data['dri_id'],
+            }).then((value) => print("User Added")).catchError((error) => print("Failed to add user: $error")); // ignore: avoid_print
+            notification.where("isRead", isEqualTo: false).get().then((value) => FlutterAppBadger.updateBadgeCount(value.docs.length));
+          }
+        }
+
+        lastMessageId = remoteMessage.messageId!;
+
         Get.to(NotificationDetailScreen(refId: remoteMessage.data['ref_id']));
       });
     });

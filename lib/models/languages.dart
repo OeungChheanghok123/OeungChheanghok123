@@ -8,7 +8,7 @@ class Languages extends Translations {
     'en_US' : {
       'Log In' : 'Log In',
       'Become a Driver?' : 'Become a Driver?',
-      'Stats' : 'Stats',
+      'States' : 'States',
       'Breakdown' : 'Breakdown',
       'Edit Profile' : 'Edit Profile',
       'Rating Score' : 'Rating Score',
@@ -22,7 +22,7 @@ class Languages extends Translations {
     'kh_KH' : {
       'Log In' : 'ចូល',
       'Become a Driver?' : 'ក្លាយជាអ្នកបើកបរ?',
-      'Stats' : 'ស្ថិតិ',
+      'States' : 'ស្ថិតិ',
       'Breakdown' : 'ពត៌មានបន្ថែម',
       'Edit Profile' : 'កែសម្រួលប្រូហ្វាល',
       'Rating Score' : 'ពិន្ទុវាយតម្លៃ',
