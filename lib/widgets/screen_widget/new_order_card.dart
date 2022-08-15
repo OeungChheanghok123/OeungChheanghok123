@@ -230,15 +230,14 @@ class NewOrderCard extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           _buildButton(
-            buttonText: 'Reject',
+            buttonText: 'Reject'.tr,
             color: red,
             onPressed: () => controller.showDialogReject(),
           ),
           _buildButton(
-            buttonText: 'Accept',
+            buttonText: 'Accept'.tr,
             color: succeed,
             onPressed: () {
-              googleController.currentLocation();
               Get.toNamed('/order_accept');
             },
           ),
