@@ -6,6 +6,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:loy_eat/controllers/google_map_controller.dart';
+import 'package:loy_eat/widgets/layout_widget/color.dart';
 
 class GoogleMapWidget extends StatefulWidget {
   const GoogleMapWidget({Key? key}) : super(key: key);
@@ -17,18 +18,16 @@ class GoogleMapWidget extends StatefulWidget {
 class _GoogleMapWidgetState extends State<GoogleMapWidget> {
   final controller = Get.put(MapController());
   final Completer<GoogleMapController> _controller = Completer();
-  late GoogleMapController newGoogleMapController;
-  String googleApiKey = "AIzaSyBSyQsntLybWDXtK0XIhYOHMNs9z-6LdVg";
-  LatLng destinationCustomer = const LatLng(11.569042861795637, 104.90094500407777);
+  late final GoogleMapController newGoogleMapController;
+  final googleApiKey = "AIzaSyBSyQsntLybWDXtK0XIhYOHMNs9z-6LdVg";
 
   @override
   void initState() {
-    setState((){
-      initMarkers().then((value) {
-        controller.markers = value;
-      });
-      getPolyline();
+    initMarkers().then((marker) {
+      controller.markers = marker;
     });
+    getPolyline();
+    setState((){});
     super.initState();
   }
 
@@ -43,7 +42,7 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
         zoomControlsEnabled: true,
         initialCameraPosition: CameraPosition(
           target: LatLng(controller.latitude.value, controller.longitude.value),
-          zoom: 15,
+          zoom: controller.zoom.value,
         ),
         markers: controller.markers,
         polylines: Set<Polyline>.of(controller.polyLines.values),
@@ -54,14 +53,33 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
       ),),
     );
   }
-  getPolyline() async {
+
+  Future<Set<Marker>> initMarkers() async {
+    final icon = BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue);
+    List<Marker> markers = <Marker>[];
+    for (final location in controller.myPosLatLng) {
+      final marker = Marker(
+        markerId: MarkerId(location.toString()),
+        position: location,
+        icon: icon,
+        infoWindow: InfoWindow(
+          title: "Some Company",
+          snippet: "Some Company branch",
+          onTap: () => debugPrint("tapped ${location.latitude}, ${location.longitude}"),
+        ),
+      );
+      markers.add(marker);
+    }
+    return markers.toSet();
+  }
+  void getPolyline() async {
     Position pos = await controller.getCurrentPosition();
     PolylineResult result = await controller.polylinePoints.getRouteBetweenCoordinates(
       googleApiKey,
       PointLatLng(pos.latitude, pos.longitude),
       PointLatLng(
-        destinationCustomer.latitude,
-        destinationCustomer.longitude,
+        controller.destinationCustomer.latitude,
+        controller.destinationCustomer.longitude,
       ),
       travelMode: TravelMode.driving,
     );
@@ -74,32 +92,15 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
     }
     addPolyLine();
   }
-  addPolyLine() {
-    PolylineId id = const PolylineId('poly123');
-    Polyline polyline = Polyline(width: 5,
-        polylineId: id, color: Colors.red, points: controller.polylineCoordinates);
+  void addPolyLine() {
+    PolylineId id = const PolylineId('polyline');
+    Polyline polyline = Polyline(
+      width: 5,
+      polylineId: id,
+      color: red,
+      points: controller.polylineCoordinates,
+    );
     controller.polyLines[id] = polyline;
     setState((){});
-  }
-  Future<Set<Marker>> initMarkers() async {
-    final icon = BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue);
-    List<Marker> markers = <Marker>[];
-    for (final location in controller.myPosLatLng) {
-      debugPrint(
-          'latitude: ${location.latitude}, longitude: ${location.longitude}');
-      final marker = Marker(
-        markerId: MarkerId(location.toString()),
-        infoWindow: InfoWindow(
-          title: "Some Company",
-          snippet: "Some Company branch",
-          onTap: () =>
-              debugPrint("tapped ${location.latitude}, ${location.longitude}"),
-        ),
-        position: location,
-        icon: icon,
-      );
-      markers.add(marker);
-    }
-    return markers.toSet();
   }
 }

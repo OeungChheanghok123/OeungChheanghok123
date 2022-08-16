@@ -152,7 +152,7 @@ class ReportScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          TextWidget(isTitle: true, text: 'Status'.tr,),
+          TextWidget(isTitle: true, text: 'States'.tr),
           _buildStatusWidget,
         ],
       ),

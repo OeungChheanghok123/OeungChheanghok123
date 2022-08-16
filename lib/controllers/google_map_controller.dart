@@ -5,18 +5,16 @@ import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class MapController extends GetxController {
+  var zoom = 16.0.obs;
   var latitude = 0.0.obs;
   var longitude = 0.0.obs;
-  double zoom = 16;
+
   Set<Marker> markers = <Marker>{};
   Map<PolylineId, Polyline> polyLines = {};
   List<LatLng> polylineCoordinates = [];
   PolylinePoints polylinePoints = PolylinePoints();
-
-  List<LatLng> myPosLatLng = [
-    const LatLng(11.56347939900025, 104.9115677945891),
-    const LatLng(11.569042861795637, 104.90094500407777),
-  ];
+  LatLng destinationCustomer = const LatLng(11.569042861795637, 104.90094500407777);
+  List<LatLng> myPosLatLng = [];
 
   @override
   void onInit() {
@@ -50,11 +48,10 @@ class MapController extends GetxController {
     if (_currentPos != null) {
       return CameraPosition(
         target: LatLng(latitude.value, longitude.value),
-        zoom: zoom,
+        zoom: zoom.value,
       );
     } else {
-      throw Exception(
-          'Error current location because Google Maps permission was denied.');
+      throw Exception('Error current location because Google Maps permission was denied.');
     }
   }
 }

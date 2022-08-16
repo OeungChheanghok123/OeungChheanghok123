@@ -320,20 +320,20 @@ class HomeScreen extends StatelessWidget {
     return Column(
       children: [
         _buildCardBreakDown(
-          text: 'Net delivery fee',
+          text: 'Net delivery fee'.tr,
           value: '\$${model.deliveryFee}',
         ),
         _buildCardBreakDown(
-          text: 'Bonus',
+          text: 'Bonus'.tr,
           value: '\$${model.bonus}',
         ),
         _buildCardBreakDown(
-          text: 'Tip',
+          text: 'Tip'.tr,
           value: '\$${model.tip}',
           isDotted: false,
         ),
         _buildCardBreakDown(
-          text: 'Total Earning',
+          text: 'Total Earning'.tr,
           value: '\$$totalEarning',
           isNon: true,
         ),

@@ -13,11 +13,11 @@ import 'package:loy_eat/widgets/layout_widget/color.dart';
 
 class NewOrderCardController extends GetxController {
   final orderController = Get.put(OrderController());
-  var newOrderId = ''.obs;
-  var merchantId = '0'.obs;
-  var customerId = '0'.obs;
   late Timer _timer;
   var startCounter = 60.obs;
+  var newOrderId = ''.obs;
+  var merchantId = ''.obs;
+  var customerId = ''.obs;
 
   final _orderData = RemoteData<List<OrderModel>>(status: RemoteDataStatus.processing, data: null).obs;
   RemoteData<List<OrderModel>> get orderData => _orderData.value;
@@ -33,8 +33,8 @@ class NewOrderCardController extends GetxController {
 
   @override
   void onInit() {
-    startTimer();
     _loadOrderData();
+    startTimer();
     super.onInit();
   }
   @override
