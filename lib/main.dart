@@ -2,7 +2,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:loy_eat/bindings/controller_binding.dart';
 import 'package:loy_eat/controllers/page_controller.dart';
 import 'package:loy_eat/fire_base_notification.dart';
 import 'package:loy_eat/models/languages.dart';
@@ -49,7 +48,6 @@ class _MyAppState extends State<MyApp> {
       title: "Loy Eat driver app for BuyLoy.com",
       initialRoute: "/",
       defaultTransition: Transition.noTransition,
-      initialBinding: ControllerBinding(),
       getPages: getRoutPage,
       home: const InstructionScreen(),
     );

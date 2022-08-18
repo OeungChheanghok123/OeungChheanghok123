@@ -39,7 +39,7 @@ class ReportScreen extends StatelessWidget {
       pinned: true,
       elevation: 1,
       backgroundColor: lightGray,
-      expandedHeight: 630,
+      expandedHeight: 650,
       excludeHeaderSemantics: true,
       automaticallyImplyLeading: false,
       flexibleSpace: _buildFlexibleSpaceWidget,
@@ -101,7 +101,7 @@ class ReportScreen extends StatelessWidget {
   }
 
   Widget get _buildTotalEarning {
-    return  Obx(() {
+    return Obx(() {
       final status = controller.driverReportData.status;
       if (status == RemoteDataStatus.processing) {
         return ScreenWidgets.loading;
@@ -113,7 +113,7 @@ class ReportScreen extends StatelessWidget {
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           itemCount: reportLength.length,
-          itemBuilder: (context, index){
+          itemBuilder: (context, index) {
             final report = controller.driverReportData.data![index];
             return _buildTotalEarningWidget(report);
           },
@@ -121,8 +121,11 @@ class ReportScreen extends StatelessWidget {
       }
     });
   }
-  Widget _buildTotalEarningWidget(DriverReportModel model){
-    final totalEarning = double.parse(model.deliveryFee) + double.parse(model.bonus) + double.parse(model.tip);
+
+  Widget _buildTotalEarningWidget(DriverReportModel model) {
+    final totalEarning = double.parse(model.deliveryFee) +
+        double.parse(model.bonus) +
+        double.parse(model.tip);
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 5),
       child: Row(
@@ -131,8 +134,8 @@ class ReportScreen extends StatelessWidget {
             icon: Icons.monetization_on,
             size: 20,
           ),
-          const TextWidget(
-            text: ' Total Earning: ',
+          TextWidget(
+            text: ' Total Earning: '.tr,
             fontWeight: FontWeight.bold,
           ),
           TextWidget(
@@ -158,7 +161,8 @@ class ReportScreen extends StatelessWidget {
       ),
     );
   }
-  Widget get _buildStatusWidget{
+
+  Widget get _buildStatusWidget {
     return Obx(() {
       final status = controller.driverReportData.status;
       if (status == RemoteDataStatus.processing) {
@@ -176,10 +180,12 @@ class ReportScreen extends StatelessWidget {
       }
     });
   }
+
   Widget stateItemWidget(BuildContext context, int index) {
     final report = controller.driverReportData.data![index];
     return _buildStatusItem(report);
   }
+
   Widget _buildStatusItem(DriverReportModel model) {
     return Container(
       margin: const EdgeInsets.only(top: 5, bottom: 10),
@@ -191,13 +197,13 @@ class ReportScreen extends StatelessWidget {
             children: [
               _buildCardState(
                 iconData: Icons.access_time,
-                title: 'Online',
+                title: 'Online'.tr,
                 subTitle: '${model.onlineHour}h:${model.onlineMinute}m',
               ),
               const Space(),
               _buildCardState(
                 iconData: Icons.directions_run,
-                title: 'Distance',
+                title: 'Distance'.tr,
                 subTitle: '${model.distance} km',
               ),
             ],
@@ -207,13 +213,13 @@ class ReportScreen extends StatelessWidget {
             children: [
               _buildCardState(
                 iconData: Icons.local_activity,
-                title: 'Point',
+                title: 'Point'.tr,
                 subTitle: model.point,
               ),
               const Space(),
               _buildCardState(
                 iconData: Icons.motorcycle_rounded,
-                title: 'Trip',
+                title: 'Trip'.tr,
                 subTitle: model.trip,
               ),
             ],
@@ -224,14 +230,14 @@ class ReportScreen extends StatelessWidget {
               _buildCardState(
                 width: 110,
                 iconData: Icons.thumbs_up_down,
-                title: 'Customer',
+                title: 'Customer'.tr,
                 subTitle: '${model.customerRating} / 5',
               ),
               const Space(),
               _buildCardState(
                 width: 110,
                 iconData: Icons.thumbs_up_down,
-                title: 'Merchant',
+                title: 'Merchant'.tr,
                 subTitle: '${model.merchantRating} / 5',
               ),
             ],
@@ -240,7 +246,12 @@ class ReportScreen extends StatelessWidget {
       ),
     );
   }
-  Widget _buildCardState({double width = 100, required IconData iconData, required String title, required String subTitle}) {
+
+  Widget _buildCardState(
+      {double width = 100,
+        required IconData iconData,
+        required String title,
+        required String subTitle}) {
     return _buildCard(
       margin: const EdgeInsets.only(bottom: 5),
       child: Container(
@@ -254,13 +265,21 @@ class ReportScreen extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            IconWidget(icon: iconData, size: 24,),
+            IconWidget(
+              icon: iconData,
+              size: 24,
+            ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 TextWidget(text: title, size: 10),
                 const Space(),
-                TextWidget(text: subTitle, fontWeight: FontWeight.bold, color: rabbit, size: 10,),
+                TextWidget(
+                  text: subTitle,
+                  fontWeight: FontWeight.bold,
+                  color: rabbit,
+                  size: 10,
+                ),
               ],
             ),
           ],
@@ -284,6 +303,7 @@ class ReportScreen extends StatelessWidget {
       ],
     );
   }
+
   Widget get _buildBreakDownWidget {
     return Obx(() {
       final status = controller.driverReportData.status;
@@ -302,36 +322,45 @@ class ReportScreen extends StatelessWidget {
       }
     });
   }
+
   Widget breakDownItemWidget(BuildContext context, int index) {
     final report = controller.driverReportData.data![index];
     return _buildBreakDownItem(report);
   }
+
   Widget _buildBreakDownItem(DriverReportModel model) {
-    final totalEarning = double.parse(model.deliveryFee) + double.parse(model.bonus) + double.parse(model.tip);
+    final totalEarning = double.parse(model.deliveryFee) +
+        double.parse(model.bonus) +
+        double.parse(model.tip);
     return Column(
       children: [
         _buildCardBreakDown(
-          text: 'Net delivery fee',
+          text: 'Net delivery fee'.tr,
           value: '\$${model.deliveryFee}',
         ),
         _buildCardBreakDown(
-          text: 'Bonus',
+          text: 'Bonus'.tr,
           value: '\$${model.bonus}',
         ),
         _buildCardBreakDown(
-          text: 'Tip',
+          text: 'Tip'.tr,
           value: '\$${model.tip}',
           isDotted: false,
         ),
         _buildCardBreakDown(
-          text: 'Total Earning',
+          text: 'Total Earning'.tr,
           value: '\$$totalEarning',
           isNon: true,
         ),
       ],
     );
   }
-  Widget _buildCardBreakDown({required String text, required String value, bool isDotted = true, bool isNon = false}) {
+
+  Widget _buildCardBreakDown(
+      {required String text,
+        required String value,
+        bool isDotted = true,
+        bool isNon = false}) {
     return Column(
       children: [
         Row(
@@ -345,15 +374,18 @@ class ReportScreen extends StatelessWidget {
       ],
     );
   }
-  Widget dottedLineWidget(bool isDot){
-    return isDot == true ? Container(
+
+  Widget dottedLineWidget(bool isDot) {
+    return isDot == true
+        ? Container(
       margin: const EdgeInsets.symmetric(vertical: 8),
       child: DottedLine(
         dashLength: 1.5,
         lineThickness: 2,
         dashColor: silver.withOpacity(0.5),
       ),
-    ) : Container(
+    )
+        : Container(
       height: 1,
       color: silver.withOpacity(0.5),
       margin: const EdgeInsets.symmetric(vertical: 8),
@@ -366,6 +398,7 @@ class ReportScreen extends StatelessWidget {
       child: _buildDetailBar(context),
     );
   }
+
   Widget _buildDetailBar(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(left: 10, bottom: 10),
@@ -373,8 +406,8 @@ class ReportScreen extends StatelessWidget {
         children: [
           Container(
             padding: const EdgeInsets.all(5),
-            child: const TextWidget(
-              text: 'Fitter by Date:',
+            child: TextWidget(
+              text: 'Fitter by Date:'.tr,
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -382,11 +415,13 @@ class ReportScreen extends StatelessWidget {
             onTap: () => controller.calenderFunction(context),
             child: Container(
               padding: const EdgeInsets.all(5),
-              child: controller.dataDatePicker.value == '' ? const IconWidget(
+              child: controller.dataDatePicker.value == ''
+                  ? const IconWidget(
                 icon: Icons.calendar_today,
                 size: 20,
                 color: black,
-              ) : TextWidget(text: controller.dataDatePicker.value),
+              )
+                  : TextWidget(text: controller.dataDatePicker.value),
             ),
           )),
         ],
@@ -399,6 +434,7 @@ class ReportScreen extends StatelessWidget {
       child: _buildOrderBodyWidget,
     );
   }
+
   Widget get _buildOrderBodyWidget {
     return Obx(() {
       final status = controller.orderData.status;
@@ -417,12 +453,15 @@ class ReportScreen extends StatelessWidget {
       }
     });
   }
+
   Widget orderBodyItem(BuildContext context, int index) {
     final order = controller.orderData.data![index];
     final deliverOrder = controller.deliverData.data![index];
     return _buildOrderBodyItemWidget(order, deliverOrder);
   }
-  Widget _buildOrderBodyItemWidget(OrderModel orderModel, DeliverModel deliverModel) {
+
+  Widget _buildOrderBodyItemWidget(
+      OrderModel orderModel, DeliverModel deliverModel) {
     return Container(
       margin: const EdgeInsets.only(bottom: 10, left: 15, right: 15),
       child: Column(
@@ -433,11 +472,15 @@ class ReportScreen extends StatelessWidget {
               Obx(() => TextWidget(
                 text: 'Date: ${orderModel.date} ${orderModel.time}',
                 fontWeight: FontWeight.bold,
-                color: controller.isCanceled.value ? carrot : controller.isDelivered.value ? black : rabbit,
+                color: controller.isCanceled.value
+                    ? carrot
+                    : controller.isDelivered.value
+                    ? black
+                    : rabbit,
               )),
               const Spacer(),
               TextWidget(
-                text: 'Status: ${deliverModel.process}',
+                text: deliverModel.process,
                 fontWeight: FontWeight.w500,
               ),
             ],
@@ -459,16 +502,23 @@ class ReportScreen extends StatelessWidget {
                       children: [
                         TextWidget(text: 'Order No: #${orderModel.orderId} '),
                         const Spacer(),
-                        const TextWidget(text: 'Total Earning: ', size: 10, fontWeight: FontWeight.w500),
+                        TextWidget(
+                            text: 'Total Earning: '.tr,
+                            size: 10,
+                            fontWeight: FontWeight.w500),
                         Container(
                           alignment: Alignment.center,
-                          padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 3),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 2, horizontal: 3),
                           decoration: BoxDecoration(
-                            color: controller.isDelivered.value ? rabbit.withOpacity(0.5) : carrot.withOpacity(0.5),
+                            color: controller.isDelivered.value
+                                ? rabbit.withOpacity(0.5)
+                                : carrot.withOpacity(0.5),
                             borderRadius: BorderRadius.circular(3),
                           ),
                           child: TextWidget(
-                            text: '\$${double.parse(deliverModel.deliveryFee).toStringAsFixed(2)}',
+                            text:
+                            '\$${double.parse(deliverModel.deliveryFee).toStringAsFixed(2)}',
                             size: 11,
                             fontWeight: FontWeight.w600,
                             color: black.withOpacity(0.8),
@@ -480,7 +530,12 @@ class ReportScreen extends StatelessWidget {
                     Row(
                       children: [
                         TextWidget(
-                          text: '${orderModel.merchantName} to ${orderModel.customerName}', size: 10, color: text, fontWeight: FontWeight.w500,
+                          text: '${orderModel.merchantName} ' +
+                              'to'.tr +
+                              ' ${orderModel.customerName}',
+                          size: 10,
+                          color: text,
+                          fontWeight: FontWeight.w500,
                         ),
                         const Spacer(),
                         Row(
@@ -510,7 +565,9 @@ class ReportScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildCard({required Widget child, EdgeInsetsGeometry margin = const EdgeInsets.all(0)}) {
+  Widget _buildCard(
+      {required Widget child,
+        EdgeInsetsGeometry margin = const EdgeInsets.all(0)}) {
     return Card(
       color: white,
       elevation: 0,
@@ -523,15 +580,23 @@ class ReportScreen extends StatelessWidget {
       child: child,
     );
   }
-  Widget _buildIconAndText({required int index, required IconData iconData, required String text}){
+
+  Widget _buildIconAndText(
+      {required int index, required IconData iconData, required String text}) {
     return Container(
       margin: const EdgeInsets.only(left: 5),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          IconWidget(icon: iconData, color: silver, size: 12,),
+          IconWidget(
+            icon: iconData,
+            color: silver,
+            size: 12,
+          ),
           const Space(width: 1),
-          index == 1 ? TextWidget(text: '$text Km', color: silver, size: 9) : TextWidget(text: '$text min', color: silver, size: 9),
+          index == 1
+              ? TextWidget(text: '$text Km', color: silver, size: 9)
+              : TextWidget(text: '$text min', color: silver, size: 9),
         ],
       ),
     );

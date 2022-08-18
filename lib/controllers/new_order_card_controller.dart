@@ -17,7 +17,9 @@ class NewOrderCardController extends GetxController {
   var startCounter = 60.obs;
   var newOrderId = ''.obs;
   var merchantId = ''.obs;
+  var merchantName = ''.obs;
   var customerId = ''.obs;
+  var customerName = ''.obs;
 
   final _orderData = RemoteData<List<OrderModel>>(status: RemoteDataStatus.processing, data: null).obs;
   RemoteData<List<OrderModel>> get orderData => _orderData.value;
@@ -47,7 +49,7 @@ class NewOrderCardController extends GetxController {
     const oneSec = Duration(seconds: 1);
     _timer = Timer.periodic(oneSec, (Timer timer) {
         if (startCounter.value == 0) {
-          timer.cancel();
+          closeTimer();
           Get.defaultDialog(
             radius: 5,
             title: '',
@@ -64,7 +66,7 @@ class NewOrderCardController extends GetxController {
             confirmTextColor: white,
             buttonColor: rabbit,
             onConfirm: (){
-              orderController.isNewOrder.value = true;
+              orderController.isNewOrder.value = false;
               Get.offNamed('/instruction');
               Get.back();
             },
@@ -112,9 +114,11 @@ class NewOrderCardController extends GetxController {
       final data = FirebaseFirestore.instance.collection(OrderModel.collectionName).where(OrderModel.orderIdString, isEqualTo: orderController.orderId.value).snapshots();
       data.listen((result) {
         final orders = result.docs.map((e) => OrderModel.fromMap(e.data())).toList();
-        merchantId.value = orders[0].merchantId;
-        customerId.value = orders[0].customerId;
         newOrderId.value = orders[0].orderId;
+        merchantId.value = orders[0].merchantId;
+        merchantName.value = orders[0].merchantName;
+        customerId.value = orders[0].customerId;
+        customerName.value = orders[0].customerName;
         _loadMerchantData(merchantId.value);
         _loadCustomerData(customerId.value);
         _loadDeliverData(newOrderId.value);

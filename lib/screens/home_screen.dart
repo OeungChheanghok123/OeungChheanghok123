@@ -42,7 +42,9 @@ class HomeScreen extends StatelessWidget {
       ),
     );
   }
-  Widget _buildFunctionBody(BuildContext context, AsyncSnapshot<Widget> snapshot) {
+
+  Widget _buildFunctionBody(
+      BuildContext context, AsyncSnapshot<Widget> snapshot) {
     if (snapshot.hasError) {
       return TextWidget(text: "${snapshot.error}");
     } else if (snapshot.hasData) {
@@ -76,11 +78,11 @@ class HomeScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             _buildTextDateAndIcon(
-              text: controller.startDate.value,
+              text: controller.startDate.value.tr,
               iconData: Icons.arrow_right_alt,
             ),
             _buildTextDateAndIcon(
-              text: controller.endDate.value,
+              text: controller.endDate.value.tr,
               iconData: Icons.arrow_drop_down,
             ),
           ],
@@ -88,7 +90,9 @@ class HomeScreen extends StatelessWidget {
       ),
     );
   }
-  Widget _buildTextDateAndIcon({required String text, required IconData iconData}) {
+
+  Widget _buildTextDateAndIcon(
+      {required String text, required IconData iconData}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -99,6 +103,7 @@ class HomeScreen extends StatelessWidget {
       ],
     );
   }
+
   void showCalendar(BuildContext context) {
     showDateRangePicker(
       context: context,
@@ -151,6 +156,7 @@ class HomeScreen extends StatelessWidget {
       ),
     );
   }
+
   Widget get _buildStateWidget {
     return Obx(() {
       final status = controller.data.status;
@@ -169,10 +175,12 @@ class HomeScreen extends StatelessWidget {
       }
     });
   }
+
   Widget stateItemWidget(BuildContext context, int index) {
     final report = controller.data.data![index];
     return _buildStatusItem(report);
   }
+
   Widget _buildStatusItem(DriverReportModel model) {
     return Container(
       margin: const EdgeInsets.only(top: 5, bottom: 10),
@@ -185,14 +193,14 @@ class HomeScreen extends StatelessWidget {
               _buildCardState(
                 width: 100,
                 iconData: Icons.access_time,
-                title: 'Online',
+                title: 'Online'.tr,
                 subTitle: '${model.onlineHour}h:${model.onlineMinute}m',
               ),
               const Space(),
               _buildCardState(
                 width: 100,
                 iconData: Icons.directions_run,
-                title: 'Distance',
+                title: 'Distance'.tr,
                 subTitle: '${model.distance} km',
               ),
             ],
@@ -203,14 +211,14 @@ class HomeScreen extends StatelessWidget {
               _buildCardState(
                 width: 100,
                 iconData: Icons.local_activity,
-                title: 'Point',
+                title: 'Point'.tr,
                 subTitle: model.point,
               ),
               const Space(),
               _buildCardState(
                 width: 100,
                 iconData: Icons.motorcycle_rounded,
-                title: 'Trip',
+                title: 'Trip'.tr,
                 subTitle: model.trip,
               ),
             ],
@@ -221,14 +229,14 @@ class HomeScreen extends StatelessWidget {
               _buildCardState(
                 width: 110,
                 iconData: Icons.thumbs_up_down,
-                title: 'Customer',
+                title: 'Customer'.tr,
                 subTitle: '${model.customerRating} / 5',
               ),
               const Space(),
               _buildCardState(
                 width: 110,
                 iconData: Icons.thumbs_up_down,
-                title: 'Merchant',
+                title: 'Merchant'.tr,
                 subTitle: '${model.merchantRating} / 5',
               ),
             ],
@@ -237,7 +245,12 @@ class HomeScreen extends StatelessWidget {
       ),
     );
   }
-  Widget _buildCardState({required double width, required IconData iconData, required String title, required String subTitle}) {
+
+  Widget _buildCardState(
+      {required double width,
+        required IconData iconData,
+        required String title,
+        required String subTitle}) {
     return Card(
       color: white,
       elevation: 0,
@@ -259,7 +272,11 @@ class HomeScreen extends StatelessWidget {
               children: [
                 TextWidget(text: title, size: 10),
                 const Space(),
-                TextWidget(text: subTitle, fontWeight: FontWeight.bold, color: rabbit, size: 10),
+                TextWidget(
+                    text: subTitle,
+                    fontWeight: FontWeight.bold,
+                    color: rabbit,
+                    size: 10),
               ],
             ),
           ],
@@ -293,6 +310,7 @@ class HomeScreen extends StatelessWidget {
       ),
     );
   }
+
   Widget get _buildBreakDownWidget {
     return Obx(() {
       final status = controller.data.status;
@@ -311,12 +329,16 @@ class HomeScreen extends StatelessWidget {
       }
     });
   }
+
   Widget breakDownItemWidget(BuildContext context, int index) {
     final report = controller.data.data![index];
     return _buildBreakDownItem(report);
   }
+
   Widget _buildBreakDownItem(DriverReportModel model) {
-    final totalEarning = double.parse(model.deliveryFee) + double.parse(model.bonus) + double.parse(model.tip);
+    final totalEarning = double.parse(model.deliveryFee) +
+        double.parse(model.bonus) +
+        double.parse(model.tip);
     return Column(
       children: [
         _buildCardBreakDown(
@@ -340,7 +362,12 @@ class HomeScreen extends StatelessWidget {
       ],
     );
   }
-  Widget _buildCardBreakDown({required String text, required String value, bool isDotted = true, bool isNon = false}) {
+
+  Widget _buildCardBreakDown(
+      {required String text,
+        required String value,
+        bool isDotted = true,
+        bool isNon = false}) {
     return Column(
       children: [
         Row(
@@ -354,15 +381,18 @@ class HomeScreen extends StatelessWidget {
       ],
     );
   }
-  Widget dottedLineWidget(bool isDot){
-    return isDot == true ? Container(
+
+  Widget dottedLineWidget(bool isDot) {
+    return isDot == true
+        ? Container(
       margin: const EdgeInsets.symmetric(vertical: 8),
       child: DottedLine(
         dashLength: 1.5,
         lineThickness: 2,
         dashColor: silver.withOpacity(0.5),
       ),
-    ) : Container(
+    )
+        : Container(
       height: 1,
       color: silver.withOpacity(0.5),
       margin: const EdgeInsets.symmetric(vertical: 8),

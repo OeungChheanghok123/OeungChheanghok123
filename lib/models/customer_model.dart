@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class CustomerModel {
   static const String collectionName = "customers";
   static const String customerIdString = "customer_id";
@@ -7,6 +9,7 @@ class CustomerModel {
   static const String imageString = "image";
   static const String genderString = "gender";
   static const String locationString = "location";
+  static const String positionString = "position";
   static const String telString = "tel";
   static const String createAtString = "create_at";
   static const String createTimeString = "create_time";
@@ -15,7 +18,8 @@ class CustomerModel {
   String customerName;
   String image;
   String gender; 
-  String location; 
+  String location;
+  GeoPoint position;
   String tel; 
   String createAt;
   String createTime;
@@ -26,6 +30,7 @@ class CustomerModel {
     required this.image,
     required this.gender,
     required this.location,
+    required this.position,
     required this.tel,
     required this.createAt,
     required this.createTime,
@@ -40,6 +45,7 @@ class CustomerModel {
     result.addAll({imageString: image});
     result.addAll({genderString: gender});
     result.addAll({locationString: location});
+    result.addAll({positionString: position});
     result.addAll({telString: tel});
     result.addAll({createAtString: createAt});
     result.addAll({createTimeString: createTime});
@@ -54,6 +60,7 @@ class CustomerModel {
       image: map[imageString] ?? '',
       gender: map[genderString] ?? '',
       location: map[locationString] ?? '',
+      position: map[positionString] ?? '',
       tel: map[telString] ?? '',
       createAt: map[createAtString] ?? '',
       createTime: map[createTimeString] ?? '',

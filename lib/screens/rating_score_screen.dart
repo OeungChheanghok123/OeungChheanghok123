@@ -16,7 +16,8 @@ class RatingScoreScreen extends StatefulWidget {
 }
 
 class _RatingScoreScreenState extends State<RatingScoreScreen> {
-  RatingScoreController ratingScoreController = Get.put(RatingScoreController());
+  RatingScoreController ratingScoreController =
+  Get.put(RatingScoreController());
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +38,7 @@ class _RatingScoreScreenState extends State<RatingScoreScreen> {
           ),
           titleSpacing: 0,
           centerTitle: true,
-          title: TitleAppBarWidget(text: ratingScoreController.titleText),
+          title: TitleAppBarWidget(text: ratingScoreController.titleText.tr),
         ),
         body: SingleChildScrollView(
           padding: const EdgeInsets.fromLTRB(15, 0, 15, 15),
@@ -57,7 +58,7 @@ class _RatingScoreScreenState extends State<RatingScoreScreen> {
   Widget get _buildTotalScore {
     return Column(
       children: [
-        const TextWidget(text: 'Total Satisfaction Score'),
+        TextWidget(text: 'Total Satisfaction Score'.tr),
         Container(
           margin: const EdgeInsets.only(top: 5),
           child: Row(
@@ -74,8 +75,8 @@ class _RatingScoreScreenState extends State<RatingScoreScreen> {
             ],
           ),
         ),
-        const TextWidget(
-          text: '(Aim >= 90%)',
+        TextWidget(
+          text: '('+ 'Aim'.tr + ' >= 90%)',
           color: rabbit,
         )
       ],
@@ -88,12 +89,13 @@ class _RatingScoreScreenState extends State<RatingScoreScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const TextWidget(
-            text: 'Recent Feedback',
+          TextWidget(
+            text: 'Recent Feedback'.tr,
             isTitle: true,
           ),
           _buildDetailFeedbackAndRating(1, 'You did a great service.', 4),
-          _buildDetailFeedbackAndRating(2, 'You did a great service. Keep your work.', 5),
+          _buildDetailFeedbackAndRating(
+              2, 'You did a great service. Keep your work.', 5),
           _buildDetailFeedbackAndRating(3, 'Why too late? I don\'t like.', 3),
         ],
       ),
@@ -154,12 +156,13 @@ class _RatingScoreScreenState extends State<RatingScoreScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   TextWidget(
-                    text: '${ratingScoreController.totalCustomerPercentage.value}%',
+                    text:
+                    '${ratingScoreController.totalCustomerPercentage.value}%',
                     fontWeight: FontWeight.bold,
                     color: rabbit,
                   ),
                   Container(
-                     margin: const EdgeInsets.symmetric(horizontal: 5),
+                    margin: const EdgeInsets.symmetric(horizontal: 5),
                     child: const IconWidget(
                       icon: Icons.thumb_up,
                       size: 15,
@@ -210,6 +213,7 @@ class _RatingScoreScreenState extends State<RatingScoreScreen> {
       ),
     );
   }
+
   Widget get _buildMerchantRating {
     int rating = 5;
     return Container(
@@ -228,7 +232,8 @@ class _RatingScoreScreenState extends State<RatingScoreScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   TextWidget(
-                    text: '${ratingScoreController.totalMerchantPercentage.value}%',
+                    text:
+                    '${ratingScoreController.totalMerchantPercentage.value}%',
                     fontWeight: FontWeight.bold,
                     color: rabbit,
                   ),
@@ -284,6 +289,7 @@ class _RatingScoreScreenState extends State<RatingScoreScreen> {
       ),
     );
   }
+
   Widget get _buildHorizontalLine {
     return Container(
       width: double.infinity,
@@ -341,6 +347,7 @@ class _RatingScoreScreenState extends State<RatingScoreScreen> {
       ),
     );
   }
+
   Widget _buildStarRating(int itemCount) {
     return Container(
       margin: const EdgeInsets.only(bottom: 5),
@@ -362,7 +369,9 @@ class _RatingScoreScreenState extends State<RatingScoreScreen> {
                     return Container(
                       margin: const EdgeInsets.only(left: 15),
                       child: IconWidget(
-                        icon: itemCount > 1 ? Icons.star_outlined : Icons.star_border_outlined,
+                        icon: itemCount > 1
+                            ? Icons.star_outlined
+                            : Icons.star_border_outlined,
                         color: black,
                         size: 18,
                       ),
