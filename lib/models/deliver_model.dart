@@ -11,10 +11,15 @@ class DeliverModel {
   static const String distanceString = "distance";
   static const String merchantRatingString = "merchant_rating";
   static const String processString = "process";
+  static const String step1String = "step_1";
+  static const String step2String = "step_2";
+  static const String step3String = "step_3";
+  static const String step4String = "step_4";
   static const String timeMinuteString = "time_minute";
   static const String tipString = "tip";
 
   late String orderId, driverId, date, bonus, customerRating, deliveryFee, distance, merchantRating, process, timeMinute, tip;
+  late bool step1, step2, step3, step4;
   DocumentReference? reference;
 
   DeliverModel({
@@ -27,6 +32,10 @@ class DeliverModel {
     this.distance = "no distance",
     this.merchantRating = "no merchant rating",
     this.process = "no process",
+    this.step1 = false,
+    this.step2 = false,
+    this.step3 = false,
+    this.step4 = false,
     this.timeMinute = "no time",
     this.tip = "no tip",
     this.reference,
@@ -43,6 +52,10 @@ class DeliverModel {
     distance = (map ?? {})[distanceString] ?? "no distance";
     merchantRating = (map ?? {})[merchantRatingString] ?? "no merchant rating";
     process = (map ?? {})[processString] ?? "no process";
+    step1 = (map ?? {})[step1String] ?? "no step 1";
+    step2 = (map ?? {})[step2String] ?? "no step 2";
+    step3 = (map ?? {})[step3String] ?? "no step 3";
+    step4 = (map ?? {})[step4String] ?? "no step 4";
     timeMinute = (map ?? {})[timeMinuteString] ?? "no time";
     tip = (map ?? {})[tipString] ?? "no tip";
   }
@@ -59,6 +72,10 @@ class DeliverModel {
     distanceString : distance,
     merchantRatingString : merchantRating,
     processString : process,
+    step1String : step1,
+    step2String : step2,
+    step3String : step3,
+    step4String : step4,
     timeMinuteString : timeMinute,
     tipString : tip,
   };

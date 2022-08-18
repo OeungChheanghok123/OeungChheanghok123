@@ -27,7 +27,7 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
       controller.markers = marker;
     });
     getPolyline();
-    setState((){});
+    setState(() {});
     super.initState();
   }
 
@@ -78,8 +78,8 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
       googleApiKey,
       PointLatLng(pos.latitude, pos.longitude),
       PointLatLng(
-        controller.destinationCustomer.latitude,
-        controller.destinationCustomer.longitude,
+        controller.destinationMerchant.latitude,
+        controller.destinationMerchant.longitude,
       ),
       travelMode: TravelMode.driving,
     );

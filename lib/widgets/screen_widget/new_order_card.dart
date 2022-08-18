@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:loy_eat/controllers/google_map_controller.dart';
 import 'package:loy_eat/controllers/new_order_card_controller.dart';
-import 'package:loy_eat/controllers/order_controller.dart';
 import 'package:loy_eat/models/customer_model.dart';
 import 'package:loy_eat/models/deliver_model.dart';
 import 'package:loy_eat/models/merchant_model.dart';
@@ -18,8 +17,7 @@ class NewOrderCard extends StatelessWidget {
   NewOrderCard({Key? key}) : super(key: key);
 
   final controller = Get.put(NewOrderCardController());
-  final orderController = Get.put(OrderController());
-  final googleController = Get.put(MapController());
+  final mapController = Get.put(MapController());
   final List<BoxShadow> boxShadowList = [
     BoxShadow(
       color: Colors.grey.withOpacity(0.5),
@@ -50,20 +48,35 @@ class NewOrderCard extends StatelessWidget {
   }
 
   Widget get cardOrder {
-    return Container(
-      padding: const EdgeInsets.only(top: 15, left: 10, right: 10, bottom: 10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildProfileMerchantWidget,
-          _buildSpace,
-          _buildProfileCustomerWidget,
-          _buildHorizontailLine,
-          _buildRowDetailOrderWidget,
-          _buildButtonOrder,
-        ],
-      ),
-    );
+    return Obx(() {
+      final merchantStatus = controller.merchantData.status;
+      final customerStatus = controller.customerData.status;
+      final deliverStatus = controller.deliverData.status;
+      if (merchantStatus == RemoteDataStatus.processing &&
+          customerStatus == RemoteDataStatus.processing &&
+          deliverStatus == RemoteDataStatus.processing) {
+        return ScreenWidgets.loading;
+      } else if (merchantStatus == RemoteDataStatus.success &&
+          customerStatus == RemoteDataStatus.success &&
+          deliverStatus == RemoteDataStatus.success) {
+        return Container(
+          padding: const EdgeInsets.only(top: 15, left: 10, right: 10, bottom: 10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildProfileMerchantWidget,
+              _buildSpace,
+              _buildProfileCustomerWidget,
+              _buildHorizontailLine,
+              _buildRowDetailOrderWidget,
+              _buildButtonOrder,
+            ],
+          ),
+        );
+      } else  {
+        return ScreenWidgets.error;
+      }
+    });
   }
 
   Widget get timerWidget {
@@ -93,28 +106,19 @@ class NewOrderCard extends StatelessWidget {
 
   Widget get _buildProfileMerchantWidget {
     return Obx(() {
-      final status = controller.merchantData.status;
-      if (status == RemoteDataStatus.processing) {
-        return ScreenWidgets.loading;
-      } else if (status == RemoteDataStatus.error) {
-        return ScreenWidgets.error;
-      } else {
-        final report = controller.merchantData.data!;
-        return ListView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: report.length,
-          itemBuilder: _buildProfileMerchantItemWidget,
-        );
-      }
+      final report = controller.merchantData.data!;
+      return ListView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: report.length,
+        itemBuilder: _buildProfileMerchantItemWidget,
+      );
     });
   }
-
   Widget _buildProfileMerchantItemWidget(BuildContext context, int index) {
     final merchant = controller.merchantData.data![index];
     return profileMerchantItem(merchant);
   }
-
   Widget profileMerchantItem(MerchantModel merchantModel) {
     return _buildDetailProfile(
       imageString: merchantModel.image,
@@ -131,28 +135,19 @@ class NewOrderCard extends StatelessWidget {
 
   Widget get _buildProfileCustomerWidget {
     return Obx(() {
-      final status = controller.customerData.status;
-      if (status == RemoteDataStatus.processing) {
-        return ScreenWidgets.loading;
-      } else if (status == RemoteDataStatus.error) {
-        return ScreenWidgets.error;
-      } else {
-        final report = controller.customerData.data!;
-        return ListView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: report.length,
-          itemBuilder: _buildProfileCustomerItemWidget,
-        );
-      }
+      final report = controller.customerData.data!;
+      return ListView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: report.length,
+        itemBuilder: _buildProfileCustomerItemWidget,
+      );
     });
   }
-
   Widget _buildProfileCustomerItemWidget(BuildContext context, int index) {
     final customer = controller.customerData.data![index];
     return profileCustomerItem(customer);
   }
-
   Widget profileCustomerItem(CustomerModel customerModel) {
     return _buildDetailProfile(
       imageString: customerModel.image,
@@ -174,28 +169,19 @@ class NewOrderCard extends StatelessWidget {
 
   Widget get _buildRowDetailOrderWidget {
     return Obx(() {
-      final status = controller.deliverData.status;
-      if (status == RemoteDataStatus.processing) {
-        return ScreenWidgets.loading;
-      } else if (status == RemoteDataStatus.error) {
-        return ScreenWidgets.error;
-      } else {
-        final report = controller.deliverData.data!;
-        return ListView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: report.length,
-          itemBuilder: _buildRowDetailOrderItemWidget,
-        );
-      }
+      final report = controller.deliverData.data!;
+      return ListView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: report.length,
+        itemBuilder: _buildRowDetailOrderItemWidget,
+      );
     });
   }
-
   Widget _buildRowDetailOrderItemWidget(BuildContext context, int index) {
     final deliver = controller.deliverData.data![index];
     return rowDetailOrderItem(deliver);
   }
-
   Widget rowDetailOrderItem(DeliverModel deliverModel) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -232,12 +218,16 @@ class NewOrderCard extends StatelessWidget {
           _buildButton(
             buttonText: 'Reject'.tr,
             color: red,
-            onPressed: () => controller.showDialogReject(),
+            onPressed: () {
+              controller.showDialogReject();
+            },
           ),
           _buildButton(
             buttonText: 'Accept'.tr,
             color: succeed,
             onPressed: () {
+              controller.closeTimer();
+              mapController.getCurrentCameraPosition();
               Get.toNamed('/order_accept');
             },
           ),
@@ -246,12 +236,11 @@ class NewOrderCard extends StatelessWidget {
     );
   }
 
-  Widget _buildDetailProfile(
-      {required String imageString,
-      required String labelString,
-      required String status,
-      required String titleString,
-      required String detailString}) {
+  Widget _buildDetailProfile({required String imageString,
+    required String labelString,
+    required String status,
+    required String titleString,
+    required String detailString,}) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -296,8 +285,8 @@ class NewOrderCard extends StatelessWidget {
     );
   }
 
-  Widget _buildText(
-      {required String text, required Color color, required double size}) {
+  Widget _buildText({required String text,
+    required Color color, required double size,}) {
     return TextWidget(
       text: text,
       size: size,
@@ -306,21 +295,20 @@ class NewOrderCard extends StatelessWidget {
     );
   }
 
-  Widget _buildIconAndText(
-      {required IconData icon,
-      required String title,
-      Color color = black,
-      bool showLine = true}) {
+  Widget _buildIconAndText({required IconData icon,
+    required String title,
+    Color color = black,
+    bool showLine = true,}) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 10),
       child: Row(
         children: [
           showLine
               ? IconWidget(
-                  icon: icon,
-                  size: 20,
-                  color: color,
-                )
+            icon: icon,
+            size: 20,
+            color: color,
+          )
               : const SizedBox.shrink(),
           showLine ? const SizedBox(width: 5) : const SizedBox.shrink(),
           TextWidget(
@@ -330,21 +318,20 @@ class NewOrderCard extends StatelessWidget {
           ),
           showLine
               ? Container(
-                  width: 1,
-                  height: 15,
-                  color: black,
-                  margin: const EdgeInsets.symmetric(horizontal: 8),
-                )
+            width: 1,
+            height: 15,
+            color: black,
+            margin: const EdgeInsets.symmetric(horizontal: 8),
+          )
               : const SizedBox.shrink(),
         ],
       ),
     );
   }
 
-  Widget _buildButton(
-      {required String buttonText,
-      required Color color,
-      required VoidCallback onPressed}) {
+  Widget _buildButton({required String buttonText,
+    required Color color,
+    required VoidCallback onPressed,}) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 10),
       child: ButtonWidget(
