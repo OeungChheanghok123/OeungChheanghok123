@@ -22,7 +22,7 @@ class _InstructionScreenState extends State<InstructionScreen> {
     HomeScreen(),
     ReportScreen(),
     OrderScreen(),
-    const AccountScreen(),
+    AccountScreen(),
   ];
 
   final _pageBottonNavBarItems = <BottomNavigationBarItem>[

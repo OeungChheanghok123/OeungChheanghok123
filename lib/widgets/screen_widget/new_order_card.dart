@@ -20,7 +20,7 @@ class NewOrderCard extends StatelessWidget {
   final mapController = Get.put(MapController());
   final List<BoxShadow> boxShadowList = [
     BoxShadow(
-      color: Colors.grey.withOpacity(0.5),
+      color: silver.withOpacity(0.5),
       spreadRadius: 1,
       blurRadius: 10,
       offset: const Offset(0, 3),
@@ -30,14 +30,7 @@ class NewOrderCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 260,
-      width: MediaQuery.of(context).size.width,
-      margin: const EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        color: lightGray,
-        borderRadius: BorderRadius.circular(5),
-        boxShadow: boxShadowList,
-      ),
+      margin: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
       child: Stack(
         children: [
           cardOrder,
@@ -60,7 +53,14 @@ class NewOrderCard extends StatelessWidget {
           customerStatus == RemoteDataStatus.success &&
           deliverStatus == RemoteDataStatus.success) {
         return Container(
+          height: 260,
+          width: double.infinity,
           padding: const EdgeInsets.only(top: 15, left: 10, right: 10, bottom: 10),
+          decoration: BoxDecoration(
+            color: white,
+            borderRadius: BorderRadius.circular(5),
+            boxShadow: boxShadowList,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
