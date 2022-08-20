@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:loy_eat/controllers/home_controller.dart';
+import 'package:loy_eat/controllers/order_controller.dart';
 import 'package:loy_eat/models/driver_report_model.dart';
 import 'package:loy_eat/models/remote_data.dart';
 import 'package:loy_eat/widgets/layout_widget/color.dart';
@@ -11,13 +12,15 @@ import 'package:loy_eat/widgets/layout_widget/space.dart';
 import 'package:loy_eat/widgets/layout_widget/text_widget.dart';
 import 'package:loy_eat/widgets/screen_widget/home_screen_app_bar.dart';
 import 'package:loy_eat/widgets/screen_widget/home_screen_bar_chart.dart';
+import 'package:loy_eat/widgets/screen_widget/new_order_card.dart';
 import 'package:loy_eat/widgets/screen_widget/screen_widgets.dart';
 
 class HomeScreen extends StatelessWidget {
   HomeScreen({Key? key}) : super(key: key);
 
   final dateFormat = DateFormat('dd-MMM-yyyy');
-  final controller = Get.put(HomeController());
+  final homeController = Get.put(HomeController());
+  final orderController = Get.put(OrderController());
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +30,9 @@ class HomeScreen extends StatelessWidget {
         backgroundColor: lightGray,
         appBar: const HomeScreenAppBar(),
         body: _buildBody,
+        bottomSheet: Obx(() =>
+        orderController.isNewOrder.value ? NewOrderCard() : const SizedBox(),
+        ),
       ),
     );
   }
@@ -37,7 +43,7 @@ class HomeScreen extends StatelessWidget {
       scrollDirection: Axis.vertical,
       padding: const EdgeInsets.all(0),
       child: FutureBuilder(
-        future: controller.wait3SecAndLoadData(),
+        future: homeController.wait3SecAndLoadData(),
         builder: _buildFunctionBody,
       ),
     );
@@ -78,11 +84,11 @@ class HomeScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             _buildTextDateAndIcon(
-              text: controller.startDate.value.tr,
+              text: homeController.startDate.value.tr,
               iconData: Icons.arrow_right_alt,
             ),
             _buildTextDateAndIcon(
-              text: controller.endDate.value.tr,
+              text: homeController.endDate.value.tr,
               iconData: Icons.arrow_drop_down,
             ),
           ],
@@ -114,8 +120,8 @@ class HomeScreen extends StatelessWidget {
         DateTimeRange _fromRange =
         DateTimeRange(start: DateTime.now(), end: DateTime.now());
         _fromRange = value;
-        controller.startDate.value = dateFormat.format(_fromRange.start);
-        controller.endDate.value = dateFormat.format(_fromRange.end);
+        homeController.startDate.value = dateFormat.format(_fromRange.start);
+        homeController.endDate.value = dateFormat.format(_fromRange.end);
       }
     });
   }
@@ -137,7 +143,7 @@ class HomeScreen extends StatelessWidget {
         child: Container(
           alignment: Alignment.center,
           padding: const EdgeInsets.fromLTRB(10, 5, 0, 15),
-          child: HomeScreenBarChart(data: controller.chartData),
+          child: HomeScreenBarChart(data: homeController.chartData),
         ),
       ),
     );
@@ -159,13 +165,13 @@ class HomeScreen extends StatelessWidget {
 
   Widget get _buildStateWidget {
     return Obx(() {
-      final status = controller.data.status;
+      final status = homeController.data.status;
       if (status == RemoteDataStatus.processing) {
         return ScreenWidgets.loading;
       } else if (status == RemoteDataStatus.error) {
         return ScreenWidgets.error;
       } else {
-        final report = controller.data.data!;
+        final report = homeController.data.data!;
         return ListView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
@@ -177,7 +183,7 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget stateItemWidget(BuildContext context, int index) {
-    final report = controller.data.data![index];
+    final report = homeController.data.data![index];
     return _buildStatusItem(report);
   }
 
@@ -313,13 +319,13 @@ class HomeScreen extends StatelessWidget {
 
   Widget get _buildBreakDownWidget {
     return Obx(() {
-      final status = controller.data.status;
+      final status = homeController.data.status;
       if (status == RemoteDataStatus.processing) {
         return ScreenWidgets.loading;
       } else if (status == RemoteDataStatus.error) {
         return ScreenWidgets.error;
       } else {
-        final report = controller.data.data!;
+        final report = homeController.data.data!;
         return ListView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
@@ -331,7 +337,7 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget breakDownItemWidget(BuildContext context, int index) {
-    final report = controller.data.data![index];
+    final report = homeController.data.data![index];
     return _buildBreakDownItem(report);
   }
 

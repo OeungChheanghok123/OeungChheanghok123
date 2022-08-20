@@ -79,6 +79,7 @@ class NewOrderCardController extends GetxController {
   }
   void closeTimer() {
     _timer.cancel();
+    startCounter.value = 60;
   }
   void showDialogReject() {
     Get.defaultDialog(
