@@ -15,10 +15,10 @@ class DeliverModel {
   static const String step2String = "step_2";
   static const String step3String = "step_3";
   static const String step4String = "step_4";
-  static const String timeMinuteString = "time_minute";
+  static const String periodString = "period";
   static const String tipString = "tip";
 
-  late String orderId, driverId, date, bonus, customerRating, deliveryFee, distance, merchantRating, process, timeMinute, tip;
+  late String orderId, driverId, date, bonus, customerRating, deliveryFee, distance, merchantRating, process, period, tip;
   late bool step1, step2, step3, step4;
   DocumentReference? reference;
 
@@ -36,7 +36,7 @@ class DeliverModel {
     this.step2 = false,
     this.step3 = false,
     this.step4 = false,
-    this.timeMinute = "no time",
+    this.period = "no time",
     this.tip = "no tip",
     this.reference,
   });
@@ -56,7 +56,7 @@ class DeliverModel {
     step2 = (map ?? {})[step2String] ?? "no step 2";
     step3 = (map ?? {})[step3String] ?? "no step 3";
     step4 = (map ?? {})[step4String] ?? "no step 4";
-    timeMinute = (map ?? {})[timeMinuteString] ?? "no time";
+    period = (map ?? {})[periodString] ?? "no time";
     tip = (map ?? {})[tipString] ?? "no tip";
   }
 
@@ -76,7 +76,7 @@ class DeliverModel {
     step2String : step2,
     step3String : step3,
     step4String : step4,
-    timeMinuteString : timeMinute,
+    periodString : period,
     tipString : tip,
   };
 }

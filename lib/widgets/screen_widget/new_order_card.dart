@@ -188,7 +188,7 @@ class NewOrderCard extends StatelessWidget {
       children: [
         _buildIconAndText(
           icon: Icons.access_time,
-          title: '${deliverModel.timeMinute} min',
+          title: '${deliverModel.period} min',
         ),
         _buildIconAndText(
           icon: Icons.directions_bike,

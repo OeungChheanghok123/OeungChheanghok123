@@ -549,7 +549,7 @@ class ReportScreen extends StatelessWidget {
                             _buildIconAndText(
                               index: 2,
                               iconData: Icons.watch_later,
-                              text: deliverModel.timeMinute,
+                              text: deliverModel.period,
                             ),
                           ],
                         ),
