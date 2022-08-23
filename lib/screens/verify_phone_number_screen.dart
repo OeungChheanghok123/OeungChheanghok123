@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:loy_eat/controllers/verify_phone_number_controller.dart';
@@ -9,42 +8,37 @@ import 'package:loy_eat/widgets/layout_widget/space.dart';
 import 'package:loy_eat/widgets/layout_widget/text_field_widget.dart';
 import 'package:loy_eat/widgets/layout_widget/text_widget.dart';
 
-class VerifyPhoneNumberScreen extends StatefulWidget {
-  const VerifyPhoneNumberScreen({Key? key}) : super(key: key);
+class VerifyPhoneNumberScreen extends StatelessWidget {
+  VerifyPhoneNumberScreen({Key? key}) : super(key: key);
 
-  @override
-  State<VerifyPhoneNumberScreen> createState() => _VerifyPhoneNumberScreenState();
-}
-
-class _VerifyPhoneNumberScreenState extends State<VerifyPhoneNumberScreen> {
-  VerifyPhoneNumberController verifyPhoneNumberController = Get.put(VerifyPhoneNumberController());
+  final controller = Get.put(VerifyPhoneNumberController());
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-
     return Scaffold(
       extendBody: true,
       backgroundColor: white,
       appBar: null,
-      body: Container(
-        width: size.width,
-        height: size.height,
-        margin: const EdgeInsets.fromLTRB(15, 5, 15, 15),
-        child: Column(
-          children: [
-            _buildLayout(1, const SizedBox()),
-            _buildLayout(5, _buildBody),
-          ],
-        ),
-      ),
+      body: body(context),
     );
   }
 
-  Widget get _buildBody {
+  Widget body(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    return  Container(
+      width: size.width,
+      height: size.height,
+      margin: const EdgeInsets.fromLTRB(15, 5, 15, 15),
+      child: Column(
+        children: [
+          _buildLayout(1, const SizedBox()),
+          _buildLayout(5, _buildBodyWidget),
+        ],
+      ),
+    );
+  }
+  Widget get _buildBodyWidget {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         _buildImageLock,
         const TextWidget(
@@ -106,7 +100,7 @@ class _VerifyPhoneNumberScreenState extends State<VerifyPhoneNumberScreen> {
       width: 200,
       margin: const EdgeInsets.symmetric(vertical: 10),
       child: TextFieldWidget(
-        controller: verifyPhoneNumberController.phoneController,
+        controller: controller.phoneController,
         height: 50,
         inputType: TextInputType.phone,
         hintText: 'Enter phone number',
@@ -118,9 +112,8 @@ class _VerifyPhoneNumberScreenState extends State<VerifyPhoneNumberScreen> {
   Widget get _buildButtonNext {
     return ButtonWidget(
       onPressed: () {
-        verifyNumber();
-        print('phone number is ${verifyPhoneNumberController.phoneController.text}'); // ignore: avoid_print
-        Get.toNamed('/enter_otp_code');
+        controller.loadAllPhoneNumber();
+        debugPrint('phone number is ${controller.phoneController.text}');
       },
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -149,32 +142,6 @@ class _VerifyPhoneNumberScreenState extends State<VerifyPhoneNumberScreen> {
         color: white,
         child: widget,
       ),
-    );
-  }
-
-  void verifyNumber() {
-    List phone = verifyPhoneNumberController.phoneController.text.split("");
-    if(phone[0] == "0"){
-      phone.removeAt(0);
-    }
-    verifyPhoneNumberController.phoneController.text = phone.join();
-    verifyPhoneNumberController.phoneNumber = phone.join();
-
-    verifyPhoneNumberController.auth.verifyPhoneNumber(
-      phoneNumber: "+855${verifyPhoneNumberController.phoneController.text}",
-      timeout: const Duration(seconds: 20),
-      verificationCompleted: (PhoneAuthCredential credential) async{
-        await verifyPhoneNumberController.auth.signInWithCredential(credential).then((value) => {
-          print('You are logged in successfully') // ignore: avoid_print
-        });
-      },
-      verificationFailed: (FirebaseAuthException exception){
-        print(exception.message); // ignore: avoid_print
-      },
-      codeSent: (String verificationID, int? resendToken){
-        verifyPhoneNumberController.verificationIDReceived = verificationID;
-      },
-      codeAutoRetrievalTimeout: (String verificationID){},
     );
   }
 }

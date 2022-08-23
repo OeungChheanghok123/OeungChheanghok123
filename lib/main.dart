@@ -49,6 +49,7 @@ class _MyAppState extends State<MyApp> {
       initialRoute: "/",
       defaultTransition: Transition.noTransition,
       getPages: getRoutPage,
+      //home: const StartUpScreen(),
       home: const InstructionScreen(),
     );
   }

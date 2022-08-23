@@ -16,7 +16,8 @@ class InviteFriendScreen extends StatefulWidget {
 }
 
 class _InviteFriendScreenState extends State<InviteFriendScreen> {
-  InviteFriendController inviteFriendController = Get.put(InviteFriendController());
+  InviteFriendController inviteFriendController =
+  Get.put(InviteFriendController());
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +39,7 @@ class _InviteFriendScreenState extends State<InviteFriendScreen> {
           ),
           titleSpacing: 0,
           centerTitle: true,
-          title: TitleAppBarWidget(text: inviteFriendController.titleText),
+          title: TitleAppBarWidget(text: inviteFriendController.titleText.tr),
         ),
         body: Container(
           margin: const EdgeInsets.fromLTRB(15, 5, 15, 15),
@@ -84,7 +85,7 @@ class _InviteFriendScreenState extends State<InviteFriendScreen> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const TextWidget(text: 'Total Points'),
+        TextWidget(text: 'Total Points'.tr),
         Container(
           margin: const EdgeInsets.symmetric(vertical: 10),
           child: Row(
@@ -116,8 +117,8 @@ class _InviteFriendScreenState extends State<InviteFriendScreen> {
   Widget get _buildGuildLine {
     return Column(
       children: [
-        const TextWidget(
-          text: 'Invite a friend, Get 5 points with terms:',
+        TextWidget(
+          text: 'Invite a friend, Get 5 points with terms:'.tr,
           fontWeight: FontWeight.bold,
         ),
         Container(
@@ -129,8 +130,8 @@ class _InviteFriendScreenState extends State<InviteFriendScreen> {
                 margin: const EdgeInsets.only(top: 10),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
-                    Expanded(
+                  children: [
+                    const Expanded(
                       flex: 0,
                       child: TextWidget(
                         text: '1. ',
@@ -138,7 +139,7 @@ class _InviteFriendScreenState extends State<InviteFriendScreen> {
                     ),
                     Expanded(
                       child: TextWidget(
-                        text: 'Download a Driver App.',
+                        text: 'Download a Driver App.'.tr,
                       ),
                     ),
                   ],
@@ -158,7 +159,9 @@ class _InviteFriendScreenState extends State<InviteFriendScreen> {
                     Expanded(
                       child: RichText(
                         text: TextSpan(
-                          text: 'Apply for a driver by using your referral code: ',
+                          text:
+                          'Apply for a driver by using your referral code: '
+                              .tr,
                           style: const TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.normal,
@@ -185,8 +188,8 @@ class _InviteFriendScreenState extends State<InviteFriendScreen> {
                 margin: const EdgeInsets.only(top: 15),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
-                    Expanded(
+                  children: [
+                    const Expanded(
                       flex: 0,
                       child: TextWidget(
                         text: '3. ',
@@ -194,7 +197,9 @@ class _InviteFriendScreenState extends State<InviteFriendScreen> {
                     ),
                     Expanded(
                       child: TextWidget(
-                        text: 'The driver is approved and staring the driving job.',
+                        text:
+                        'The driver is approved and starting the driving job.'
+                            .tr,
                       ),
                     ),
                   ],

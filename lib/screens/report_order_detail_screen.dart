@@ -10,7 +10,6 @@ import 'package:loy_eat/widgets/layout_widget/text_field_widget.dart';
 import 'package:loy_eat/widgets/layout_widget/text_widget.dart';
 import 'package:loy_eat/widgets/layout_widget/title_appbar_widget.dart';
 
-
 class ReportOrderDetailScreen extends StatelessWidget {
   ReportOrderDetailScreen({Key? key}) : super(key: key);
 
@@ -19,44 +18,50 @@ class ReportOrderDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     controller.getOrderNo.value = Get.arguments['order'];
-
     return SafeArea(
       child: Scaffold(
         extendBody: true,
         backgroundColor: white,
-        appBar:  AppBar(
-          backgroundColor: white,
-          elevation: 0,
-          titleSpacing: 0,
-          centerTitle: true,
-          leading: InkWell(
-            onTap: () => Get.back(),
-            child: const IconWidget(
-              icon: Icons.arrow_back_ios,
-              color: black,
-              size: 24,
-            ),
-          ),
-          title: TitleAppBarWidget(
-            text: 'Order ID: ${controller.getOrderNo.value}',
-          ),
+        appBar: appBar,
+        body: body,
+      ),
+    );
+  }
+
+  AppBar get appBar {
+    return AppBar(
+      backgroundColor: white,
+      elevation: 0,
+      titleSpacing: 0,
+      centerTitle: true,
+      leading: InkWell(
+        onTap: () => Get.back(),
+        child: const IconWidget(
+          icon: Icons.arrow_back_ios,
+          color: black,
+          size: 24,
         ),
-        body: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          physics: const ClampingScrollPhysics(),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _buildDetailCustomer,
-              _buildItemCountAndTotal,
-              _buildTextFieldRemark,
-              _buildItemsOrderDetail,
-              _buildStatusDetail,
-              _buildYourEarning,
-              _buildButtonStatus,
-            ],
-          ),
-        ),
+      ),
+      title: TitleAppBarWidget(
+        text: 'Order ID: ${controller.getOrderNo.value}',
+      ),
+    );
+  }
+  Widget get body {
+    return SingleChildScrollView(
+      scrollDirection: Axis.vertical,
+      physics: const ClampingScrollPhysics(),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _buildDetailCustomer,
+          _buildItemCountAndTotal,
+          _buildTextFieldRemark,
+          _buildItemsOrderDetail,
+          _buildStatusDetail,
+          _buildYourEarning,
+          _buildButtonStatus,
+        ],
       ),
     );
   }
@@ -74,76 +79,86 @@ class ReportOrderDetailScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Expanded(
-                  flex: 0,
-                  child: Container(
-                    width: 40,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      color: rabbit,
-                      borderRadius: BorderRadius.circular(50),
-                      image: DecorationImage(
-                        fit: BoxFit.cover,
-                        image: AssetImage(controller.customer.image),
-                      ),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  flex: 3,
-                  child: Container(
-                    margin: const EdgeInsets.only(left: 10, right: 20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        TextWidget(text: controller.customer.name),
-                        const Space(),
-                        TextWidget(text: controller.customer.address),
-                      ],
-                    ),
-                  ),
-                ),
+                profileCustomer('controller.customer.image'),
+                detailCustomer('controller.customer.name', 'controller.customer.address'),
               ],
             ),
           ),
           Expanded(
-              flex: 0,
-              child: Stack(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: rabbit,
-                      borderRadius: BorderRadius.circular(100),
-                    ),
-                    child: const IconWidget(
-                      icon: Icons.call,
-                      color: white,
-                      size: 25,
-                    ),
-                  ),
-                  Positioned(
-                    right: 0,
-                    top: 0,
-                    child: Container(
-                      width: 20,
-                      height: 20,
-                      alignment: Alignment.center,
-                      decoration: const BoxDecoration(
-                          color: none,
-                          image: DecorationImage(
-                            image: AssetImage('assets/image/smart_icon.png'),
-                          )
-                      ),
-                    ),
-                  ),
-                ],
-              )
+            flex: 0,
+            child: iconCall,
           ),
         ],
       ),
     );
   }
+  Widget profileCustomer(String image) {
+    return Expanded(
+      flex: 0,
+      child: Container(
+        width: 40,
+        height: 40,
+        decoration: BoxDecoration(
+          color: rabbit,
+          borderRadius: BorderRadius.circular(50),
+          image: DecorationImage(
+            fit: BoxFit.cover,
+            image: AssetImage(image),
+          ),
+        ),
+      ),
+    );
+  }
+  Widget detailCustomer(String name, String address) {
+    return Expanded(
+      flex: 3,
+      child: Container(
+        margin: const EdgeInsets.only(left: 10, right: 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            TextWidget(text: name),
+            const Space(),
+            TextWidget(text: address),
+          ],
+        ),
+      ),
+    );
+  }
+  Widget get iconCall {
+    return Stack(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: rabbit,
+            borderRadius: BorderRadius.circular(100),
+          ),
+          child: const IconWidget(
+            icon: Icons.call,
+            color: white,
+            size: 25,
+          ),
+        ),
+        Positioned(
+          right: 0,
+          top: 0,
+          child: Container(
+            width: 20,
+            height: 20,
+            alignment: Alignment.center,
+            decoration: const BoxDecoration(
+                color: none,
+                image: DecorationImage(
+                  image: AssetImage('assets/image/smart_icon.png'),
+                )
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget get _buildItemCountAndTotal{
     return Container(
       margin: const EdgeInsets.only(top: 10, right: 15,  left: 15),

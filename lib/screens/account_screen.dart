@@ -45,7 +45,7 @@ class AccountScreen extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SizedBox(height: 5),
-        const TextWidget(text: 'Profile', fontWeight: FontWeight.bold, size: 14),
+        TextWidget(text: 'Profile'.tr, fontWeight: FontWeight.bold, size: 14),
         Card(
           margin: const EdgeInsets.only(top: 5),
           elevation: 1,
@@ -145,7 +145,7 @@ class AccountScreen extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SizedBox(height: 15),
-        const TextWidget(text: 'Setting', fontWeight: FontWeight.bold, size: 14),
+        TextWidget(text: 'Setting'.tr, fontWeight: FontWeight.bold, size: 14),
         Card(
           elevation: 1,
           borderOnForeground: false,

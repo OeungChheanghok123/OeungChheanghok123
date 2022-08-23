@@ -76,7 +76,7 @@ class _RatingScoreScreenState extends State<RatingScoreScreen> {
           ),
         ),
         TextWidget(
-          text: '('+ 'Aim'.tr + ' >= 90%)',
+          text: '(' + 'Aim'.tr + ' >= 90%)',
           color: rabbit,
         )
       ],
@@ -109,20 +109,17 @@ class _RatingScoreScreenState extends State<RatingScoreScreen> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const TextWidget(
-              isTitle: true,
-              text: 'Satisfaction Detail',
-            ),
+            TextWidget(isTitle: true, text: 'Satisfaction Detail'.tr),
             Container(
               margin: const EdgeInsets.only(top: 5),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
+                children: [
                   TextWidget(
-                    text: 'All time ratings',
+                    text: 'All time ratings'.tr,
                     size: 10,
                   ),
-                  IconWidget(
+                  const IconWidget(
                     icon: Icons.keyboard_arrow_down,
                     color: black,
                     size: 18,
@@ -148,8 +145,8 @@ class _RatingScoreScreenState extends State<RatingScoreScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const TextWidget(
-                text: 'Customer',
+              TextWidget(
+                text: 'Customer'.tr,
                 color: rabbit,
               ),
               Row(
@@ -224,8 +221,8 @@ class _RatingScoreScreenState extends State<RatingScoreScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const TextWidget(
-                text: 'Merchant',
+              TextWidget(
+                text: 'Merchant'.tr,
                 color: rabbit,
               ),
               Row(

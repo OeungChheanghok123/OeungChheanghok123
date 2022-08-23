@@ -25,7 +25,7 @@ List<GetPage<dynamic>>? getRoutPage = [
   GetPage(name: '/start_up', page: () => const StartUpScreen()),
   GetPage(name: '/log_in', page: () => const LoginScreen()),
   GetPage(name: '/become_driver', page: () => const BecomeDriverScreen()),
-  GetPage(name: '/verify_phone_number', page: () => const VerifyPhoneNumberScreen()),
+  GetPage(name: '/verify_phone_number', page: () => VerifyPhoneNumberScreen()),
   GetPage(name: '/enter_otp_code', page: () => const EnterOTPCodeScreen()),
   GetPage(name: '/instruction', page: () => const InstructionScreen()),
   GetPage(name: '/home', page: () => HomeScreen()),
@@ -44,4 +44,5 @@ List<GetPage<dynamic>>? getRoutPage = [
   GetPage(name: '/order_empty', page: () => OrderEmptyScreen()),
   GetPage(name: '/order_accept', page: () => OrderAccept()),
   GetPage(name: '/order', page: () => OrderScreen()),
+  GetPage(name: '/become_driver_fail', page: () => const BecomeDriverFailScreen()),
 ];

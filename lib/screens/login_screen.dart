@@ -10,45 +10,56 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-
     return Scaffold(
       extendBody: true,
       backgroundColor: white,
       appBar: null,
-      body: Stack(
-        alignment: Alignment.center,
-        children: [
-          Container(
-            width: size.width,
-            height: size.height,
-            color: white,
-            child: SvgPictureWidget(
-              key: key,
-              imageString: 'assets/image/loy_eat_logo.svg',
-              label: 'LoyEat Logo',
-              boxFit: BoxFit.contain,
-            ),
-          ),
-          Positioned(
-            bottom: 50,
-            child: SizedBox(
-              width: size.width,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  _buildButton("Log In".tr, rabbit, '/verify_phone_number'),
-                  _buildButton("Become a Driver?".tr, carrot, '/become_driver'),
-                ],
-              ),
-            ),
-          ),
-        ],
-      )
+      body: body(context),
     );
   }
 
+  Widget body (BuildContext context) {
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        _buildLogoLoyEatWidget(context),
+        _buildRowButtonWidget(context),
+      ],
+    );
+  }
+
+  Widget _buildLogoLoyEatWidget (BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
+    return Container(
+      width: size.width,
+      height: size.height,
+      color: white,
+      child: const SvgPictureWidget(
+        imageString: 'assets/image/loy_eat_logo.svg',
+        label: 'LoyEat Logo',
+        boxFit: BoxFit.contain,
+      ),
+    );
+  }
+  Widget _buildRowButtonWidget(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
+    return Positioned(
+      bottom: 50,
+      child: SizedBox(
+        width: size.width,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            _buildButton("Log In".tr, rabbit, '/verify_phone_number'),
+            _buildButton("Become a Driver?".tr, carrot, '/become_driver'),
+          ],
+        ),
+      ),
+    );
+  }
   Widget _buildButton(String text, Color color, String page){
     return ButtonWidget(
       color: color,

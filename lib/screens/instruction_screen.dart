@@ -1,5 +1,6 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:loy_eat/models/notification_model.dart';
 import 'package:loy_eat/screens/account_screen.dart';
 import 'package:loy_eat/screens/home_screen.dart';
@@ -26,10 +27,10 @@ class _InstructionScreenState extends State<InstructionScreen> {
   ];
 
   final _pageBottonNavBarItems = <BottomNavigationBarItem>[
-    const BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-    const BottomNavigationBarItem(icon: Icon(Icons.account_balance_wallet), label: 'Report'),
-    const BottomNavigationBarItem(icon: Icon(Icons.access_time), label: 'Order'),
-    const BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Account'),
+    BottomNavigationBarItem(icon: const Icon(Icons.home), label: 'Home'.tr),
+    BottomNavigationBarItem(icon: const Icon(Icons.account_balance_wallet), label: 'Report'.tr),
+    BottomNavigationBarItem(icon: const Icon(Icons.access_time), label: 'Order'.tr),
+    BottomNavigationBarItem(icon: const Icon(Icons.person), label: 'Account'.tr),
   ];
 
   @override
