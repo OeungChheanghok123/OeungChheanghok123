@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:loy_eat/controllers/languages_controller.dart';
-import 'package:loy_eat/controllers/verify_phone_number_controller.dart';
+import 'package:loy_eat/controllers/start_up_controller.dart';
 import 'package:loy_eat/models/driver_model.dart';
 import 'package:loy_eat/models/remote_data.dart';
 import 'package:loy_eat/widgets/layout_widget/color.dart';
@@ -21,15 +21,18 @@ class AccountController extends GetxController {
   var radioColorEnglish = rabbit.obs;
 
   final languagesController = Get.put(LanguagesController());
-  final verifyPhoneNumberController = Get.put(VerifyPhoneNumberController());
+  final startUpController = Get.put(StartUpController());
 
   final _driverData = RemoteData<List<DriverModel>>(status: RemoteDataStatus.processing, data: null).obs;
   RemoteData<List<DriverModel>> get driverData => _driverData.value;
 
   @override
   void onInit() {
-    _loadDriverData();
+    _changeLanguage.value = startUpController.language;
     defaultLanguage.value = _changeLanguage.value;
+
+    _loadDriverData();
+
     super.onInit();
   }
   void onConfirmSelectingLanguage(int index) {
@@ -57,18 +60,13 @@ class AccountController extends GetxController {
   }
   void _loadDriverData() {
     try {
-      final data = FirebaseFirestore.instance.collection(
-          DriverModel.collectionName).where(
-          DriverModel.driverIdString, isEqualTo: '1').snapshots();
+      final data = FirebaseFirestore.instance.collection(DriverModel.collectionName).where(DriverModel.isLogString, isEqualTo: true).snapshots();
       data.listen((result) {
-        final driver = result.docs.map((e) => DriverModel.fromMap(e.data()))
-            .toList();
-        _driverData.value = RemoteData<List<DriverModel>>(
-            status: RemoteDataStatus.success, data: driver);
+        final driver = result.docs.map((e) => DriverModel.fromMap(e.data())).toList();
+        _driverData.value = RemoteData<List<DriverModel>>(status: RemoteDataStatus.success, data: driver);
       });
     } catch (ex) {
-      _driverData.value = RemoteData<List<DriverModel>>(
-          status: RemoteDataStatus.error, data: null);
+      _driverData.value = RemoteData<List<DriverModel>>(status: RemoteDataStatus.error, data: null);
     }
   }
 }

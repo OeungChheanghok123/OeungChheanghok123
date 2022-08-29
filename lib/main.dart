@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:loy_eat/controllers/page_controller.dart';
 import 'package:loy_eat/fire_base_notification.dart';
 import 'package:loy_eat/models/languages.dart';
-import 'package:loy_eat/screens/instruction_screen.dart';
+import 'package:loy_eat/screens/start_up_screen.dart';
 
 Future<void> backgroundHandler(RemoteMessage message) async {
   print(message.data.toString()); // ignore: avoid_print
@@ -45,12 +45,11 @@ class _MyAppState extends State<MyApp> {
       translations: Languages(),
       locale: const Locale('en', 'US'),
       fallbackLocale: const Locale('en', 'US'),
-      title: "Loy Eat driver app for BuyLoy.com",
+      title: "Loy Eat driver app",
       initialRoute: "/",
       defaultTransition: Transition.noTransition,
       getPages: getRoutPage,
-      //home: const StartUpScreen(),
-      home: const InstructionScreen(),
+      home: const StartUpScreen(),
     );
   }
 }

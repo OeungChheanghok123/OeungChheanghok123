@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:loy_eat/controllers/account_controller.dart';
 import 'package:loy_eat/controllers/languages_controller.dart';
 import 'package:loy_eat/controllers/start_up_controller.dart';
 import 'package:loy_eat/widgets/layout_widget/color.dart';
@@ -14,9 +13,8 @@ class StartUpScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    LanguagesController languagesController = Get.put(LanguagesController());
-    AccountController accountController = Get.put(AccountController());
-    StartUpController startUpController = Get.put(StartUpController());
+    final languagesController = Get.put(LanguagesController());
+    final startUpController = Get.put(StartUpController());
     
     return Scaffold(
       extendBody: true,
@@ -43,8 +41,7 @@ class StartUpScreen extends StatelessWidget {
               builder: (c, s) => s.connectionState == ConnectionState.done ? Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  TextWidget(
-                    key: key,
+                  const TextWidget(
                     isTitle: true,
                     text: 'ជ្រើសរើសភាសា',
                     color: white,
@@ -58,7 +55,8 @@ class StartUpScreen extends StatelessWidget {
                         splashColor: none,
                         onTap: () {
                           languagesController.changeLanguage('kh', 'KH');
-                          accountController.defaultLanguage(startUpController.khmerFlag);
+                          //accountController.defaultLanguage(startUpController.khmerFlag);
+                          startUpController.language = startUpController.khmerFlag;
                           Get.offAllNamed('/log_in');
                         },
                         child: _buildLanguage(startUpController.khmerFlag, 'ខ្មែរ', 'Cambodia Flag Logo',),
@@ -68,7 +66,8 @@ class StartUpScreen extends StatelessWidget {
                         splashColor: none,
                         onTap: () {
                           languagesController.changeLanguage('en', 'US');
-                          accountController.defaultLanguage(startUpController.englishFlag);
+                          //accountController.defaultLanguage(startUpController.englishFlag);
+                          startUpController.language = startUpController.englishFlag;
                           Get.offAllNamed('/log_in');
                         },
                         child: _buildLanguage(startUpController.englishFlag, 'English', 'United kingdom Flag Logo',),

@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:loy_eat/controllers/account_controller.dart';
-import 'package:loy_eat/controllers/verify_phone_number_controller.dart';
 import 'package:loy_eat/models/driver_model.dart';
 import 'package:loy_eat/models/remote_data.dart';
 import 'package:loy_eat/widgets/layout_widget/button_widget.dart';
@@ -17,10 +16,10 @@ class AccountScreen extends StatelessWidget {
   AccountScreen({Key? key}) : super(key: key);
 
   final accountController = Get.put(AccountController());
-  final verifyPhoneNumberController = Get.put(VerifyPhoneNumberController());
 
   @override
   Widget build(BuildContext context) {
+    accountController.onInit();
     return SafeArea(
       child: Scaffold(
         extendBody: true,

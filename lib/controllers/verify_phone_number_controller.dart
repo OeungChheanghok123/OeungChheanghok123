@@ -2,21 +2,21 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:loy_eat/controllers/home_controller.dart';
 import 'package:loy_eat/models/driver_model.dart';
-import 'package:loy_eat/models/remote_data.dart';
 
 class VerifyPhoneNumberController extends GetxController {
+  final driverCollection = FirebaseFirestore.instance.collection(DriverModel.collectionName);
+  var driverDoc = '';
   var allPhoneNumberList = [];
   var phoneNumber = '';
   var verificationIDReceived = '';
 
   final auth = FirebaseAuth.instance;
   final phoneController = TextEditingController();
+  final homeController = Get.put(HomeController());
 
-  final _driverData = RemoteData<List<DriverModel>>(status: RemoteDataStatus.processing, data: null).obs;
-  RemoteData<List<DriverModel>> get data => _driverData.value;
-
-  void verifyNumber() {
+  void editPhoneNumber() {
     List phone = phoneController.text.split("");
 
     if(phone[0] == "0"){
@@ -26,6 +26,16 @@ class VerifyPhoneNumberController extends GetxController {
     phoneController.text = phone.join();
     phoneNumber = phone.join();
 
+    driverCollection.where(DriverModel.telString, isEqualTo: phoneNumber).get().then((snapshot) => {
+      // ignore: avoid_function_literals_in_foreach_calls
+      snapshot.docs.forEach((element) {
+        driverDoc = element.id;
+      }),
+      driverCollection.doc(driverDoc).update({DriverModel.isLogString : true}).then((_) => debugPrint('is log = true.')),
+    });
+
+  }
+  void verifyNumber() {
     auth.verifyPhoneNumber(
       phoneNumber: "+855${phoneController.text}",
       timeout: const Duration(seconds: 20),
@@ -48,27 +58,26 @@ class VerifyPhoneNumberController extends GetxController {
       final data = FirebaseFirestore.instance.collection(DriverModel.collectionName).snapshots();
       data.listen((result) {
         final driver = result.docs.map((e) => DriverModel.fromMap(e.data())).toList();
-        _driverData.value = RemoteData<List<DriverModel>>(status: RemoteDataStatus.success, data: driver);
 
         for (var e in driver) {
           allPhoneNumberList.add(e.tel);
         }
-        debugPrint('all Phone Number list : $allPhoneNumberList');
+
+        editPhoneNumber();
+
         for (int i = 0 ; i < allPhoneNumberList.length ; i++) {
           String num = allPhoneNumberList[i];
-          if (num == phoneController.text) {
-            debugPrint('successful login : $num');
+          if (num == phoneNumber) {
             Get.toNamed('/enter_otp_code');
             verifyNumber();
             break;
           } else {
-            debugPrint('failed login : $num');
-            Get.toNamed('/become_driver_fail');
+            Get.toNamed('/log_in_fail');
           }
         }
       });
     } catch (ex) {
-      _driverData.value = RemoteData<List<DriverModel>>(status: RemoteDataStatus.error, data: null);
+      debugPrint("Load All Phone Number Error: $ex");
     }
   }
 }

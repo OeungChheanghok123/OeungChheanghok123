@@ -40,7 +40,7 @@ class Languages extends Translations {
       'Your time available': 'Your time available',
       'Morning': 'Morning',
       'Afternoon': 'Afternoon',
-      'Evening': 'Take your ID card photo',
+      'Evening': 'Evening',
       'Take your ID card photo': 'Take your ID card photo',
       'Referral code if have': 'Referral code if have',
       'Enter code': 'Enter code',

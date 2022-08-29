@@ -8,6 +8,7 @@ import 'package:loy_eat/screens/feedback_screen.dart';
 import 'package:loy_eat/screens/home_screen.dart';
 import 'package:loy_eat/screens/instruction_screen.dart';
 import 'package:loy_eat/screens/invite_friend_screen.dart';
+import 'package:loy_eat/screens/login_fail_screen.dart';
 import 'package:loy_eat/screens/login_screen.dart';
 import 'package:loy_eat/screens/order_accept.dart';
 import 'package:loy_eat/screens/order_screen.dart';
@@ -45,4 +46,5 @@ List<GetPage<dynamic>>? getRoutPage = [
   GetPage(name: '/order_accept', page: () => OrderAccept()),
   GetPage(name: '/order', page: () => OrderScreen()),
   GetPage(name: '/become_driver_fail', page: () => const BecomeDriverFailScreen()),
+  GetPage(name: '/log_in_fail', page: () => const LoginFailScreen()),
 ];

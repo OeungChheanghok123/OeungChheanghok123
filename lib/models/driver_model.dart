@@ -14,6 +14,7 @@ class DriverModel {
   static const String shiftString = "shift";
   static const String statusString = "status";  
   static const String telString = "tel";
+  static const String isLogString = "is_log";
 
   String yob;
   String createAt;
@@ -27,6 +28,7 @@ class DriverModel {
   String shift;
   String status;
   String tel;
+  bool isLog;
 
   DriverModel({
     this.yob = '',
@@ -41,6 +43,7 @@ class DriverModel {
     this.shift = '',
     this.status = '',
     this.tel = '',
+    this.isLog = false,
   });
 
   Map<String, dynamic> toMap() {
@@ -58,7 +61,8 @@ class DriverModel {
     result.addAll({shiftString: shift});
     result.addAll({statusString: status});
     result.addAll({telString: tel});
-  
+    result.addAll({isLogString: isLog});
+
     return result;
   }
 
@@ -76,6 +80,7 @@ class DriverModel {
       shift: map[shiftString] ?? '',
       status: map[statusString] ?? '',
       tel: map[telString] ?? '',
+      isLog: map[isLogString] ?? false,
     );
   }
 
