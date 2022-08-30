@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:loy_eat/controllers/home_controller.dart';
+import 'package:loy_eat/controllers/main_page_controller.dart';
 import 'package:loy_eat/models/driver_model.dart';
 
 class VerifyPhoneNumberController extends GetxController {
@@ -15,6 +16,7 @@ class VerifyPhoneNumberController extends GetxController {
   final auth = FirebaseAuth.instance;
   final phoneController = TextEditingController();
   final homeController = Get.put(HomeController());
+  final mainPageController = Get.put(MainPageController());
 
   void editPhoneNumber() {
     List phone = phoneController.text.split("");
@@ -68,6 +70,7 @@ class VerifyPhoneNumberController extends GetxController {
         for (int i = 0 ; i < allPhoneNumberList.length ; i++) {
           String num = allPhoneNumberList[i];
           if (num == phoneNumber) {
+            mainPageController.write(true);
             Get.toNamed('/enter_otp_code');
             verifyNumber();
             break;

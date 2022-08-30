@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
       initialRoute: "/",
       defaultTransition: Transition.noTransition,
       getPages: getRoutPage,
-      home: Obx(() => controller.isLog.value ? const InstructionScreen() : const StartUpScreen()),
+      home: controller.read() ? const InstructionScreen() : const StartUpScreen(),
     );
   }
 }

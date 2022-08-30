@@ -54,11 +54,11 @@ class VerifyPhoneNumberScreen extends StatelessWidget {
           ),
         ),
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
               width: 70,
-              height: 50,
+              height: 48,
               decoration: BoxDecoration(
                 color: white,
                 border: Border.all(color: black.withOpacity(0.5)),
@@ -70,6 +70,7 @@ class VerifyPhoneNumberScreen extends StatelessWidget {
                 ),
               ),
             ),
+            const SizedBox(width: 10),
             _buildTextFieldPhoneNumber,
           ],
         ),

@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:loy_eat/controllers/account_controller.dart';
@@ -290,7 +289,10 @@ class AccountScreen extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.fromLTRB(40, 0, 40, 30),
       child: ButtonWidget(
-        onPressed: () => exit(0),
+        onPressed: () {
+          accountController.logout();
+          Get.offAllNamed('/start_up');
+        },
         width: double.infinity,
         color: platinum.withOpacity(0.8),
         child: Row(

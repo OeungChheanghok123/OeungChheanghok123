@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:loy_eat/controllers/languages_controller.dart';
+import 'package:loy_eat/controllers/main_page_controller.dart';
 import 'package:loy_eat/controllers/start_up_controller.dart';
 import 'package:loy_eat/models/driver_model.dart';
 import 'package:loy_eat/models/remote_data.dart';
@@ -22,6 +23,8 @@ class AccountController extends GetxController {
 
   final languagesController = Get.put(LanguagesController());
   final startUpController = Get.put(StartUpController());
+  final mainPageController = Get.put(MainPageController());
+
 
   final _driverData = RemoteData<List<DriverModel>>(status: RemoteDataStatus.processing, data: null).obs;
   RemoteData<List<DriverModel>> get driverData => _driverData.value;
@@ -68,5 +71,8 @@ class AccountController extends GetxController {
     } catch (ex) {
       _driverData.value = RemoteData<List<DriverModel>>(status: RemoteDataStatus.error, data: null);
     }
+  }
+  void logout() {
+    mainPageController.remove();
   }
 }
