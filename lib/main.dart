@@ -8,31 +8,37 @@ import 'package:loy_eat/models/languages.dart';
 import 'package:loy_eat/screens/instruction_screen.dart';
 import 'package:loy_eat/screens/start_up_screen.dart';
 
-final controller = Get.put(MainPageController());
+Future<void> backgroundHandler(RemoteMessage message) async {
+  debugPrint(message.data.toString());
+  debugPrint(message.notification!.title);
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  FirebaseMessaging.onBackgroundMessage(controller.backgroundHandler);
-  runApp(const MyApp());
+  FirebaseMessaging.onBackgroundMessage(backgroundHandler);
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  MyApp({Key? key}) : super(key: key);
+
+  final controller = Get.put(MainPageController());
 
   @override
   Widget build(BuildContext context) {
-    controller.firebaseNotifications;
+    controller.loadFirebaseNotification;
+
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       translations: Languages(),
-      locale: const Locale('en', 'US'),
-      fallbackLocale: const Locale('en', 'US'),
+      locale: Locale(controller.readLanguageCode(), controller.readCountryCode()),
+      fallbackLocale: Locale(controller.readLanguageCode(), controller.readCountryCode()),
       title: "Loy Eat driver app",
       initialRoute: "/",
       defaultTransition: Transition.noTransition,
       getPages: getRoutPage,
-      home: controller.read() ? const InstructionScreen() : const StartUpScreen(),
+      home: controller.readLogin() ? const InstructionScreen() : StartUpScreen(),
     );
   }
 }

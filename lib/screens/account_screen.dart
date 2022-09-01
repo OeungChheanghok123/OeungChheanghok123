@@ -131,7 +131,7 @@ class AccountScreen extends StatelessWidget {
                   size: 12,
                   color: black,
                 ),
-              )
+              ),
           ),
         ],
       ),

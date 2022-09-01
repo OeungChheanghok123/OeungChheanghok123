@@ -23,7 +23,7 @@ import 'package:loy_eat/widgets/screen_widget/auto_complete_text_field.dart';
 import 'package:loy_eat/widgets/screen_widget/order_empty_screen.dart';
 
 List<GetPage<dynamic>>? getRoutPage = [
-  GetPage(name: '/start_up', page: () => const StartUpScreen()),
+  GetPage(name: '/start_up', page: () => StartUpScreen()),
   GetPage(name: '/log_in', page: () => const LoginScreen()),
   GetPage(name: '/become_driver', page: () => const BecomeDriverScreen()),
   GetPage(name: '/verify_phone_number', page: () => VerifyPhoneNumberScreen()),

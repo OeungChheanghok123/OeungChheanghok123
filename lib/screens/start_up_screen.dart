@@ -1,21 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:loy_eat/controllers/languages_controller.dart';
-import 'package:loy_eat/controllers/start_up_controller.dart';
+import 'package:loy_eat/controllers/main_page_controller.dart';
 import 'package:loy_eat/widgets/layout_widget/color.dart';
 import 'package:loy_eat/widgets/layout_widget/space.dart';
 import 'package:loy_eat/widgets/layout_widget/svg_picture_widget.dart';
 import 'package:loy_eat/widgets/layout_widget/text_widget.dart';
 
 class StartUpScreen extends StatelessWidget {
-  const StartUpScreen({Key? key}) : super(key: key);
+  StartUpScreen({Key? key}) : super(key: key);
+
+  final khmerFlag = 'assets/image/cambodia_flag.svg';
+  final englishFlag = 'assets/image/uk_flag.svg';
+
+  final languagesController = Get.put(LanguagesController());
+  final mainPageController = Get.put(MainPageController());
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-    final languagesController = Get.put(LanguagesController());
-    final startUpController = Get.put(StartUpController());
-    
+    final size = MediaQuery.of(context).size;
+
     return Scaffold(
       extendBody: true,
       backgroundColor: rabbit,
@@ -55,22 +59,24 @@ class StartUpScreen extends StatelessWidget {
                         splashColor: none,
                         onTap: () {
                           languagesController.changeLanguage('kh', 'KH');
-                          //accountController.defaultLanguage(startUpController.khmerFlag);
-                          startUpController.language = startUpController.khmerFlag;
+                          mainPageController.writeLanguage(khmerFlag);
+                          mainPageController.writeLanguageCode('kh');
+                          mainPageController.writeCountryCode('KH');
                           Get.offAllNamed('/log_in');
                         },
-                        child: _buildLanguage(startUpController.khmerFlag, 'ខ្មែរ', 'Cambodia Flag Logo',),
+                        child: _buildLanguage(khmerFlag, 'ខ្មែរ', 'Cambodia Flag Logo'),
                       ),
                       const Space(width: 35),
                       InkWell(
                         splashColor: none,
                         onTap: () {
                           languagesController.changeLanguage('en', 'US');
-                          //accountController.defaultLanguage(startUpController.englishFlag);
-                          startUpController.language = startUpController.englishFlag;
+                          mainPageController.writeLanguage(englishFlag);
+                          mainPageController.writeLanguageCode('en');
+                          mainPageController.writeCountryCode('US');
                           Get.offAllNamed('/log_in');
                         },
-                        child: _buildLanguage(startUpController.englishFlag, 'English', 'United kingdom Flag Logo',),
+                        child: _buildLanguage(englishFlag, 'English', 'United kingdom Flag Logo'),
                       ),
                     ],
                   ),

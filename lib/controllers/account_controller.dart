@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:loy_eat/controllers/languages_controller.dart';
 import 'package:loy_eat/controllers/main_page_controller.dart';
-import 'package:loy_eat/controllers/start_up_controller.dart';
 import 'package:loy_eat/models/driver_model.dart';
 import 'package:loy_eat/models/remote_data.dart';
 import 'package:loy_eat/widgets/layout_widget/color.dart';
@@ -22,20 +21,16 @@ class AccountController extends GetxController {
   var radioColorEnglish = rabbit.obs;
 
   final languagesController = Get.put(LanguagesController());
-  final startUpController = Get.put(StartUpController());
   final mainPageController = Get.put(MainPageController());
-
 
   final _driverData = RemoteData<List<DriverModel>>(status: RemoteDataStatus.processing, data: null).obs;
   RemoteData<List<DriverModel>> get driverData => _driverData.value;
 
   @override
   void onInit() {
-    _changeLanguage.value = startUpController.language;
+    _changeLanguage.value = mainPageController.readLanguage();
     defaultLanguage.value = _changeLanguage.value;
-
     _loadDriverData();
-
     super.onInit();
   }
   void onConfirmSelectingLanguage(int index) {
@@ -46,18 +41,26 @@ class AccountController extends GetxController {
       isSelectedEnglish.value = true;
       isSelectedKhmer.value = false;
     }
+
     if (isSelectedKhmer.value == true) {
       radioColorKhmer.value = rabbit;
       radioColorEnglish.value = white;
       _changeLanguage.value = khmerImage.value;
 
       languagesController.changeLanguage('kh', 'KH');
+      mainPageController.writeLanguage(khmerImage.value);
+      mainPageController.writeLanguageCode('kh');
+      mainPageController.writeCountryCode('KH');
+
     } else {
       radioColorKhmer.value = white;
       radioColorEnglish.value = rabbit;
       _changeLanguage.value = ukImage.value;
 
       languagesController.changeLanguage('en', 'US');
+      mainPageController.writeLanguage(ukImage.value);
+      mainPageController.writeLanguageCode('en');
+      mainPageController.writeCountryCode('US');
     }
     defaultLanguage.value = _changeLanguage.value;
   }
@@ -73,6 +76,8 @@ class AccountController extends GetxController {
     }
   }
   void logout() {
-    mainPageController.remove();
+    mainPageController.removeLogin();
+    mainPageController.removeLanguage();
+    mainPageController.removeCode();
   }
 }
