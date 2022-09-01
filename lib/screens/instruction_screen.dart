@@ -1,6 +1,7 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:loy_eat/controllers/main_page_controller.dart';
 import 'package:loy_eat/models/notification_model.dart';
 import 'package:loy_eat/screens/account_screen.dart';
 import 'package:loy_eat/screens/home_screen.dart';
@@ -16,6 +17,7 @@ class InstructionScreen extends StatefulWidget {
 }
 
 class _InstructionScreenState extends State<InstructionScreen> {
+  final mainPageController = Get.put(MainPageController());
 
   int _currentTabIndex = 0;
 
@@ -58,6 +60,8 @@ class _InstructionScreenState extends State<InstructionScreen> {
   @override
   void initState() {
     super.initState();
+    mainPageController.writeLogin(true);
+
     LocalNotificationService.initNotification(context);
 
     FirebaseMessaging.instance.getInitialMessage().then((message) {

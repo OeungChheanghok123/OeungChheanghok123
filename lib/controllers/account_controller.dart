@@ -7,6 +7,7 @@ import 'package:loy_eat/models/remote_data.dart';
 import 'package:loy_eat/widgets/layout_widget/color.dart';
 
 class AccountController extends GetxController {
+  var phoneNumber = ''.obs;
   var defaultLanguage = ''.obs;
   final _changeLanguage = ''.obs;
 
@@ -66,7 +67,8 @@ class AccountController extends GetxController {
   }
   void _loadDriverData() {
     try {
-      final data = FirebaseFirestore.instance.collection(DriverModel.collectionName).where(DriverModel.isLogString, isEqualTo: true).snapshots();
+      phoneNumber.value = mainPageController.readDriverPhoneNumber();
+      final data = FirebaseFirestore.instance.collection(DriverModel.collectionName).where(DriverModel.telString, isEqualTo: phoneNumber.value).snapshots();
       data.listen((result) {
         final driver = result.docs.map((e) => DriverModel.fromMap(e.data())).toList();
         _driverData.value = RemoteData<List<DriverModel>>(status: RemoteDataStatus.success, data: driver);

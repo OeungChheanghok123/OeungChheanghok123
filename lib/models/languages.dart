@@ -8,7 +8,7 @@ class Languages extends Translations {
     'en_US': {
       'Log In': 'Log In',
       'Become a Driver?': 'Become a Driver?',
-      'Status': 'States',
+      'States': 'States',
       'Breakdown': 'Breakdown',
       'Profile': 'Profile',
       'Rating Score': 'Rating Score',
