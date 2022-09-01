@@ -70,7 +70,7 @@ class VerifyPhoneNumberController extends GetxController {
         for (int i = 0 ; i < allPhoneNumberList.length ; i++) {
           String num = allPhoneNumberList[i];
           if (num == phoneNumber) {
-            mainPageController.write(true);
+            mainPageController.writeLogin(true);
             Get.toNamed('/enter_otp_code');
             verifyNumber();
             break;
