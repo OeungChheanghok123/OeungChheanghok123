@@ -28,7 +28,6 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     controller.loadFirebaseNotification;
-
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       translations: Languages(),

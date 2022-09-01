@@ -58,6 +58,7 @@ class _InstructionScreenState extends State<InstructionScreen> {
   @override
   void initState() {
     super.initState();
+
     LocalNotificationService.initNotification(context);
 
     FirebaseMessaging.instance.getInitialMessage().then((message) {

@@ -7,6 +7,7 @@ class MainPageController extends GetxController{
   SharedPreferences? preferences;
   final String _isLogKey = "isLog";
   final String _language = "language";
+  final String _phoneNumber = "driverId";
   final String _languageCode = "languageCode";
   final String _countryCode = "countryCode";
   final firebaseNotifications = FirebaseNotifications();
@@ -55,6 +56,16 @@ class MainPageController extends GetxController{
   void removeCode() {
     preferences?.remove(_languageCode);
     preferences?.remove(_countryCode);
+  }
+
+  Future<bool>? writeDriverPhoneNumber(String value) {
+    return preferences?.setString(_phoneNumber, value);
+  }
+  String readDriverPhoneNumber() {
+    return preferences?.getString(_phoneNumber) ?? "";
+  }
+  void removeDriverPhoneNumber() {
+    preferences?.remove(_phoneNumber);
   }
 
   void loadFirebaseNotification(BuildContext context) {

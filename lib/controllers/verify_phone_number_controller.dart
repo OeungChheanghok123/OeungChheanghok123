@@ -33,7 +33,6 @@ class VerifyPhoneNumberController extends GetxController {
       snapshot.docs.forEach((element) {
         driverDoc = element.id;
       }),
-      driverCollection.doc(driverDoc).update({DriverModel.isLogString : true}).then((_) => debugPrint('is log = true.')),
     });
 
   }
@@ -70,7 +69,7 @@ class VerifyPhoneNumberController extends GetxController {
         for (int i = 0 ; i < allPhoneNumberList.length ; i++) {
           String num = allPhoneNumberList[i];
           if (num == phoneNumber) {
-            mainPageController.writeLogin(true);
+            mainPageController.writeDriverPhoneNumber(num);
             Get.toNamed('/enter_otp_code');
             verifyNumber();
             break;

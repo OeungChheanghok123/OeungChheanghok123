@@ -3,10 +3,13 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:loy_eat/controllers/main_page_controller.dart';
 import 'package:loy_eat/controllers/verify_phone_number_controller.dart';
+import 'package:loy_eat/widgets/layout_widget/color.dart';
 
 class OTPCodeController extends GetxController {
-  VerifyPhoneNumberController verifyPhoneNumberController = Get.put(VerifyPhoneNumberController());
+  final verifyPhoneNumberController = Get.put(VerifyPhoneNumberController());
+  final mainPageController  = Get.put(MainPageController());
   FirebaseAuth auth = FirebaseAuth.instance;
 
   final List<TextEditingController> listController = [];
@@ -20,7 +23,8 @@ class OTPCodeController extends GetxController {
   late Timer _timer;
   var start = 60.obs;
   late var otpNumber = "".obs;
-  var isOTPError = false.obs;
+  var labelErrorColor = none.obs;
+  var otpColor = rabbit.obs;
 
   @override
   void onInit() {
@@ -56,7 +60,8 @@ class OTPCodeController extends GetxController {
   }
   void numberClick(int index) async{
     if (index == 10){
-      isOTPError.value = false;
+      labelErrorColor.value = none;
+      otpColor.value = rabbit;
       otp1.text = '';
       otp2.text = '';
       otp3.text = '';
@@ -67,6 +72,7 @@ class OTPCodeController extends GetxController {
       if (index == 11){
         index = 0;
       }
+
       if (otp1.text == ''){
         otp1.text = '$index';
       } else if (otp1.text != '' && otp2.text == ''){
@@ -82,6 +88,7 @@ class OTPCodeController extends GetxController {
       }
     }
     otpNumber.value = (otp1.text + otp2.text + otp3.text + otp4.text + otp5.text + otp6.text).toString();
+
     if (otp6.text != ''){
       PhoneAuthCredential credential = PhoneAuthProvider.credential(
         verificationId: verifyPhoneNumberController.verificationIDReceived,
@@ -89,25 +96,40 @@ class OTPCodeController extends GetxController {
       );
 
       await auth.signInWithCredential(credential).then((value) {
-        if(otpNumber.value != credential.smsCode){
-          isOTPError.value = true;
+        try{
+            _timer.cancel();
+            mainPageController.writeLogin(true);
+            debugPrint('Login is save = ${mainPageController.readLogin()}');
+            debugPrint('you are logged in successfully');
+            debugPrint('code SMS: ${credential.smsCode}');
+            Get.offAllNamed('/instruction');
+        } catch (ex) {
+            labelErrorColor.value = red;
+            otpColor.value = red;
+            deleteNumberClick();
+            debugPrint('you otp number not correctly.');
         }
-        _timer.cancel();
-        Get.offAllNamed('/instruction');
-        print('you are logged in successfully'); // ignore: avoid_print
-        print('code SMS: ${credential.smsCode}'); // ignore: avoid_print
+
+        // if(otpNumber.value != credential.smsCode){
+        //   labelErrorColor.value = red;
+        //   otpColor.value = red;
+        //   deleteNumberClick();
+        //   debugPrint('you otp number not correctly.');
+        // }
+        // else {
+        //   _timer.cancel();
+        //   mainPageController.writeLogin(true);
+        //   debugPrint('Login is save = ${mainPageController.readLogin()}');
+        //   debugPrint('you are logged in successfully');
+        //   debugPrint('code SMS: ${credential.smsCode}');
+        //   Get.offAllNamed('/instruction');
+        // }
       });
-      // if (otpNumber.value == '123456'){
-      //   _timer.cancel();
-      //   Get.offAllNamed('/instruction');
-      // }
-      // else {
-      //   isOTPError.value = true;
-      // }
     }
   }
   void deleteNumberClick() {
-    isOTPError.value = false;
+    labelErrorColor.value = none;
+    otpColor.value = rabbit;
     if (otp2.text == ''){
       otp1.text = '';
     } else if (otp3.text == ''){

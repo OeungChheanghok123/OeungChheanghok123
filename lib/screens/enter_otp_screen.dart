@@ -8,17 +8,11 @@ import 'package:loy_eat/widgets/layout_widget/space.dart';
 import 'package:loy_eat/widgets/layout_widget/text_widget.dart';
 
 
-class EnterOTPCodeScreen extends StatefulWidget {
-  const EnterOTPCodeScreen({Key? key}) : super(key: key);
+class EnterOTPCodeScreen extends StatelessWidget {
+  EnterOTPCodeScreen({Key? key}) : super(key: key);
 
-  @override
-  State<EnterOTPCodeScreen> createState() => _EnterOTPCodeScreenState();
-}
-
-class _EnterOTPCodeScreenState extends State<EnterOTPCodeScreen> {
-
-  OTPCodeController otpCodeController = Get.put(OTPCodeController());
-  VerifyPhoneNumberController verifyPhoneNumberController = Get.put(VerifyPhoneNumberController());
+  final otpCodeController = Get.put(OTPCodeController());
+  final verifyPhoneNumberController = Get.put(VerifyPhoneNumberController());
 
   @override
   Widget build(BuildContext context) {
@@ -29,116 +23,114 @@ class _EnterOTPCodeScreenState extends State<EnterOTPCodeScreen> {
       appBar: null,
       body: Container(
         margin: const EdgeInsets.fromLTRB(15, 5, 15, 15),
-        child: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _buildLayout(1, Container()),
-              _buildLayout(5,  Container(
-                width: size.width,
-                alignment: Alignment.center,
-                child: Column(
-                  children: [
-                    Container(
-                      width: 50,
-                      height: 50,
-                      margin: const EdgeInsets.only(bottom: 15),
-                      decoration: BoxDecoration(
-                        color: rabbit,
-                        borderRadius: BorderRadius.circular(100),
-                      ),
-                      child: const Center(
-                        child: IconWidget(
-                          icon: Icons.lock_open_outlined,
-                          color: white,
-                          size: 24,
-                        ),
-                      ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _buildLayout(1, Container()),
+            _buildLayout(5,  Container(
+              width: size.width,
+              alignment: Alignment.center,
+              child: Column(
+                children: [
+                  Container(
+                    width: 50,
+                    height: 50,
+                    margin: const EdgeInsets.only(bottom: 15),
+                    decoration: BoxDecoration(
+                      color: rabbit,
+                      borderRadius: BorderRadius.circular(100),
                     ),
-                    const TextWidget(
-                      isTitle: true,
-                      text: 'Enter Code',
-                    ),
-                    Container(
-                      width: 250,
-                      margin: const EdgeInsets.symmetric(vertical: 15),
-                      child: TextWidget(
-                        textAlign: TextAlign.center,
-                        text: 'Enter your one-time password (OTP) sent to +855${verifyPhoneNumberController.phoneNumber}',
-                      ),
-                    ),
-                    Container(
-                      margin: const EdgeInsets.symmetric(vertical: 5),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Obx(() => TextWidget(
-                            text: 'Expire in ${otpCodeController.start.value} seconds. ',
-                            color: silver,
-                          )),
-                          InkWell(
-                            onTap: () {
-                              otpCodeController.closeTimer();
-                              otpCodeController.start.value = 60;
-                              //verifyNumber();
-                              otpCodeController.startTimer();
-                            },
-                            child: const TextWidget(text: 'Resend Code', color: rabbit,),
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      height: 30,
-                      width: double.infinity,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          ListView.builder(
-                            shrinkWrap: true,
-                            scrollDirection: Axis.horizontal,
-                            itemCount: 6,
-                            itemBuilder: (BuildContext context, int index){
-                              return Padding(
-                                padding: index == 6 ? const EdgeInsets.only(left: 0.0) : const EdgeInsets.only(left: 8.0),
-                                child: _otpTextField(context, index == 0 ? true : false, otpCodeController.listController[index]),
-                              );
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                    const Space(height: 10),
-                    Obx(() => TextWidget(
-                      text: 'Verification failed. Please try again',
-                      color: otpCodeController.isOTPError.value ? red : none,
-                      size: 10,
-                    )),
-                    Expanded(
-                      child: Container(
+                    child: const Center(
+                      child: IconWidget(
+                        icon: Icons.lock_open_outlined,
                         color: white,
-                        width: 250,
-                        child: GridView.builder(
+                        size: 24,
+                      ),
+                    ),
+                  ),
+                  const TextWidget(
+                    isTitle: true,
+                    text: 'Enter Code',
+                  ),
+                  Container(
+                    width: 250,
+                    margin: const EdgeInsets.symmetric(vertical: 15),
+                    child: TextWidget(
+                      textAlign: TextAlign.center,
+                      text: 'Enter your one-time password (OTP) sent to +855${verifyPhoneNumberController.phoneNumber}',
+                    ),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.symmetric(vertical: 5),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Obx(() => TextWidget(
+                          text: 'Expire in ${otpCodeController.start.value} seconds. ',
+                          color: silver,
+                        )),
+                        InkWell(
+                          onTap: () {
+                            otpCodeController.closeTimer();
+                            otpCodeController.start.value = 60;
+                            //verifyNumber();
+                            otpCodeController.startTimer();
+                          },
+                          child: const TextWidget(text: 'Resend Code', color: rabbit,),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: 30,
+                    width: double.infinity,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ListView.builder(
                           shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                            maxCrossAxisExtent: 80,
-                            crossAxisSpacing: 25,
-                            mainAxisSpacing: 25,
-                          ),
-                          itemCount: 12,
-                          itemBuilder: (BuildContext ctx, index) {
-                            return index == 11 ? _buildDelete() :
-                            _buildNumber(index + 1, index < 9 ?'${index + 1}' : index == 9 ? 'C' : '0');
+                          scrollDirection: Axis.horizontal,
+                          itemCount: 6,
+                          itemBuilder: (BuildContext context, int index){
+                            return Padding(
+                              padding: index == 6 ? const EdgeInsets.only(left: 0.0) : const EdgeInsets.only(left: 8.0),
+                              child: Obx(() => _otpTextField(context, index == 0 ? true : false, otpCodeController.listController[index], otpCodeController.otpColor.value),),
+                            );
                           },
                         ),
+                      ],
+                    ),
+                  ),
+                  const Space(height: 10),
+                  Obx(() => TextWidget(
+                    text: 'Verification failed. Please try again',
+                    color: otpCodeController.labelErrorColor.value,
+                    size: 10,
+                  )),
+                  Expanded(
+                    child: Container(
+                      color: white,
+                      width: 250,
+                      child: GridView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                          maxCrossAxisExtent: 80,
+                          crossAxisSpacing: 25,
+                          mainAxisSpacing: 25,
+                        ),
+                        itemCount: 12,
+                        itemBuilder: (BuildContext ctx, index) {
+                          return index == 11 ? _buildDelete() :
+                          _buildNumber(index + 1, index < 9 ?'${index + 1}' : index == 9 ? 'C' : '0');
+                        },
                       ),
                     ),
-                  ],
-                ),
-              )),
-            ],
-          ),
+                  ),
+                ],
+              ),
+            )),
+          ],
         ),
       ),
     );
@@ -154,7 +146,7 @@ class _EnterOTPCodeScreenState extends State<EnterOTPCodeScreen> {
       ),
     );
   }
-  Widget _otpTextField(BuildContext context, bool autoFocus, TextEditingController controller) {
+  Widget _otpTextField(BuildContext context, bool autoFocus, TextEditingController controller, Color color) {
     return  SizedBox(
       width: 30,
       child: AspectRatio(
@@ -177,7 +169,7 @@ class _EnterOTPCodeScreenState extends State<EnterOTPCodeScreen> {
           readOnly: true,
           textAlign: TextAlign.center,
           keyboardType: TextInputType.number,
-          style: TextStyle(fontSize: 14, color: otpCodeController.isOTPError.value ? red : rabbit),
+          style: TextStyle(fontSize: 14, color: color),
           maxLines: 1,
           onChanged: (value) {
             if(value.length == 1) {
