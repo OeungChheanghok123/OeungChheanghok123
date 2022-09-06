@@ -20,6 +20,11 @@ class NewOrderCardController extends GetxController {
   var merchantName = ''.obs;
   var customerId = ''.obs;
   var customerName = ''.obs;
+  var orderDocId = '';
+  var deliverDocId = '';
+
+  final orderCollection = FirebaseFirestore.instance.collection(OrderModel.collectionName);
+  final deliverCollection = FirebaseFirestore.instance.collection(DeliverModel.collectionName);
 
   final _orderData = RemoteData<List<OrderModel>>(status: RemoteDataStatus.processing, data: null).obs;
   RemoteData<List<OrderModel>> get orderData => _orderData.value;
@@ -45,6 +50,20 @@ class NewOrderCardController extends GetxController {
     super.onClose();
   }
 
+  void getDocumentId() {
+    orderCollection.where(DeliverModel.orderIdString, isEqualTo: newOrderId.value).get().then((snapshot) => {
+      // ignore: avoid_function_literals_in_foreach_calls
+      snapshot.docs.forEach((element) {
+        orderDocId = element.id;
+      }),
+    });
+    deliverCollection.where(DeliverModel.orderIdString, isEqualTo: newOrderId.value).get().then((snapshot) => {
+      // ignore: avoid_function_literals_in_foreach_calls
+      snapshot.docs.forEach((element) {
+        deliverDocId = element.id;
+      }),
+    });
+  }
   void startTimer() {
     const oneSec = Duration(seconds: 1);
     _timer = Timer.periodic(oneSec, (Timer timer) {
@@ -67,6 +86,8 @@ class NewOrderCardController extends GetxController {
             buttonColor: rabbit,
             onConfirm: (){
               orderController.isNewOrder.value = false;
+              orderCollection.doc(orderDocId).update({OrderModel.isNewString : false}).then((_) => debugPrint('update successful.'));
+              deliverCollection.doc(deliverDocId).update({DeliverModel.processString : 'Rejected'}).then((_) => debugPrint('order id $newOrderId was reject.'));
               Get.offNamed('/instruction');
               Get.back();
             },
@@ -79,7 +100,6 @@ class NewOrderCardController extends GetxController {
   }
   void closeTimer() {
     _timer.cancel();
-    startCounter.value = 60;
   }
   void showDialogReject() {
     Get.defaultDialog(
@@ -100,9 +120,11 @@ class NewOrderCardController extends GetxController {
       buttonColor: rabbit,
       onConfirm: (){
         orderController.isNewOrder.value = false;
+        orderCollection.doc(orderDocId).update({OrderModel.isNewString : false}).then((_) => debugPrint('update successful.'));
+        deliverCollection.doc(deliverDocId).update({DeliverModel.processString : 'Rejected'}).then((_) => debugPrint('order id $newOrderId was reject.'));
+        closeTimer();
         Get.back();
         Get.toNamed('/instruction');
-        closeTimer();
       },
       onCancel:(){
         Get.back();
@@ -123,6 +145,7 @@ class NewOrderCardController extends GetxController {
         _loadMerchantData(merchantId.value);
         _loadCustomerData(customerId.value);
         _loadDeliverData(newOrderId.value);
+        getDocumentId();
         _orderData.value = RemoteData<List<OrderModel>>(status: RemoteDataStatus.success, data: orders);
       });
     } catch (ex) {

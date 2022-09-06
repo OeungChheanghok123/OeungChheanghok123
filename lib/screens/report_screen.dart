@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:loy_eat/controllers/order_controller.dart';
 import 'package:loy_eat/controllers/report_controller.dart';
 import 'package:loy_eat/models/deliver_model.dart';
 import 'package:loy_eat/models/order_model.dart';
@@ -8,12 +9,14 @@ import 'package:loy_eat/widgets/layout_widget/color.dart';
 import 'package:loy_eat/widgets/layout_widget/icon_widget.dart';
 import 'package:loy_eat/widgets/layout_widget/space.dart';
 import 'package:loy_eat/widgets/layout_widget/text_widget.dart';
+import 'package:loy_eat/widgets/screen_widget/new_order_card.dart';
 import 'package:loy_eat/widgets/screen_widget/screen_widgets.dart';
 
 class ReportScreen extends StatelessWidget {
   ReportScreen({Key? key}) : super(key: key);
 
   final controller = Get.put(ReportController());
+  final orderController = Get.put(OrderController());
 
   @override
   Widget build(BuildContext context) {
@@ -21,22 +24,30 @@ class ReportScreen extends StatelessWidget {
       child: Scaffold(
         extendBody: true,
         backgroundColor: lightGray,
-        body: SingleChildScrollView(
-          child: _buildSilverBody,
-        ),
+        body: _buildBody,
+        bottomSheet: _buildNewOrder,
       ),
     );
   }
 
-  Widget get _buildSilverBody {
-    return Container(
-      margin: const EdgeInsets.only(top: 15),
-      child: Column(
-        children: [
-          _buildDetailBar,
-          _buildOrderBodyWidget,
-        ],
+  Widget get _buildBody {
+    return SingleChildScrollView(
+      child: Container(
+        margin: const EdgeInsets.only(top: 15),
+        child: Column(
+          children: [
+            _buildDetailBar,
+            _buildOrderBodyWidget,
+          ],
+        ),
       ),
+    );
+  }
+  Widget get _buildNewOrder {
+    return Obx(
+          () => orderController.isNewOrder.value
+          ? NewOrderCard()
+          : const SizedBox(),
     );
   }
 

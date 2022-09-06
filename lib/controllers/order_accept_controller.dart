@@ -70,7 +70,7 @@ class OrderAcceptController extends GetxController{
     }
     if (slideIndex.value == 4) {
       deliverCollection.doc(deliverDocId).update({DeliverModel.step4String : true}).then((_) => debugPrint('update step 4 successful.'));
-      deliverCollection.doc(deliverDocId).update({DeliverModel.processString : 'delivered'}).then((_) => debugPrint('update status successful.'));
+      deliverCollection.doc(deliverDocId).update({DeliverModel.processString : 'Delivered'}).then((_) => debugPrint('update status successful.'));
       orderCollection.doc(orderDocId).update({OrderModel.isNewString : false}).then((_) => debugPrint('update successful.'));
     }
   }

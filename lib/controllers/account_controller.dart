@@ -63,6 +63,7 @@ class AccountController extends GetxController {
       mainPageController.writeLanguageCode('en');
       mainPageController.writeCountryCode('US');
     }
+    mainPageController.writeLogin(true);
     defaultLanguage.value = _changeLanguage.value;
   }
   void _loadDriverData() {
