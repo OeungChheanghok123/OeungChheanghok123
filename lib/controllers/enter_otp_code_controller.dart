@@ -107,23 +107,8 @@ class OTPCodeController extends GetxController {
             labelErrorColor.value = red;
             otpColor.value = red;
             deleteNumberClick();
-            debugPrint('you otp number not correctly.');
+            debugPrint('your otp number not correctly.');
         }
-
-        // if(otpNumber.value != credential.smsCode){
-        //   labelErrorColor.value = red;
-        //   otpColor.value = red;
-        //   deleteNumberClick();
-        //   debugPrint('you otp number not correctly.');
-        // }
-        // else {
-        //   _timer.cancel();
-        //   mainPageController.writeLogin(true);
-        //   debugPrint('Login is save = ${mainPageController.readLogin()}');
-        //   debugPrint('you are logged in successfully');
-        //   debugPrint('code SMS: ${credential.smsCode}');
-        //   Get.offAllNamed('/instruction');
-        // }
       });
     }
   }
