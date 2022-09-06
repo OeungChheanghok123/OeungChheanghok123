@@ -28,7 +28,7 @@ class HomeScreen extends StatelessWidget {
       child: Scaffold(
         extendBody: true,
         backgroundColor: lightGray,
-        appBar: const HomeScreenAppBar(),
+        appBar: HomeScreenAppBar(),
         body: _buildBody,
         bottomSheet: Obx(() =>
         orderController.isNewOrder.value ? NewOrderCard() : const SizedBox(),
@@ -49,8 +49,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildFunctionBody(
-      BuildContext context, AsyncSnapshot<Widget> snapshot) {
+  Widget _buildFunctionBody(BuildContext context, AsyncSnapshot<Widget> snapshot) {
     if (snapshot.hasError) {
       return TextWidget(text: "${snapshot.error}");
     } else if (snapshot.hasData) {

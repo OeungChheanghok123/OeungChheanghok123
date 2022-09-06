@@ -17,7 +17,7 @@ class OrderScreen extends StatelessWidget {
       child: Scaffold(
         extendBody: true,
         backgroundColor: lightGray,
-        appBar: const HomeScreenAppBar(),
+        appBar: HomeScreenAppBar(),
         body: OrderEmptyScreen(),
         bottomSheet: Obx(() =>
           controller.isNewOrder.value ? NewOrderCard() : OrderEmptyScreen(),

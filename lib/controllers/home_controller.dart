@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:loy_eat/controllers/main_page_controller.dart';
+import 'package:loy_eat/models/driver_model.dart';
 import 'package:loy_eat/models/driver_report_model.dart';
 import 'package:loy_eat/models/notification_model.dart';
 import 'package:loy_eat/models/remote_data.dart';
@@ -39,6 +41,8 @@ class HomeController extends GetxController{
   final _driverReportData = RemoteData<List<DriverReportModel>>(status: RemoteDataStatus.processing, data: null).obs;
   RemoteData<List<DriverReportModel>> get data => _driverReportData.value;
 
+  final mainPageController = Get.put(MainPageController());
+
   @override
   void onInit() {
     CollectionReference notification = FirebaseFirestore.instance.collection('notification');
@@ -50,25 +54,35 @@ class HomeController extends GetxController{
   }
   void _loadDriverReportData() {
     try {
-      final data = FirebaseFirestore.instance.collection(DriverReportModel.collectionName).snapshots();
-      data.listen((result) {
-        final driverReport = result.docs.map((e) => DriverReportModel.fromMap(e.data())).toList();
-        _driverReportData.value = RemoteData<List<DriverReportModel>>(status: RemoteDataStatus.success, data: driverReport);
+      final driverPhoneNumber = mainPageController.readDriverPhoneNumber();
+      final driver = FirebaseFirestore.instance.collection(DriverModel.collectionName).where(DriverModel.telString, isEqualTo: driverPhoneNumber).snapshots();
+      driver.listen((e) {
+        final driverData = e.docs.map((e) => DriverModel.fromMap(e.data())).toList();
+        toggleState.value = driverData[0].isOnline;
+        debugPrint('toggleState.value = ${toggleState.value}');
+        toggleClicked();
+        final id = driverData[0].driverId;
+        final data = FirebaseFirestore.instance.collection(DriverReportModel.collectionName).where(DriverReportModel.driverIdString, isEqualTo: int.parse(id)).snapshots();
+        data.listen((result) {
+          final driverReport = result.docs.map((e) => DriverReportModel.fromMap(e.data())).toList();
+          _driverReportData.value = RemoteData<List<DriverReportModel>>(status: RemoteDataStatus.success, data: driverReport);
+        });
+
       });
     } catch (ex) {
       _driverReportData.value = RemoteData<List<DriverReportModel>>(status: RemoteDataStatus.error, data: null);
     }
   }
   void toggleClicked(){
-    if (toggleState.value == false) {
-      toggleState.value = true;
+    if (toggleState.value == true) {
+      toggleState.value = false;
       appBarColor.value = rabbit;
       toggleIcon.value = Icons.toggle_on;
       status.value = "Online";
       notificationColor.value = carrot;
     }
-    else if (toggleState.value == true) {
-      toggleState.value = false;
+    else if (toggleState.value == false) {
+      toggleState.value = true;
       appBarColor.value = carrot;
       toggleIcon.value = Icons.toggle_off;
       status.value = "Offline";
