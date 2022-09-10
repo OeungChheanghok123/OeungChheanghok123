@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:loy_eat/controllers/languages_controller.dart';
 import 'package:loy_eat/controllers/main_page_controller.dart';
@@ -8,6 +9,8 @@ import 'package:loy_eat/widgets/layout_widget/color.dart';
 
 class AccountController extends GetxController {
   var phoneNumber = ''.obs;
+  var id = '';
+  var docId = '';
   var defaultLanguage = ''.obs;
   final _changeLanguage = ''.obs;
 
@@ -23,6 +26,8 @@ class AccountController extends GetxController {
 
   final languagesController = Get.put(LanguagesController());
   final mainPageController = Get.put(MainPageController());
+
+  final driverCollection = FirebaseFirestore.instance.collection(DriverModel.collectionName);
 
   final _driverData = RemoteData<List<DriverModel>>(status: RemoteDataStatus.processing, data: null).obs;
   RemoteData<List<DriverModel>> get driverData => _driverData.value;
@@ -69,18 +74,29 @@ class AccountController extends GetxController {
   void _loadDriverData() {
     try {
       phoneNumber.value = mainPageController.readDriverPhoneNumber();
-      final data = FirebaseFirestore.instance.collection(DriverModel.collectionName).where(DriverModel.telString, isEqualTo: phoneNumber.value).snapshots();
+      final data = driverCollection.where(DriverModel.telString, isEqualTo: phoneNumber.value).snapshots();
       data.listen((result) {
         final driver = result.docs.map((e) => DriverModel.fromMap(e.data())).toList();
         _driverData.value = RemoteData<List<DriverModel>>(status: RemoteDataStatus.success, data: driver);
+
+        id = driver[0].driverId;
+        loadDocumentId(id);
       });
     } catch (ex) {
       _driverData.value = RemoteData<List<DriverModel>>(status: RemoteDataStatus.error, data: null);
     }
   }
+  void loadDocumentId(String id) {
+    driverCollection.where(DriverModel.driverIdString, isEqualTo: id).get().then((snapshot) => {
+      snapshot.docs.forEach((element) { // ignore: avoid_function_literals_in_foreach_calls
+        docId = element.id;
+      }),
+    });
+  }
   void logout() {
     mainPageController.removeLogin();
     mainPageController.removeLanguage();
     mainPageController.removeCode();
+    driverCollection.doc(docId).update({DriverModel.isOnlineString : false}).then((_) => debugPrint('Driver is Offline'));
   }
 }

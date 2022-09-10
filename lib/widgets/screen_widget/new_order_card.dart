@@ -16,7 +16,7 @@ import 'package:loy_eat/widgets/screen_widget/screen_widgets.dart';
 class NewOrderCard extends StatelessWidget {
   NewOrderCard({Key? key}) : super(key: key);
 
-  final controller = Get.put(NewOrderCardController());
+  final newOrderController = Get.put(NewOrderCardController());
   final mapController = Get.put(MapController());
   final List<BoxShadow> boxShadowList = [
     BoxShadow(
@@ -42,16 +42,14 @@ class NewOrderCard extends StatelessWidget {
 
   Widget get cardOrder {
     return Obx(() {
-      final merchantStatus = controller.merchantData.status;
-      final customerStatus = controller.customerData.status;
-      final deliverStatus = controller.deliverData.status;
-      if (merchantStatus == RemoteDataStatus.processing &&
-          customerStatus == RemoteDataStatus.processing &&
-          deliverStatus == RemoteDataStatus.processing) {
+      final merchantStatus = newOrderController.merchantData.status;
+      final customerStatus = newOrderController.customerData.status;
+      final deliverStatus = newOrderController.deliverData.status;
+
+      if (merchantStatus == RemoteDataStatus.processing && customerStatus == RemoteDataStatus.processing && deliverStatus == RemoteDataStatus.processing) {
         return ScreenWidgets.loading;
-      } else if (merchantStatus == RemoteDataStatus.success &&
-          customerStatus == RemoteDataStatus.success &&
-          deliverStatus == RemoteDataStatus.success) {
+      }
+      else if (merchantStatus == RemoteDataStatus.success && customerStatus == RemoteDataStatus.success && deliverStatus == RemoteDataStatus.success) {
         return Container(
           height: 260,
           width: double.infinity,
@@ -73,7 +71,8 @@ class NewOrderCard extends StatelessWidget {
             ],
           ),
         );
-      } else  {
+      }
+      else  {
         return ScreenWidgets.error;
       }
     });
@@ -93,7 +92,7 @@ class NewOrderCard extends StatelessWidget {
         child: Center(
           child: Obx(
             () => TextWidget(
-              text: '${controller.startCounter.value}',
+              text: '${newOrderController.startCounter.value}',
               size: 9,
               color: white,
               textAlign: TextAlign.center,
@@ -106,7 +105,7 @@ class NewOrderCard extends StatelessWidget {
 
   Widget get _buildProfileMerchantWidget {
     return Obx(() {
-      final report = controller.merchantData.data!;
+      final report = newOrderController.merchantData.data!;
       return ListView.builder(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
@@ -116,7 +115,7 @@ class NewOrderCard extends StatelessWidget {
     });
   }
   Widget _buildProfileMerchantItemWidget(BuildContext context, int index) {
-    final merchant = controller.merchantData.data![index];
+    final merchant = newOrderController.merchantData.data![index];
     return profileMerchantItem(merchant);
   }
   Widget profileMerchantItem(MerchantModel merchantModel) {
@@ -135,7 +134,7 @@ class NewOrderCard extends StatelessWidget {
 
   Widget get _buildProfileCustomerWidget {
     return Obx(() {
-      final report = controller.customerData.data!;
+      final report = newOrderController.customerData.data!;
       return ListView.builder(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
@@ -145,7 +144,7 @@ class NewOrderCard extends StatelessWidget {
     });
   }
   Widget _buildProfileCustomerItemWidget(BuildContext context, int index) {
-    final customer = controller.customerData.data![index];
+    final customer = newOrderController.customerData.data![index];
     return profileCustomerItem(customer);
   }
   Widget profileCustomerItem(CustomerModel customerModel) {
@@ -169,7 +168,7 @@ class NewOrderCard extends StatelessWidget {
 
   Widget get _buildRowDetailOrderWidget {
     return Obx(() {
-      final report = controller.deliverData.data!;
+      final report = newOrderController.deliverData.data!;
       return ListView.builder(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
@@ -179,7 +178,7 @@ class NewOrderCard extends StatelessWidget {
     });
   }
   Widget _buildRowDetailOrderItemWidget(BuildContext context, int index) {
-    final deliver = controller.deliverData.data![index];
+    final deliver = newOrderController.deliverData.data![index];
     return rowDetailOrderItem(deliver);
   }
   Widget rowDetailOrderItem(DeliverModel deliverModel) {
@@ -218,15 +217,14 @@ class NewOrderCard extends StatelessWidget {
           _buildButton(
             buttonText: 'Reject'.tr,
             color: red,
-            onPressed: () {
-              controller.showDialogReject();
-            },
+            onPressed: () => newOrderController.showDialogReject(),
           ),
           _buildButton(
             buttonText: 'Accept'.tr,
             color: succeed,
             onPressed: () {
-              controller.closeTimer();
+              newOrderController.closeTimer();
+              newOrderController.updateOrderStatus();
               mapController.getCurrentCameraPosition();
               mapController.loadOrderData();
               Get.toNamed('/order_accept');
@@ -237,11 +235,7 @@ class NewOrderCard extends StatelessWidget {
     );
   }
 
-  Widget _buildDetailProfile({required String imageString,
-    required String labelString,
-    required String status,
-    required String titleString,
-    required String detailString,}) {
+  Widget _buildDetailProfile({required String imageString, required String labelString, required String status, required String titleString, required String detailString}) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -286,8 +280,7 @@ class NewOrderCard extends StatelessWidget {
     );
   }
 
-  Widget _buildText({required String text,
-    required Color color, required double size,}) {
+  Widget _buildText({required String text, required Color color, required double size}) {
     return TextWidget(
       text: text,
       size: size,
@@ -296,10 +289,7 @@ class NewOrderCard extends StatelessWidget {
     );
   }
 
-  Widget _buildIconAndText({required IconData icon,
-    required String title,
-    Color color = black,
-    bool showLine = true,}) {
+  Widget _buildIconAndText({required IconData icon, required String title, Color color = black, bool showLine = true}) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 10),
       child: Row(
@@ -330,9 +320,7 @@ class NewOrderCard extends StatelessWidget {
     );
   }
 
-  Widget _buildButton({required String buttonText,
-    required Color color,
-    required VoidCallback onPressed,}) {
+  Widget _buildButton({required String buttonText, required Color color, required VoidCallback onPressed}) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 10),
       child: ButtonWidget(
