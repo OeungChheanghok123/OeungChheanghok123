@@ -15,7 +15,7 @@ class DriverReportModel {
   static const String pointString = "point";
   static const String tripString = "trip";
 
-  int driverId;
+  String driverId;
   String date;
   String bonus;
   String deliveryFee;
@@ -65,7 +65,7 @@ class DriverReportModel {
 
   factory DriverReportModel.fromMap(Map<String, dynamic> map) {
     return DriverReportModel(
-      driverId: map[driverIdString]?.toInt() ?? 0,
+      driverId: map[driverIdString] ?? '',
       date: map[dateString] ?? '',
       bonus: map[bonusString] ?? '',
       deliveryFee: map[deliveryFeeString] ?? '',

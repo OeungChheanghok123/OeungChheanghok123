@@ -3,7 +3,6 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:get/get.dart';
 import 'package:loy_eat/controllers/google_map_controller.dart';
 import 'package:loy_eat/controllers/order_accept_controller.dart';
-import 'package:loy_eat/controllers/order_controller.dart';
 import 'package:loy_eat/widgets/layout_widget/button_widget.dart';
 import 'package:loy_eat/widgets/layout_widget/color.dart';
 import 'package:loy_eat/widgets/layout_widget/icon_widget.dart';
@@ -16,7 +15,6 @@ class OrderAccept extends StatelessWidget {
   OrderAccept({Key? key}) : super(key: key);
 
   final orderAcceptController = Get.put(OrderAcceptController());
-  final orderController = Get.put(OrderController());
   final mapController = Get.put(MapController());
 
   @override
@@ -45,26 +43,24 @@ class OrderAccept extends StatelessWidget {
       bottom: 0,
       left: 0,
       right: 0,
-      child: Obx(
-        () => Container(
-          padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
-          color: none,
-          child: ConfirmationSlider(
-            height: 50,
-            backgroundColor: rabbit,
-            backgroundShape: BorderRadius.circular(5.0),
-            foregroundColor: white.withOpacity(0.5),
-            foregroundShape: BorderRadius.circular(5.0),
-            text: orderAcceptController.orderStep[orderAcceptController.slideIndex.value],
-            textStyle: const TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-              color: white,
-            ),
-            onConfirmation: () => onConfirmSliderButton(),
+      child: Obx(() => Container(
+        padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+        color: none,
+        child: ConfirmationSlider(
+          height: 50,
+          backgroundColor: rabbit,
+          backgroundShape: BorderRadius.circular(5.0),
+          foregroundColor: white.withOpacity(0.5),
+          foregroundShape: BorderRadius.circular(5.0),
+          text: orderAcceptController.orderStep[orderAcceptController.slideIndex.value],
+          textStyle: const TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+            color: white,
           ),
+          onConfirmation: () => onConfirmSliderButton(),
         ),
-      ),
+      )),
     );
   }
   void onConfirmSliderButton() {
@@ -124,7 +120,6 @@ class OrderAccept extends StatelessWidget {
       child: InkWell(
         splashColor: none,
         onTap: () {
-          orderController.isNewOrder.value = false;
           Get.offNamed('/instruction');
         },
         child: Container(
@@ -201,7 +196,6 @@ class OrderAccept extends StatelessWidget {
         borderRadius: 5,
         onPressed: (){
           orderAcceptController.sendComment(controller.text);
-          orderController.isNewOrder.value = false;
           Get.offNamed('/instruction');
         },
         child: const TextWidget(

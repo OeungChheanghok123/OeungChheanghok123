@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:loy_eat/controllers/order_controller.dart';
 import 'package:loy_eat/models/customer_model.dart';
 import 'package:loy_eat/models/deliver_model.dart';
 import 'package:loy_eat/models/merchant_model.dart';
@@ -12,19 +11,13 @@ import 'package:loy_eat/models/remote_data.dart';
 import 'package:loy_eat/widgets/layout_widget/color.dart';
 
 class NewOrderCardController extends GetxController {
-  final orderController = Get.put(OrderController());
   late Timer _timer;
   var startCounter = 60.obs;
-  var newOrderId = ''.obs;
-  var merchantId = ''.obs;
-  var merchantName = ''.obs;
-  var customerId = ''.obs;
-  var customerName = ''.obs;
-  var orderDocId = '';
-  var deliverDocId = '';
 
   final orderCollection = FirebaseFirestore.instance.collection(OrderModel.collectionName);
   final deliverCollection = FirebaseFirestore.instance.collection(DeliverModel.collectionName);
+  final merchantCollection = FirebaseFirestore.instance.collection(MerchantModel.collectionName);
+  final customerCollection = FirebaseFirestore.instance.collection(CustomerModel.collectionName);
 
   final _orderData = RemoteData<List<OrderModel>>(status: RemoteDataStatus.processing, data: null).obs;
   RemoteData<List<OrderModel>> get orderData => _orderData.value;
@@ -38,32 +31,25 @@ class NewOrderCardController extends GetxController {
   final _deliverData = RemoteData<List<DeliverModel>>(status: RemoteDataStatus.processing, data: null).obs;
   RemoteData<List<DeliverModel>> get deliverData => _deliverData.value;
 
+  var newOrderId = ''.obs;
+  var orderId = ''.obs;
+  var merchantId = ''.obs;
+  var customerId = ''.obs;
+  var customerName = ''.obs;
+  var orderDocId = ''.obs;
+  var deliverDocId = ''.obs;
+
   @override
   void onInit() {
-    _loadOrderData();
-    startTimer();
+    _loadNewOrder();
     super.onInit();
   }
   @override
   void onClose() {
-    closeTimer();
     super.onClose();
+    closeTimer();
   }
 
-  void getDocumentId() {
-    orderCollection.where(DeliverModel.orderIdString, isEqualTo: newOrderId.value).get().then((snapshot) => {
-      // ignore: avoid_function_literals_in_foreach_calls
-      snapshot.docs.forEach((element) {
-        orderDocId = element.id;
-      }),
-    });
-    deliverCollection.where(DeliverModel.orderIdString, isEqualTo: newOrderId.value).get().then((snapshot) => {
-      // ignore: avoid_function_literals_in_foreach_calls
-      snapshot.docs.forEach((element) {
-        deliverDocId = element.id;
-      }),
-    });
-  }
   void startTimer() {
     const oneSec = Duration(seconds: 1);
     _timer = Timer.periodic(oneSec, (Timer timer) {
@@ -76,23 +62,15 @@ class NewOrderCardController extends GetxController {
             titleStyle: const TextStyle(fontSize: 10),
             titlePadding: const EdgeInsets.all(0),
             contentPadding: const EdgeInsets.all(15),
-            middleTextStyle: const TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.normal,
-            ),
+            middleTextStyle: const TextStyle(fontSize: 14),
             middleText: 'The time is out, the delivery will auto to reject.',
             textConfirm: 'Confirm',
             confirmTextColor: white,
             buttonColor: rabbit,
-            onConfirm: (){
-              orderController.isNewOrder.value = false;
-              orderCollection.doc(orderDocId).update({OrderModel.isNewString : false}).then((_) => debugPrint('update successful.'));
-              deliverCollection.doc(deliverDocId).update({DeliverModel.processString : 'Rejected'}).then((_) => debugPrint('order id $newOrderId was reject.'));
-              Get.offNamed('/instruction');
-              Get.back();
-            },
+            onConfirm: () => rejectFunction(),
           );
-        } else {
+        }
+        else {
           startCounter--;
         }
       },
@@ -100,6 +78,7 @@ class NewOrderCardController extends GetxController {
   }
   void closeTimer() {
     _timer.cancel();
+    startCounter.value = 60;
   }
   void showDialogReject() {
     Get.defaultDialog(
@@ -108,45 +87,57 @@ class NewOrderCardController extends GetxController {
       titleStyle: const TextStyle(fontSize: 10),
       titlePadding: const EdgeInsets.all(0),
       contentPadding: const EdgeInsets.all(15),
-      middleTextStyle: const TextStyle(
-        fontSize: 14,
-        fontWeight: FontWeight.normal,
-      ),
+      middleTextStyle: const TextStyle(fontSize: 14),
       middleText: 'Are you sure to reject this delivery?',
       textConfirm: 'Confirm',
       textCancel: 'Cancel',
       confirmTextColor: white,
       cancelTextColor: rabbit,
       buttonColor: rabbit,
-      onConfirm: (){
-        orderController.isNewOrder.value = false;
-        orderCollection.doc(orderDocId).update({OrderModel.isNewString : false}).then((_) => debugPrint('update successful.'));
-        deliverCollection.doc(deliverDocId).update({DeliverModel.processString : 'Rejected'}).then((_) => debugPrint('order id $newOrderId was reject.'));
-        closeTimer();
-        Get.back();
-        Get.toNamed('/instruction');
-      },
-      onCancel:(){
-        Get.back();
-      },
+      onConfirm: () => rejectFunction(),
+      onCancel:() => Get.back(),
     );
   }
 
-  void _loadOrderData() {
-    try {
-      final data = FirebaseFirestore.instance.collection(OrderModel.collectionName).where(OrderModel.orderIdString, isEqualTo: orderController.orderId.value).snapshots();
-      data.listen((result) {
-        final orders = result.docs.map((e) => OrderModel.fromMap(e.data())).toList();
+  void _loadNewOrder() {
+    final data = orderCollection.where(OrderModel.isNewString, isEqualTo: true).snapshots();
+    data.listen((result) {
+      final orders = result.docs.map((e) => OrderModel.fromMap(e.data())).toList();
+
+      if (orders.isNotEmpty) {
+        startTimer();
+
+        newOrderId.value = '';
         newOrderId.value = orders[0].orderId;
+        orderId.value = newOrderId.value;
+        _loadOrderData(newOrderId.value);
+        _loadDeliverData(newOrderId.value);
+        _getDocumentId(newOrderId.value);
+
+        merchantId.value = '';
         merchantId.value = orders[0].merchantId;
-        merchantName.value = orders[0].merchantName;
+        _loadMerchantData(merchantId.value);
+
+        customerId.value = '';
         customerId.value = orders[0].customerId;
         customerName.value = orders[0].customerName;
-        _loadMerchantData(merchantId.value);
         _loadCustomerData(customerId.value);
-        _loadDeliverData(newOrderId.value);
-        getDocumentId();
-        _orderData.value = RemoteData<List<OrderModel>>(status: RemoteDataStatus.success, data: orders);
+      }
+      else {
+        closeTimer();
+
+        newOrderId.value = '';
+        merchantId.value = '';
+        customerId.value = '';
+      }
+    });
+  }
+  void _loadOrderData(String id) {
+    try {
+      final data = orderCollection.where(OrderModel.orderIdString, isEqualTo: id).snapshots();
+      data.listen((result) {
+        final order = result.docs.map((e) => OrderModel.fromMap(e.data())).toList();
+        _orderData.value = RemoteData<List<OrderModel>>(status: RemoteDataStatus.success, data: order);
       });
     } catch (ex) {
       _orderData.value = RemoteData<List<OrderModel>>(status: RemoteDataStatus.error, data: null);
@@ -154,7 +145,7 @@ class NewOrderCardController extends GetxController {
   }
   void _loadMerchantData(String id) {
     try {
-      final data = FirebaseFirestore.instance.collection(MerchantModel.collectionName).where(MerchantModel.merchantIdString, isEqualTo: id).snapshots();
+      final data = merchantCollection.where(MerchantModel.merchantIdString, isEqualTo: id).snapshots();
       data.listen((result) {
         final merchant = result.docs.map((e) => MerchantModel.fromMap(e.data())).toList();
         _merchantData.value = RemoteData<List<MerchantModel>>(status: RemoteDataStatus.success, data: merchant);
@@ -165,7 +156,7 @@ class NewOrderCardController extends GetxController {
   }
   void _loadCustomerData(String id) {
     try {
-      final data = FirebaseFirestore.instance.collection(CustomerModel.collectionName).where(CustomerModel.customerIdString, isEqualTo: id).snapshots();
+      final data = customerCollection.where(CustomerModel.customerIdString, isEqualTo: id).snapshots();
       data.listen((result) {
         final customer = result.docs.map((e) => CustomerModel.fromMap(e.data())).toList();
         _customerData.value = RemoteData<List<CustomerModel>>(status: RemoteDataStatus.success, data: customer);
@@ -176,7 +167,7 @@ class NewOrderCardController extends GetxController {
   }
   void _loadDeliverData(String id) {
     try {
-      final data = FirebaseFirestore.instance.collection(DeliverModel.collectionName).where(DeliverModel.orderIdString, isEqualTo: id).snapshots();
+      final data = deliverCollection.where(DeliverModel.orderIdString, isEqualTo: id).snapshots();
       data.listen((result) {
         final deliver = result.docs.map((e) => DeliverModel.fromMap(e.data())).toList();
         _deliverData.value = RemoteData<List<DeliverModel>>(status: RemoteDataStatus.success, data: deliver);
@@ -184,5 +175,31 @@ class NewOrderCardController extends GetxController {
     } catch (ex) {
       _deliverData.value = RemoteData<List<DeliverModel>>(status: RemoteDataStatus.error, data: null);
     }
+  }
+
+  void _getDocumentId(String id) {
+    orderCollection.where(DeliverModel.orderIdString, isEqualTo: id).get().then((snapshot) => {
+      snapshot.docs.forEach((element) {       // ignore: avoid_function_literals_in_foreach_calls
+        orderDocId.value = '';
+        orderDocId.value = element.id;
+      }),
+    });
+    deliverCollection.where(DeliverModel.orderIdString, isEqualTo: id).get().then((snapshot) => {
+      snapshot.docs.forEach((element) {       // ignore: avoid_function_literals_in_foreach_calls
+        deliverDocId.value = '';
+        deliverDocId.value = element.id;
+      }),
+    });
+  }
+  void updateOrderStatus() {
+    orderCollection.doc(orderDocId.value).update({OrderModel.isNewString : false}).then((_) => debugPrint('order status is false.'));
+  }
+
+  void rejectFunction() {
+    orderCollection.doc(orderDocId.value).update({OrderModel.isNewString : false}).then((_) => debugPrint('update successful.'));
+    deliverCollection.doc(deliverDocId.value).update({DeliverModel.processString : 'Rejected'}).then((_) => debugPrint('order id ${newOrderId.value} was reject.'));
+    deliverCollection.doc(deliverDocId.value).update({DeliverModel.step1String : false, DeliverModel.step2String : false, DeliverModel.step3String : false, DeliverModel.step4String : false}).then((_) => debugPrint('update all step successful.'));
+    _timer.cancel();
+    Get.offAllNamed('/instruction');
   }
 }

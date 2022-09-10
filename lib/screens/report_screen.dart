@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:loy_eat/controllers/order_controller.dart';
+import 'package:loy_eat/controllers/new_order_card_controller.dart';
 import 'package:loy_eat/controllers/report_controller.dart';
 import 'package:loy_eat/models/deliver_model.dart';
 import 'package:loy_eat/models/order_model.dart';
@@ -16,7 +16,7 @@ class ReportScreen extends StatelessWidget {
   ReportScreen({Key? key}) : super(key: key);
 
   final controller = Get.put(ReportController());
-  final orderController = Get.put(OrderController());
+  final newOrderController = Get.put(NewOrderCardController());
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +25,7 @@ class ReportScreen extends StatelessWidget {
         extendBody: true,
         backgroundColor: lightGray,
         body: _buildBody,
-        bottomSheet: _buildNewOrder,
+        bottomSheet: Obx(() => newOrderController.newOrderId.value != '' ? NewOrderCard() : const SizedBox()),
       ),
     );
   }
@@ -41,13 +41,6 @@ class ReportScreen extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-  Widget get _buildNewOrder {
-    return Obx(
-          () => orderController.isNewOrder.value
-          ? NewOrderCard()
-          : const SizedBox(),
     );
   }
 

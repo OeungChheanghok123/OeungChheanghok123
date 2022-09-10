@@ -1,11 +1,10 @@
-// ignore_for_file: unnecessary_null_comparison, avoid_function_literals_in_foreach_calls
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:loy_eat/controllers/order_controller.dart';
+import 'package:loy_eat/controllers/new_order_card_controller.dart';
 import 'package:loy_eat/models/customer_model.dart';
 import 'package:loy_eat/models/merchant_model.dart';
 import 'package:loy_eat/models/order_model.dart';
@@ -13,7 +12,7 @@ import 'package:loy_eat/models/remote_data.dart';
 import 'package:loy_eat/widgets/layout_widget/color.dart';
 
 class MapController extends GetxController {
-  final orderController = Get.put(OrderController());
+  final newOrderController = Get.put(NewOrderCardController());
   final googleApiKey = "AIzaSyBSyQsntLybWDXtK0XIhYOHMNs9z-6LdVg";
 
   var zoom = 15.0.obs;
@@ -30,11 +29,20 @@ class MapController extends GetxController {
   List<LatLng> polylineCoordinates = [];
   PolylinePoints polylinePoints = PolylinePoints();
 
+  final _orderData = RemoteData<List<OrderModel>>(status: RemoteDataStatus.processing, data: null).obs;
+  RemoteData<List<OrderModel>> get orderData => _orderData.value;
+
+  final _merchantData = RemoteData<List<MerchantModel>>(status: RemoteDataStatus.processing, data: null).obs;
+  RemoteData<List<MerchantModel>> get merchantData => _merchantData.value;
+
+  final _customerData = RemoteData<List<CustomerModel>>(status: RemoteDataStatus.processing, data: null).obs;
+  RemoteData<List<CustomerModel>> get customerData => _customerData.value;
+
   @override
   void onInit() {
+    super.onInit();
     getCurrentCameraPosition();
     loadOrderData();
-    super.onInit();
   }
 
   Future<Position> getCurrentPosition() async {
@@ -60,7 +68,7 @@ class MapController extends GetxController {
     Position _currentPos = await getCurrentPosition();
     latitude.value = _currentPos.latitude;
     longitude.value = _currentPos.longitude;
-    if (_currentPos != null) {
+    if (_currentPos != null) {        // ignore: unnecessary_null_comparison
       return CameraPosition(
         target: LatLng(latitude.value, longitude.value),
         zoom: zoom.value,
@@ -114,18 +122,9 @@ class MapController extends GetxController {
     );
   }
 
-  final _orderData = RemoteData<List<OrderModel>>(status: RemoteDataStatus.processing, data: null).obs;
-  RemoteData<List<OrderModel>> get orderData => _orderData.value;
-
-  final _merchantData = RemoteData<List<MerchantModel>>(status: RemoteDataStatus.processing, data: null).obs;
-  RemoteData<List<MerchantModel>> get merchantData => _merchantData.value;
-
-  final _customerData = RemoteData<List<CustomerModel>>(status: RemoteDataStatus.processing, data: null).obs;
-  RemoteData<List<CustomerModel>> get customerData => _customerData.value;
-
   void loadOrderData() {
     try {
-      final data = FirebaseFirestore.instance.collection(OrderModel.collectionName).where(OrderModel.orderIdString, isEqualTo: orderController.orderId.value).snapshots();
+      final data = FirebaseFirestore.instance.collection(OrderModel.collectionName).where(OrderModel.orderIdString, isEqualTo: newOrderController.newOrderId.value).snapshots();
       data.listen((result) {
         final orders = result.docs.map((e) => OrderModel.fromMap(e.data())).toList();
         _orderData.value = RemoteData<List<OrderModel>>(status: RemoteDataStatus.success, data: orders);
@@ -182,9 +181,9 @@ class MapController extends GetxController {
     );
     polylineCoordinates.clear();
     if (result.points.isNotEmpty) {
-      result.points.forEach((PointLatLng point) {
+      for (var point in result.points) {
         polylineCoordinates.add(LatLng(point.latitude, point.longitude));
-      });
+      }
     }
     addPolyLine(location.toString());
   }

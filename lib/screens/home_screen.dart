@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:loy_eat/controllers/home_controller.dart';
-import 'package:loy_eat/controllers/order_controller.dart';
+import 'package:loy_eat/controllers/new_order_card_controller.dart';
 import 'package:loy_eat/models/driver_report_model.dart';
 import 'package:loy_eat/models/remote_data.dart';
 import 'package:loy_eat/widgets/layout_widget/color.dart';
@@ -20,7 +20,7 @@ class HomeScreen extends StatelessWidget {
 
   final dateFormat = DateFormat('dd-MMM-yyyy');
   final homeController = Get.put(HomeController());
-  final orderController = Get.put(OrderController());
+  final newOrderController = Get.put(NewOrderCardController());
 
   @override
   Widget build(BuildContext context) {
@@ -30,8 +30,7 @@ class HomeScreen extends StatelessWidget {
         backgroundColor: lightGray,
         appBar: HomeScreenAppBar(),
         body: _buildBody,
-        bottomSheet: Obx(() =>
-        orderController.isNewOrder.value ? NewOrderCard() : const SizedBox(),
+        bottomSheet: Obx(() => newOrderController.newOrderId.value != '' ? NewOrderCard() : const SizedBox(),
         ),
       ),
     );
@@ -96,8 +95,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildTextDateAndIcon(
-      {required String text, required IconData iconData}) {
+  Widget _buildTextDateAndIcon({required String text, required IconData iconData}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -250,11 +248,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildCardState(
-      {required double width,
-        required IconData iconData,
-        required String title,
-        required String subTitle}) {
+  Widget _buildCardState({required double width, required IconData iconData, required String title, required String subTitle}) {
     return Card(
       color: white,
       elevation: 0,
@@ -341,9 +335,7 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget _buildBreakDownItem(DriverReportModel model) {
-    final totalEarning = double.parse(model.deliveryFee) +
-        double.parse(model.bonus) +
-        double.parse(model.tip);
+    final totalEarning = double.parse(model.deliveryFee) + double.parse(model.bonus) + double.parse(model.tip);
     return Column(
       children: [
         _buildCardBreakDown(
@@ -368,11 +360,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildCardBreakDown(
-      {required String text,
-        required String value,
-        bool isDotted = true,
-        bool isNon = false}) {
+  Widget _buildCardBreakDown({required String text, required String value, bool isDotted = true, bool isNon = false}) {
     return Column(
       children: [
         Row(

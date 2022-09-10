@@ -25,16 +25,16 @@ class OrderModel {
   String totalDiscount;
 
   OrderModel({
-    required this.customerId,
-    required this.customerName,
-    required this.date,
-    required this.isNew,
-    required this.merchantId,
-    required this.merchantName,
-    required this.orderId,
-    required this.status,
-    required this.time,
-    required this.totalDiscount,
+    this.customerId = '',
+    this.customerName = '',
+    this.date = '',
+    this.isNew = false,
+    this.merchantId = '',
+    this.merchantName = '',
+    this.orderId = '',
+    this.status = '',
+    this.time = '',
+    this.totalDiscount = '',
   });
 
   Map<String, dynamic> toMap() {
