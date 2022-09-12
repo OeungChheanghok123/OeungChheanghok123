@@ -14,20 +14,19 @@ class HomeController extends GetxController{
   var status = "Offline".obs;
   var appBarColor = carrot.obs;
   var toggleIcon = Icons.toggle_off.obs;
+
   var notificationColor = rabbit.obs;
   var notificationCount = 0.obs;
   var readAll = false.obs;
+
   var startDate  = 'Start Date'.obs;
   var endDate = 'End Date'.obs;
+
   var id = '';
   var docId = '';
+
   final driverReportCollection = FirebaseFirestore.instance.collection(DriverReportModel.collectionName);
   final driverCollection = FirebaseFirestore.instance.collection(DriverModel.collectionName);
-
-  Future<Widget> wait3SecAndLoadData() async {
-    await Future.delayed(const Duration(seconds: 3));
-    return Container();
-  }
 
   final List<ReportChart> chartData = [
     ReportChart(date: '15\nMon', price: 12.45, barColor: charts.ColorUtil.fromDartColor(rabbit)),
@@ -46,10 +45,7 @@ class HomeController extends GetxController{
 
   @override
   void onInit() {
-    CollectionReference notification = FirebaseFirestore.instance.collection('notification');
-    notification.where('isRead', isEqualTo: false).get().then((QuerySnapshot snapshot) => {
-      notificationCount.value = snapshot.docs.length,
-    });
+    loadNotification();
     _loadDriverReportData();
     super.onInit();
   }
@@ -59,16 +55,17 @@ class HomeController extends GetxController{
       final driver = driverCollection.where(DriverModel.telString, isEqualTo: driverPhoneNumber).snapshots();
       driver.listen((e) {
         final driverData = e.docs.map((e) => DriverModel.fromMap(e.data())).toList();
-        toggleState.value = driverData[0].isOnline;
+
         id = driverData[0].driverId;
-        loadToggleState();
-        loadDocumentId(id);
         final data = driverReportCollection.where(DriverReportModel.driverIdString, isEqualTo: id).snapshots();
         data.listen((result) {
           final driverReport = result.docs.map((e) => DriverReportModel.fromMap(e.data())).toList();
           _driverReportData.value = RemoteData<List<DriverReportModel>>(status: RemoteDataStatus.success, data: driverReport);
         });
 
+        toggleState.value = driverData[0].isOnline;
+        loadToggleState();
+        loadDocumentId(id);
       });
     } catch (ex) {
       _driverReportData.value = RemoteData<List<DriverReportModel>>(status: RemoteDataStatus.error, data: null);
@@ -95,6 +92,13 @@ class HomeController extends GetxController{
       }),
     });
   }
+  void loadNotification() {
+    final notification = FirebaseFirestore.instance.collection('notification');
+    final data = notification.where('isRead', isEqualTo: false).snapshots();
+    data.listen((e) {
+      notificationCount.value = e.docs.length;
+    });
+  }
   void toggleClicked() {
     if (toggleState.value == false) {
       driverCollection.doc(docId).update({DriverModel.isOnlineString : true}).then((_) => debugPrint('Driver is Online'));
@@ -102,5 +106,9 @@ class HomeController extends GetxController{
       driverCollection.doc(docId).update({DriverModel.isOnlineString : false}).then((_) => debugPrint('Driver is Offline'));
     }
     loadToggleState();
+  }
+  Future<Widget> wait3SecAndLoadData() async {
+    await Future.delayed(const Duration(seconds: 3));
+    return Container();
   }
 }

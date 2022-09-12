@@ -3,8 +3,10 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:loy_eat/controllers/main_page_controller.dart';
 import 'package:loy_eat/models/customer_model.dart';
 import 'package:loy_eat/models/deliver_model.dart';
+import 'package:loy_eat/models/driver_model.dart';
 import 'package:loy_eat/models/merchant_model.dart';
 import 'package:loy_eat/models/order_model.dart';
 import 'package:loy_eat/models/remote_data.dart';
@@ -14,6 +16,9 @@ class NewOrderCardController extends GetxController {
   late Timer _timer;
   var startCounter = 60.obs;
 
+  final mainPageController = Get.put(MainPageController());
+
+  final driverCollection = FirebaseFirestore.instance.collection(DriverModel.collectionName);
   final orderCollection = FirebaseFirestore.instance.collection(OrderModel.collectionName);
   final deliverCollection = FirebaseFirestore.instance.collection(DeliverModel.collectionName);
   final merchantCollection = FirebaseFirestore.instance.collection(MerchantModel.collectionName);
@@ -41,6 +46,7 @@ class NewOrderCardController extends GetxController {
 
   @override
   void onInit() {
+    startTimer();
     _loadNewOrder();
     super.onInit();
   }
@@ -196,10 +202,21 @@ class NewOrderCardController extends GetxController {
   }
 
   void rejectFunction() {
+    setDriverId();
     orderCollection.doc(orderDocId.value).update({OrderModel.isNewString : false}).then((_) => debugPrint('update successful.'));
     deliverCollection.doc(deliverDocId.value).update({DeliverModel.processString : 'Rejected'}).then((_) => debugPrint('order id ${newOrderId.value} was reject.'));
     deliverCollection.doc(deliverDocId.value).update({DeliverModel.step1String : false, DeliverModel.step2String : false, DeliverModel.step3String : false, DeliverModel.step4String : false}).then((_) => debugPrint('update all step successful.'));
     _timer.cancel();
     Get.offAllNamed('/instruction');
+  }
+  void setDriverId() {
+    final tel = mainPageController.readDriverPhoneNumber();
+    final data = driverCollection.where(DriverModel.telString, isEqualTo: tel).snapshots();
+    data.listen((data) {
+      final driver = data.docs.map((e) => DriverModel.fromMap(e.data())).toList();
+      String id = driver[0].driverId;
+      orderCollection.doc(orderDocId.value).update({OrderModel.driverIdString : id}).then((_) => debugPrint('Order was accept/reject by driver id: $id'));
+      deliverCollection.doc(deliverDocId.value).update({DeliverModel.driverIdString : id}).then((_) => debugPrint('deliver was accept/reject by driver id: $id'));
+    });
   }
 }

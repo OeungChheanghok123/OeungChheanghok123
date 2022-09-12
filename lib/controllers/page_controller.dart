@@ -10,7 +10,7 @@ import 'package:loy_eat/screens/instruction_screen.dart';
 import 'package:loy_eat/screens/invite_friend_screen.dart';
 import 'package:loy_eat/screens/login_fail_screen.dart';
 import 'package:loy_eat/screens/login_screen.dart';
-import 'package:loy_eat/screens/order_accept.dart';
+import 'package:loy_eat/screens/order_accept_screen.dart';
 import 'package:loy_eat/screens/order_screen.dart';
 import 'package:loy_eat/screens/qr_code_screen.dart';
 import 'package:loy_eat/screens/rating_score_screen.dart';

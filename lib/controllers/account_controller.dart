@@ -88,15 +88,17 @@ class AccountController extends GetxController {
   }
   void loadDocumentId(String id) {
     driverCollection.where(DriverModel.driverIdString, isEqualTo: id).get().then((snapshot) => {
-      snapshot.docs.forEach((element) { // ignore: avoid_function_literals_in_foreach_calls
+      snapshot.docs.forEach((element) {      // ignore: avoid_function_literals_in_foreach_calls
         docId = element.id;
       }),
     });
   }
   void logout() {
     mainPageController.removeLogin();
+    mainPageController.removeDriverPhoneNumber();
     mainPageController.removeLanguage();
     mainPageController.removeCode();
     driverCollection.doc(docId).update({DriverModel.isOnlineString : false}).then((_) => debugPrint('Driver is Offline'));
+    Get.reloadAll();
   }
 }
