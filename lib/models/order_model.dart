@@ -12,6 +12,7 @@ class OrderModel {
   static const String statusString = "status";
   static const String timeString = "time";
   static const String totalDiscountString = "total_discount";
+  static const String driverIdString = "driver_id";
 
   String customerId;
   String customerName;
@@ -23,6 +24,7 @@ class OrderModel {
   String status;
   String time;
   String totalDiscount;
+  String driverId;
 
   OrderModel({
     this.customerId = '',
@@ -35,6 +37,7 @@ class OrderModel {
     this.status = '',
     this.time = '',
     this.totalDiscount = '',
+    this.driverId = '',
   });
 
   Map<String, dynamic> toMap() {
@@ -50,7 +53,8 @@ class OrderModel {
     result.addAll({statusString: status});
     result.addAll({timeString: time});
     result.addAll({totalDiscountString: totalDiscount});
-  
+    result.addAll({driverIdString: driverId});
+
     return result;
   }
 
@@ -66,6 +70,7 @@ class OrderModel {
       status: map[statusString] ?? '',
       time: map[timeString] ?? '',
       totalDiscount: map[totalDiscountString] ?? '',
+      driverId: map[driverIdString] ?? '',
     );
   }
 

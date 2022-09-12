@@ -47,7 +47,6 @@ class HomeScreen extends StatelessWidget {
       ),
     );
   }
-
   Widget _buildFunctionBody(BuildContext context, AsyncSnapshot<Widget> snapshot) {
     if (snapshot.hasError) {
       return TextWidget(text: "${snapshot.error}");
@@ -94,7 +93,6 @@ class HomeScreen extends StatelessWidget {
       ),
     );
   }
-
   Widget _buildTextDateAndIcon({required String text, required IconData iconData}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -106,7 +104,6 @@ class HomeScreen extends StatelessWidget {
       ],
     );
   }
-
   void showCalendar(BuildContext context) {
     showDateRangePicker(
       context: context,
@@ -159,7 +156,6 @@ class HomeScreen extends StatelessWidget {
       ),
     );
   }
-
   Widget get _buildStateWidget {
     return Obx(() {
       final status = homeController.data.status;
@@ -178,7 +174,6 @@ class HomeScreen extends StatelessWidget {
       }
     });
   }
-
   Widget stateItemWidget(BuildContext context, int index) {
     final report = homeController.data.data![index];
     return _buildStatusItem(report);
@@ -248,6 +243,79 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
+  Widget get _buildBreakDown {
+    return Container(
+      margin: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          TextWidget(isTitle: true, text: 'Breakdown'.tr),
+          Card(
+            color: white,
+            elevation: 0,
+            borderOnForeground: false,
+            margin: const EdgeInsets.only(top: 5),
+            shape: RoundedRectangleBorder(
+              side: BorderSide(color: white.withOpacity(0.5), width: 1),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Container(
+              margin: const EdgeInsets.all(10),
+              child: _buildBreakDownWidget,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+  Widget get _buildBreakDownWidget {
+    return Obx(() {
+      final status = homeController.data.status;
+      if (status == RemoteDataStatus.processing) {
+        return ScreenWidgets.loading;
+      } else if (status == RemoteDataStatus.error) {
+        return ScreenWidgets.error;
+      } else {
+        final report = homeController.data.data!;
+        return ListView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: report.length,
+          itemBuilder: breakDownItemWidget,
+        );
+      }
+    });
+  }
+  Widget breakDownItemWidget(BuildContext context, int index) {
+    final report = homeController.data.data![index];
+    return _buildBreakDownItem(report);
+  }
+  Widget _buildBreakDownItem(DriverReportModel model) {
+    final totalEarning = double.parse(model.deliveryFee) + double.parse(model.bonus) + double.parse(model.tip);
+    return Column(
+      children: [
+        _buildCardBreakDown(
+          text: 'Net delivery fee'.tr,
+          value: '\$${model.deliveryFee}',
+        ),
+        _buildCardBreakDown(
+          text: 'Bonus'.tr,
+          value: '\$${model.bonus}',
+        ),
+        _buildCardBreakDown(
+          text: 'Tip'.tr,
+          value: '\$${model.tip}',
+          isDotted: false,
+        ),
+        _buildCardBreakDown(
+          text: 'Total Earning'.tr,
+          value: '\$${totalEarning.toStringAsFixed(2)}',
+          isNon: true,
+        ),
+      ],
+    );
+  }
+
   Widget _buildCardState({required double width, required IconData iconData, required String title, required String subTitle}) {
     return Card(
       color: white,
@@ -281,82 +349,6 @@ class HomeScreen extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-
-  Widget get _buildBreakDown {
-    return Container(
-      margin: const EdgeInsets.fromLTRB(15, 0, 15, 0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          TextWidget(isTitle: true, text: 'Breakdown'.tr),
-          Card(
-            color: white,
-            elevation: 0,
-            borderOnForeground: false,
-            margin: const EdgeInsets.only(top: 5),
-            shape: RoundedRectangleBorder(
-              side: BorderSide(color: white.withOpacity(0.5), width: 1),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Container(
-              margin: const EdgeInsets.all(10),
-              child: _buildBreakDownWidget,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget get _buildBreakDownWidget {
-    return Obx(() {
-      final status = homeController.data.status;
-      if (status == RemoteDataStatus.processing) {
-        return ScreenWidgets.loading;
-      } else if (status == RemoteDataStatus.error) {
-        return ScreenWidgets.error;
-      } else {
-        final report = homeController.data.data!;
-        return ListView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: report.length,
-          itemBuilder: breakDownItemWidget,
-        );
-      }
-    });
-  }
-
-  Widget breakDownItemWidget(BuildContext context, int index) {
-    final report = homeController.data.data![index];
-    return _buildBreakDownItem(report);
-  }
-
-  Widget _buildBreakDownItem(DriverReportModel model) {
-    final totalEarning = double.parse(model.deliveryFee) + double.parse(model.bonus) + double.parse(model.tip);
-    return Column(
-      children: [
-        _buildCardBreakDown(
-          text: 'Net delivery fee'.tr,
-          value: '\$${model.deliveryFee}',
-        ),
-        _buildCardBreakDown(
-          text: 'Bonus'.tr,
-          value: '\$${model.bonus}',
-        ),
-        _buildCardBreakDown(
-          text: 'Tip'.tr,
-          value: '\$${model.tip}',
-          isDotted: false,
-        ),
-        _buildCardBreakDown(
-          text: 'Total Earning'.tr,
-          value: '\$$totalEarning',
-          isNon: true,
-        ),
-      ],
     );
   }
 

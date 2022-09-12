@@ -73,8 +73,11 @@ class VerifyPhoneNumberController extends GetxController {
             Get.toNamed('/enter_otp_code');
             verifyNumber();
             break;
-          } else {
-            Get.toNamed('/log_in_fail');
+          }
+          if (i == allPhoneNumberList.length - 1) {
+            if (num != phoneNumber) {
+              Get.toNamed('/log_in_fail');
+            }
           }
         }
       });

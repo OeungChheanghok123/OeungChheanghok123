@@ -223,6 +223,7 @@ class NewOrderCard extends StatelessWidget {
             buttonText: 'Accept'.tr,
             color: succeed,
             onPressed: () {
+              newOrderController.setDriverId();
               newOrderController.closeTimer();
               newOrderController.updateOrderStatus();
               mapController.getCurrentCameraPosition();
