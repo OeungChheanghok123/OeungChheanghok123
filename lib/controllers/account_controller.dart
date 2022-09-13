@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:get/get.dart';
 import 'package:loy_eat/controllers/languages_controller.dart';
 import 'package:loy_eat/controllers/main_page_controller.dart';
@@ -93,12 +94,12 @@ class AccountController extends GetxController {
       }),
     });
   }
-  void logout() {
+  void logout(BuildContext context) {
     mainPageController.removeLogin();
     mainPageController.removeDriverPhoneNumber();
     mainPageController.removeLanguage();
     mainPageController.removeCode();
     driverCollection.doc(docId).update({DriverModel.isOnlineString : false}).then((_) => debugPrint('Driver is Offline'));
-    Get.reloadAll();
+    Phoenix.rebirth(context);
   }
 }

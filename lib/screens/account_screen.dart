@@ -290,7 +290,7 @@ class AccountScreen extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(40, 0, 40, 30),
       child: ButtonWidget(
         onPressed: () {
-          accountController.logout();
+          accountController.logout(Get.context!);
           Get.offAllNamed('/start_up');
         },
         width: double.infinity,

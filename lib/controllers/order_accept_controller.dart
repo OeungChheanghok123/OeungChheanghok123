@@ -28,6 +28,8 @@ class OrderAcceptController extends GetxController{
   var driverReportDocId = '';
 
   var orderDeliveryFee = '0.00'.obs;
+  var orderBonus = '0.00'.obs;
+  var orderTip = '0.00'.obs;
 
   final deliverCollection = FirebaseFirestore.instance.collection(DeliverModel.collectionName);
   final orderCollection = FirebaseFirestore.instance.collection(OrderModel.collectionName);
@@ -76,18 +78,28 @@ class OrderAcceptController extends GetxController{
       setDriverReportData();
     }
   }
-  void setDriverReportData() {
-    final data = driverReportCollection.where(DriverReportModel.driverIdString, isEqualTo: driverId).snapshots();
-    data.listen((result) {
-      final driverReport = result.docs.map((e) => DriverReportModel.fromMap(e.data())).toList();
+  void setDriverReportData() async {
+    final data = await driverReportCollection.where(DriverReportModel.driverIdString, isEqualTo: driverId).get();
+    final driverReport = data.docs.map((e) => DriverReportModel.fromMap(e.data())).toList();
 
-      var deliveryFee = double.parse(driverReport[0].deliveryFee);
-      debugPrint('orderDeliveryFee: ${orderDeliveryFee.value} deliverFee : $deliveryFee');
-      var totalDeliveryFee = deliveryFee + double.parse(orderDeliveryFee.value);
+    var deliveryFee = double.parse(driverReport[0].deliveryFee);
+    var bonus = double.parse(driverReport[0].bonus);
+    var tip = double.parse(driverReport[0].tip);
 
-      driverReportCollection.doc(driverReportDocId).update({DriverReportModel.deliveryFeeString : totalDeliveryFee.toStringAsFixed(2)});
+    var totalDeliveryFee = deliveryFee + double.parse(orderDeliveryFee.value);
+    var totalBonus = bonus + double.parse(orderBonus.value);
+    var totalTip = tip + double.parse(orderTip.value);
+
+    debugPrint('totalDeliveryFee: $totalDeliveryFee, totalBonus: $totalBonus, totalTip: $totalTip');
+    driverReportCollection.doc(driverReportDocId).update({
+      DriverReportModel.deliveryFeeString: totalDeliveryFee.toStringAsFixed(2),
     });
-
+    driverReportCollection.doc(driverReportDocId).update({
+      DriverReportModel.bonusString: totalBonus.toStringAsFixed(2),
+    });
+    driverReportCollection.doc(driverReportDocId).update({
+      DriverReportModel.tipString: totalTip.toStringAsFixed(2),
+    });
   }
   void _loadDeliverDocumentId(String id) {
     deliverCollection.where(DeliverModel.orderIdString, isEqualTo: id).get().then((snapshot) => {
@@ -98,7 +110,8 @@ class OrderAcceptController extends GetxController{
         _loadDeliverReportDocumentId(driverId);
 
         orderDeliveryFee.value = element['delivery_fee'];
-        debugPrint('orderDeliveryFee is : ${orderDeliveryFee.value}');
+        orderBonus.value = element['bonus'];
+        orderTip.value = element['tip'];
       }),
     });
   }
