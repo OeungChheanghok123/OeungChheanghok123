@@ -1,7 +1,6 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:loy_eat/models/notification_model.dart';
 import 'package:loy_eat/screens/account_screen.dart';
 import 'package:loy_eat/screens/home_screen.dart';
 import 'package:loy_eat/screens/order_screen.dart';
@@ -58,8 +57,6 @@ class _InstructionScreenState extends State<InstructionScreen> {
   @override
   void initState() {
     super.initState();
-
-    LocalNotificationService.initNotification(context);
 
     FirebaseMessaging.instance.getInitialMessage().then((message) {
       if (message != null) {

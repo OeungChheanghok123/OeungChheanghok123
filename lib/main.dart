@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:get/get.dart';
 import 'package:loy_eat/controllers/main_page_controller.dart';
 import 'package:loy_eat/controllers/page_controller.dart';
@@ -17,7 +18,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   FirebaseMessaging.onBackgroundMessage(backgroundHandler);
-  runApp(MyApp());
+  runApp(Phoenix(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {

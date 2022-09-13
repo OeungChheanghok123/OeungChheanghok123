@@ -291,20 +291,24 @@ class HomeScreen extends StatelessWidget {
     return _buildBreakDownItem(report);
   }
   Widget _buildBreakDownItem(DriverReportModel model) {
-    final totalEarning = double.parse(model.deliveryFee) + double.parse(model.bonus) + double.parse(model.tip);
+    var deliveryFee = double.parse(model.deliveryFee);
+    var bonus = double.parse(model.bonus);
+    var tip = double.parse(model.tip);
+    var totalEarning = double.parse(model.deliveryFee) + double.parse(model.bonus) + double.parse(model.tip);
+
     return Column(
       children: [
         _buildCardBreakDown(
           text: 'Net delivery fee'.tr,
-          value: '\$${model.deliveryFee}',
+          value: '\$${deliveryFee.toStringAsFixed(2)}',
         ),
         _buildCardBreakDown(
           text: 'Bonus'.tr,
-          value: '\$${model.bonus}',
+          value: '\$${bonus.toStringAsFixed(2)}',
         ),
         _buildCardBreakDown(
           text: 'Tip'.tr,
-          value: '\$${model.tip}',
+          value: '\$${tip.toStringAsFixed(2)}',
           isDotted: false,
         ),
         _buildCardBreakDown(
