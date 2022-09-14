@@ -103,7 +103,7 @@ class OrderAccept extends StatelessWidget {
         ),
         _buildTextWidget(
           marginTop: 30,
-          text: 'How was your experience with Sovongdy?',
+          text: 'How was your experience with ${orderAcceptController.customerName}?',
           textAlign: TextAlign.center,
         ),
         startRatingWidget,

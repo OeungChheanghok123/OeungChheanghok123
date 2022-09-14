@@ -22,10 +22,13 @@ class OrderAcceptController extends GetxController{
   var step4 = '';
   var orderStep = [];
 
+  var customerName = '';
   var driverId = '';
   var driverDocId = '';
   var deliverDocId = '';
   var driverReportDocId = '';
+
+  var orderDistance = '0.00'.obs;
 
   var orderDeliveryFee = '0.00'.obs;
   var orderBonus = '0.00'.obs;
@@ -75,6 +78,7 @@ class OrderAcceptController extends GetxController{
     if (slideIndex.value == 4) {
       deliverCollection.doc(deliverDocId).update({DeliverModel.step4String : true}).then((_) => debugPrint('update step 4 successful.'));
       deliverCollection.doc(deliverDocId).update({DeliverModel.processString : 'Delivered'}).then((_) => debugPrint('order is Delivered successful.'));
+      customerName = newOrderCardController.customerName.value;
       setDriverReportData();
     }
   }
@@ -82,23 +86,25 @@ class OrderAcceptController extends GetxController{
     final data = await driverReportCollection.where(DriverReportModel.driverIdString, isEqualTo: driverId).get();
     final driverReport = data.docs.map((e) => DriverReportModel.fromMap(e.data())).toList();
 
+    var distance = double.parse(driverReport[0].distance);
+    var trip = int.parse(driverReport[0].trip);
     var deliveryFee = double.parse(driverReport[0].deliveryFee);
     var bonus = double.parse(driverReport[0].bonus);
     var tip = double.parse(driverReport[0].tip);
 
+    var totalDistance = distance + double.parse(orderDistance.value);
+    var totalTrip = trip + 1;
     var totalDeliveryFee = deliveryFee + double.parse(orderDeliveryFee.value);
     var totalBonus = bonus + double.parse(orderBonus.value);
     var totalTip = tip + double.parse(orderTip.value);
 
-    debugPrint('totalDeliveryFee: $totalDeliveryFee, totalBonus: $totalBonus, totalTip: $totalTip');
     driverReportCollection.doc(driverReportDocId).update({
-      DriverReportModel.deliveryFeeString: totalDeliveryFee.toStringAsFixed(2),
-    });
-    driverReportCollection.doc(driverReportDocId).update({
-      DriverReportModel.bonusString: totalBonus.toStringAsFixed(2),
-    });
-    driverReportCollection.doc(driverReportDocId).update({
-      DriverReportModel.tipString: totalTip.toStringAsFixed(2),
+      DriverReportModel.distanceString : totalDistance.toStringAsFixed(2),
+      DriverReportModel.tripString : totalTrip.toString(),
+
+      DriverReportModel.deliveryFeeString : totalDeliveryFee.toStringAsFixed(2),
+      DriverReportModel.bonusString : totalBonus.toStringAsFixed(2),
+      DriverReportModel.tipString : totalTip.toStringAsFixed(2),
     });
   }
   void _loadDeliverDocumentId(String id) {
@@ -109,6 +115,7 @@ class OrderAcceptController extends GetxController{
         _loadDriverDocumentId(driverId);
         _loadDeliverReportDocumentId(driverId);
 
+        orderDistance.value = element['distance'];
         orderDeliveryFee.value = element['delivery_fee'];
         orderBonus.value = element['bonus'];
         orderTip.value = element['tip'];

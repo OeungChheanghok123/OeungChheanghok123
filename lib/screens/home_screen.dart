@@ -1,3 +1,4 @@
+import 'package:custom_timer/custom_timer.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -187,12 +188,20 @@ class HomeScreen extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              _buildCardState(
-                width: 100,
-                iconData: Icons.access_time,
-                title: 'Online'.tr,
-                subTitle: '${model.onlineHour}h:${model.onlineMinute}m',
+              CustomTimer(
+                controller: homeController.controller,
+                begin: const Duration(hours: 0, minutes: 0, seconds: 0),
+                end: const Duration(days: 1),
+                builder: (remaining) {
+                  return _buildCardState(
+                    width: 100,
+                    iconData: Icons.access_time,
+                    title: 'Online'.tr,
+                    subTitle: '${remaining.minutes}m:${remaining.seconds}s',
+                  );
+                },
               ),
+
               const Space(),
               _buildCardState(
                 width: 100,
