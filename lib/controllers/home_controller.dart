@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:custom_timer/custom_timer.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:loy_eat/controllers/main_page_controller.dart';
@@ -23,8 +24,9 @@ class HomeController extends GetxController{
   var endDate = 'End Date'.obs;
 
   var id = '';
-  var docId = '';
+  var driverDocId = '';
 
+  final CustomTimerController controller = CustomTimerController();
   final driverReportCollection = FirebaseFirestore.instance.collection(DriverReportModel.collectionName);
   final driverCollection = FirebaseFirestore.instance.collection(DriverModel.collectionName);
 
@@ -65,33 +67,38 @@ class HomeController extends GetxController{
 
         toggleState.value = driverData[0].isOnline;
         loadToggleState();
-        loadDocumentId(id);
+        loadDriverDocumentId(id);
       });
     } catch (ex) {
       _driverReportData.value = RemoteData<List<DriverReportModel>>(status: RemoteDataStatus.error, data: null);
     }
   }
+
   void loadToggleState(){
     if (toggleState.value == true) {
       appBarColor.value = rabbit;
       toggleIcon.value = Icons.toggle_on;
       status.value = "Online";
       notificationColor.value = carrot;
+      controller.start();
     }
     else {
       appBarColor.value = carrot;
       toggleIcon.value = Icons.toggle_off;
       status.value = "Offline";
       notificationColor.value = rabbit;
+      controller.pause();
+
     }
   }
-  void loadDocumentId(String id) {
+  void loadDriverDocumentId(String id) {
     driverCollection.where(DriverModel.driverIdString, isEqualTo: id).get().then((snapshot) => {
       snapshot.docs.forEach((element) { // ignore: avoid_function_literals_in_foreach_calls
-        docId = element.id;
+        driverDocId = element.id;
       }),
     });
   }
+
   void loadNotification() {
     final notification = FirebaseFirestore.instance.collection('notification');
     final data = notification.where('isRead', isEqualTo: false).snapshots();
@@ -101,9 +108,9 @@ class HomeController extends GetxController{
   }
   void toggleClicked() {
     if (toggleState.value == false) {
-      driverCollection.doc(docId).update({DriverModel.isOnlineString : true}).then((_) => debugPrint('Driver is Online'));
+      driverCollection.doc(driverDocId).update({DriverModel.isOnlineString : true}).then((_) => debugPrint('Driver is Online'));
     } else {
-      driverCollection.doc(docId).update({DriverModel.isOnlineString : false}).then((_) => debugPrint('Driver is Offline'));
+      driverCollection.doc(driverDocId).update({DriverModel.isOnlineString : false}).then((_) => debugPrint('Driver is Offline'));
     }
     loadToggleState();
   }
