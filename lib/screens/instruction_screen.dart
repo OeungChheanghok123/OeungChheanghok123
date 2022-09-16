@@ -15,7 +15,6 @@ class InstructionScreen extends StatefulWidget {
 }
 
 class _InstructionScreenState extends State<InstructionScreen> {
-
   int _currentTabIndex = 0;
 
   final _listTabPages = <Widget>[
