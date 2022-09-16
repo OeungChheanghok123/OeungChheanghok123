@@ -1,4 +1,3 @@
-import 'package:custom_timer/custom_timer.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -188,20 +187,28 @@ class HomeScreen extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              CustomTimer(
-                controller: homeController.controller,
-                begin: const Duration(hours: 0, minutes: 0, seconds: 0),
-                end: const Duration(days: 1),
-                builder: (remaining) {
-                  return _buildCardState(
-                    width: 100,
-                    iconData: Icons.access_time,
-                    title: 'Online'.tr,
-                    subTitle: '${remaining.minutes}m:${remaining.seconds}s',
-                  );
-                },
+              // CustomTimer(
+              //   controller: homeController.controller,
+              //   begin: Duration(minutes: int.parse(model.onlineHour), seconds: int.parse(model.onlineMinute)),
+              //   end: const Duration(days: 1),
+              //   builder: (remaining) {
+              //     homeController.onlineHour.value = remaining.minutes;
+              //     homeController.onlineMinute.value = remaining.seconds;
+              //
+              //     return Obx(() => _buildCardState(
+              //       width: 100,
+              //       iconData: Icons.access_time,
+              //       title: 'Online'.tr,
+              //       subTitle: '${homeController.onlineHour.value}m:${homeController.onlineMinute.value}s',
+              //     ));
+              //   },
+              // ),
+              _buildCardState(
+                width: 100,
+                iconData: Icons.access_time,
+                title: 'Online'.tr,
+                subTitle: '${model.onlineHour}h:${model.onlineMinute}m',
               ),
-
               const Space(),
               _buildCardState(
                 width: 100,
