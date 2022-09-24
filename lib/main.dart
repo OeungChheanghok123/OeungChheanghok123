@@ -5,7 +5,7 @@ import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:get/get.dart';
 import 'package:loy_eat/controllers/main_page_controller.dart';
 import 'package:loy_eat/controllers/page_controller.dart';
-import 'package:loy_eat/models/languages.dart';
+import 'package:loy_eat/models/languages_model.dart';
 import 'package:loy_eat/screens/instruction_screen.dart';
 import 'package:loy_eat/screens/start_up_screen.dart';
 

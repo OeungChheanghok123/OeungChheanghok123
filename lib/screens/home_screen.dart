@@ -4,8 +4,6 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:loy_eat/controllers/home_controller.dart';
 import 'package:loy_eat/controllers/new_order_card_controller.dart';
-import 'package:loy_eat/models/driver_report_model.dart';
-import 'package:loy_eat/models/remote_data.dart';
 import 'package:loy_eat/widgets/layout_widget/color.dart';
 import 'package:loy_eat/widgets/layout_widget/icon_widget.dart';
 import 'package:loy_eat/widgets/layout_widget/space.dart';
@@ -51,10 +49,11 @@ class HomeScreen extends StatelessWidget {
     if (snapshot.hasError) {
       return TextWidget(text: "${snapshot.error}");
     } else if (snapshot.hasData) {
-      return Container(
+      return Obx(() => Container(
         width: MediaQuery.of(context).size.width,
         alignment: Alignment.topCenter,
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             _buildDatePicker,
             _buildChart,
@@ -62,7 +61,7 @@ class HomeScreen extends StatelessWidget {
             _buildBreakDown,
           ],
         ),
-      );
+      ));
     } else {
       return Container(
         height: MediaQuery.of(context).size.height - 55,
@@ -73,33 +72,65 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget get _buildDatePicker {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 5, top: 10),
-      child: InkWell(
-        onTap: () => showCalendar,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            _buildTextDateAndIcon(
-              text: homeController.startDate.value.tr,
-              iconData: Icons.arrow_right_alt,
+    return Obx(() => Container(
+      margin: const EdgeInsets.only(top: 5),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          InkWell(
+            splashColor: none,
+            onTap: () => showCalendar(Get.context!),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 5),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  const Space(width: 10),
+                  _buildTextDateAndIcon(
+                    text: homeController.startDate.value.tr,
+                    iconData: Icons.arrow_right_alt,
+                    iconColor: homeController.isSearch.value ? black : black,
+                  ),
+                  homeController.isSearch.value ? const Padding(
+                    padding: EdgeInsets.only(right: 8.0),
+                    child: IconWidget(icon: Icons.arrow_right_alt, color: black),
+                  ) : Container(),
+                  _buildTextDateAndIcon(
+                    text: homeController.endDate.value.tr,
+                    iconData: Icons.arrow_drop_down,
+                    iconColor: homeController.isSearch.value ? none : black,
+                  )
+                ],
+              ),
             ),
-            _buildTextDateAndIcon(
-              text: homeController.endDate.value.tr,
-              iconData: Icons.arrow_drop_down,
+          ),
+          homeController.isSearch.value ? Padding(
+            padding: const EdgeInsets.only(left: 5.0),
+            child: InkWell(
+                splashColor: none,
+                onTap: () {
+                  homeController.startDate.value  = 'Start Date';
+                  homeController.endDate.value = 'End Date';
+
+                  homeController.isSearch.value = false;
+                  homeController.clearData();
+                  homeController.loadDriverReportData();
+                },
+                child: const IconWidget(icon: Icons.clear, color: red, size: 24),
             ),
-          ],
-        ),
+          ) : Container(),
+        ],
       ),
-    );
+    ));
   }
-  Widget _buildTextDateAndIcon({required String text, required IconData iconData}) {
+  Widget _buildTextDateAndIcon({required String text, required IconData iconData, required Color iconColor, double size = 16}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         TextWidget(text: text),
         const Space(),
-        IconWidget(icon: iconData, color: black),
+        homeController.isSearch.value ? Container() : IconWidget(icon: iconData, color: iconColor, size: size),
         const Space(),
       ],
     );
@@ -114,8 +145,18 @@ class HomeScreen extends StatelessWidget {
         DateTimeRange _fromRange =
         DateTimeRange(start: DateTime.now(), end: DateTime.now());
         _fromRange = value;
-        homeController.startDate.value = dateFormat.format(_fromRange.start);
-        homeController.endDate.value = dateFormat.format(_fromRange.end);
+
+        DateTime rangeStart = DateFormat('yyyy-MM-dd').parse(_fromRange.start.toString());
+        DateTime rangeEnd = DateFormat('yyyy-MM-dd').parse(_fromRange.end.toString());
+        var outputFormat = DateFormat('dd-MMM-yy');
+        var outputDateStart = outputFormat.format(rangeStart);
+        var outputDateEnd = outputFormat.format(rangeEnd);
+
+        homeController.startDate.value = outputDateStart;
+        homeController.endDate.value = outputDateEnd;
+
+        homeController.isSearch.value = true;
+        homeController.loadDriverReportData();
       }
     });
   }
@@ -124,7 +165,7 @@ class HomeScreen extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(top: 5, bottom: 5, left: 15, right: 15),
       color: lightGray,
-      height: 180,
+      height: 250,
       child: Card(
         elevation: 0,
         color: white,
@@ -136,8 +177,8 @@ class HomeScreen extends StatelessWidget {
         ),
         child: Container(
           alignment: Alignment.center,
-          padding: const EdgeInsets.fromLTRB(10, 5, 0, 15),
-          child: HomeScreenBarChart(data: homeController.chartData),
+          padding: const EdgeInsets.fromLTRB(15, 20, 15, 0),
+          child: homeController.chartData.isNotEmpty ? HomeScreenBarChart(chartData: homeController.chartData) : ScreenWidgets.loading,
         ),
       ),
     );
@@ -151,34 +192,12 @@ class HomeScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           TextWidget(isTitle: true, text: 'States'.tr),
-          _buildStateWidget,
+          _buildStatusItem,
         ],
       ),
     );
   }
-  Widget get _buildStateWidget {
-    return Obx(() {
-      final status = homeController.data.status;
-      if (status == RemoteDataStatus.processing) {
-        return ScreenWidgets.loading;
-      } else if (status == RemoteDataStatus.error) {
-        return ScreenWidgets.error;
-      } else {
-        final report = homeController.data.data!;
-        return ListView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: report.length,
-          itemBuilder: stateItemWidget,
-        );
-      }
-    });
-  }
-  Widget stateItemWidget(BuildContext context, int index) {
-    final report = homeController.data.data![index];
-    return _buildStatusItem(report);
-  }
-  Widget _buildStatusItem(DriverReportModel model) {
+  Widget get _buildStatusItem {
     return Container(
       margin: const EdgeInsets.only(top: 5, bottom: 10),
       child: Row(
@@ -187,36 +206,20 @@ class HomeScreen extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // CustomTimer(
-              //   controller: homeController.controller,
-              //   begin: Duration(minutes: int.parse(model.onlineHour), seconds: int.parse(model.onlineMinute)),
-              //   end: const Duration(days: 1),
-              //   builder: (remaining) {
-              //     homeController.onlineHour.value = remaining.minutes;
-              //     homeController.onlineMinute.value = remaining.seconds;
-              //
-              //     return Obx(() => _buildCardState(
-              //       width: 100,
-              //       iconData: Icons.access_time,
-              //       title: 'Online'.tr,
-              //       subTitle: '${homeController.onlineHour.value}m:${homeController.onlineMinute.value}s',
-              //     ));
-              //   },
-              // ),
               _buildCardState(
                 width: 100,
                 iconData: Icons.access_time,
                 title: 'Online'.tr,
-                subTitle: '${model.onlineHour}h:${model.onlineMinute}m',
+                subTitle: '${homeController.totalOnlineHour.value}h:${homeController.totalOnlineMinute.value}m',
               ),
               const Space(),
               _buildCardState(
                 width: 100,
                 iconData: Icons.directions_run,
                 title: 'Distance'.tr,
-                subTitle: '${model.distance} km',
+                subTitle: '${homeController.totalDistance.value.toStringAsFixed(2)} km',
               ),
-            ],
+            ]
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -225,14 +228,14 @@ class HomeScreen extends StatelessWidget {
                 width: 100,
                 iconData: Icons.local_activity,
                 title: 'Point'.tr,
-                subTitle: model.point,
+                subTitle: '${homeController.totalPoint.value}',
               ),
               const Space(),
               _buildCardState(
                 width: 100,
                 iconData: Icons.motorcycle_rounded,
                 title: 'Trip'.tr,
-                subTitle: model.trip,
+                subTitle: '${homeController.totalTrip.value}',
               ),
             ],
           ),
@@ -243,14 +246,14 @@ class HomeScreen extends StatelessWidget {
                 width: 110,
                 iconData: Icons.thumbs_up_down,
                 title: 'Customer'.tr,
-                subTitle: '${model.customerRating} / 5',
+                subTitle: '${(homeController.totalCustomerRate.value / homeController.driverReportLength.value).toStringAsFixed(2)} / 5',
               ),
               const Space(),
               _buildCardState(
                 width: 110,
                 iconData: Icons.thumbs_up_down,
                 title: 'Merchant'.tr,
-                subTitle: '${model.merchantRating} / 5',
+                subTitle: '${(homeController.totalMerchantRate.value / homeController.driverReportLength.value).toStringAsFixed(2)} / 5',
               ),
             ],
           ),
@@ -270,61 +273,36 @@ class HomeScreen extends StatelessWidget {
             color: white,
             elevation: 0,
             borderOnForeground: false,
-            margin: const EdgeInsets.only(top: 5),
+            margin: const EdgeInsets.only(top: 5, bottom: 15),
             shape: RoundedRectangleBorder(
               side: BorderSide(color: white.withOpacity(0.5), width: 1),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Container(
               margin: const EdgeInsets.all(10),
-              child: _buildBreakDownWidget,
+              child: _buildBreakDownItem(),
             ),
           ),
         ],
       ),
     );
   }
-  Widget get _buildBreakDownWidget {
-    return Obx(() {
-      final status = homeController.data.status;
-      if (status == RemoteDataStatus.processing) {
-        return ScreenWidgets.loading;
-      } else if (status == RemoteDataStatus.error) {
-        return ScreenWidgets.error;
-      } else {
-        final report = homeController.data.data!;
-        return ListView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: report.length,
-          itemBuilder: breakDownItemWidget,
-        );
-      }
-    });
-  }
-  Widget breakDownItemWidget(BuildContext context, int index) {
-    final report = homeController.data.data![index];
-    return _buildBreakDownItem(report);
-  }
-  Widget _buildBreakDownItem(DriverReportModel model) {
-    var deliveryFee = double.parse(model.deliveryFee);
-    var bonus = double.parse(model.bonus);
-    var tip = double.parse(model.tip);
-    var totalEarning = double.parse(model.deliveryFee) + double.parse(model.bonus) + double.parse(model.tip);
+  Widget _buildBreakDownItem() {
+    var totalEarning = homeController.totalDeliveryFee.value + homeController.totalBonus.value + homeController.totalTip.value;
 
     return Column(
       children: [
         _buildCardBreakDown(
           text: 'Net delivery fee'.tr,
-          value: '\$${deliveryFee.toStringAsFixed(2)}',
+          value: '\$${homeController.totalDeliveryFee.toStringAsFixed(2)}',
         ),
         _buildCardBreakDown(
           text: 'Bonus'.tr,
-          value: '\$${bonus.toStringAsFixed(2)}',
+          value: '\$${homeController.totalBonus.toStringAsFixed(2)}',
         ),
         _buildCardBreakDown(
           text: 'Tip'.tr,
-          value: '\$${tip.toStringAsFixed(2)}',
+          value: '\$${homeController.totalTip.toStringAsFixed(2)}',
           isDotted: false,
         ),
         _buildCardBreakDown(
@@ -388,16 +366,14 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget dottedLineWidget(bool isDot) {
-    return isDot == true
-        ? Container(
+    return isDot == true ? Container(
       margin: const EdgeInsets.symmetric(vertical: 8),
       child: DottedLine(
         dashLength: 1.5,
         lineThickness: 2,
         dashColor: silver.withOpacity(0.5),
       ),
-    )
-        : Container(
+    ) : Container(
       height: 1,
       color: silver.withOpacity(0.5),
       margin: const EdgeInsets.symmetric(vertical: 8),

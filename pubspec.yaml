@@ -38,7 +38,7 @@ dependencies:
   dotted_line: ^3.1.0
   flutter_share: ^2.0.0
   flutter_rating_bar: ^4.0.0
-  charts_flutter: any
+  fl_chart: ^0.55.1
   flutter_typeahead: ^4.0.0
   image_picker: ^0.8.5+3
   path_provider: ^2.0.10
@@ -54,7 +54,6 @@ dependencies:
   flutter_polyline_points: ^1.0.0
   shared_preferences: ^2.0.15
   flutter_phoenix: ^1.1.0
-  custom_timer: ^0.1.2
 
 dev_dependencies:
   # The "flutter_lints" package below contains a set of recommended lints to
