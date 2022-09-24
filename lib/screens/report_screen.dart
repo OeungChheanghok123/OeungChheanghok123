@@ -120,6 +120,7 @@ class ReportScreen extends StatelessWidget {
     return _buildOrderBodyItemWidget(order, deliver);
   }
   Widget _buildOrderBodyItemWidget(OrderModel orderModel, DeliverModel deliverModel) {
+    var yourEarning = double.parse(deliverModel.deliveryFee) + double.parse(deliverModel.tip) + double.parse(deliverModel.bonus);
     return Container(
       margin: const EdgeInsets.only(bottom: 10, left: 15, right: 15),
       child: Column(
@@ -166,7 +167,7 @@ class ReportScreen extends StatelessWidget {
                         TextWidget(text: 'Order No: #${orderModel.orderId} '),
                         const Spacer(),
                         TextWidget(
-                          text: 'Total Earning: '.tr,
+                          text: 'Your Earning: '.tr,
                           size: 10,
                           fontWeight: FontWeight.w500,
                         ),
@@ -181,7 +182,7 @@ class ReportScreen extends StatelessWidget {
                             borderRadius: BorderRadius.circular(3),
                           ),
                           child: TextWidget(
-                            text: '\$${double.parse(deliverModel.deliveryFee).toStringAsFixed(2)}',
+                            text: '\$${yourEarning.toStringAsFixed(2)}',
                             size: 11,
                             fontWeight: FontWeight.w600,
                             color: black.withOpacity(0.8),
