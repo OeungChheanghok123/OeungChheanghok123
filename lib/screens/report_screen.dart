@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:loy_eat/controllers/home_controller.dart';
 import 'package:loy_eat/controllers/new_order_card_controller.dart';
 import 'package:loy_eat/controllers/report_controller.dart';
 import 'package:loy_eat/models/deliver_model.dart';
@@ -17,6 +18,7 @@ class ReportScreen extends StatelessWidget {
 
   final controller = Get.put(ReportController());
   final newOrderController = Get.put(NewOrderCardController());
+  final homeController = Get.put(HomeController());
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +27,7 @@ class ReportScreen extends StatelessWidget {
         extendBody: true,
         backgroundColor: lightGray,
         body: _buildBody,
-        bottomSheet: Obx(() => newOrderController.newOrderId.value != '' ? NewOrderCard() : const SizedBox()),
+        bottomSheet: Obx(() => newOrderController.newOrderId.value != '' && homeController.isOnline.value == true ? NewOrderCard() : const SizedBox()),
       ),
     );
   }

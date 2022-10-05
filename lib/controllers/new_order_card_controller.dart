@@ -3,10 +3,12 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:loy_eat/controllers/main_page_controller.dart';
 import 'package:loy_eat/models/customer_model.dart';
 import 'package:loy_eat/models/deliver_model.dart';
 import 'package:loy_eat/models/driver_model.dart';
+import 'package:loy_eat/models/driver_report_model.dart';
 import 'package:loy_eat/models/merchant_model.dart';
 import 'package:loy_eat/models/order_model.dart';
 import 'package:loy_eat/models/remote_data.dart';
@@ -18,6 +20,7 @@ class NewOrderCardController extends GetxController {
 
   final mainPageController = Get.put(MainPageController());
 
+  final driverReportCollection = FirebaseFirestore.instance.collection(DriverReportModel.collectionName);
   final driverCollection = FirebaseFirestore.instance.collection(DriverModel.collectionName);
   final orderCollection = FirebaseFirestore.instance.collection(OrderModel.collectionName);
   final deliverCollection = FirebaseFirestore.instance.collection(DeliverModel.collectionName);
@@ -38,9 +41,12 @@ class NewOrderCardController extends GetxController {
 
   var newOrderId = ''.obs;
   var orderId = ''.obs;
+  var orderDate = ''.obs;
   var merchantId = ''.obs;
   var customerId = ''.obs;
   var customerName = ''.obs;
+
+  var driverReportDocId = ''.obs;
   var orderDocId = ''.obs;
   var deliverDocId = ''.obs;
 
@@ -116,6 +122,7 @@ class NewOrderCardController extends GetxController {
         newOrderId.value = '';
         newOrderId.value = orders[0].orderId;
         orderId.value = newOrderId.value;
+        orderDate.value = orders[0].date;
         _loadOrderData(newOrderId.value);
         _loadDeliverData(newOrderId.value);
         _getDocumentId(newOrderId.value);
@@ -196,20 +203,35 @@ class NewOrderCardController extends GetxController {
         deliverDocId.value = element.id;
       }),
     });
+    driverReportCollection.where(DriverReportModel.dateString, isEqualTo: '').get().then((snapshot) => {
+      snapshot.docs.forEach((element) {       // ignore: avoid_function_literals_in_foreach_calls
+        driverReportDocId.value = '';
+        driverReportDocId.value = element.id;
+      }),
+    });
   }
   void updateOrderStatus() {
     orderCollection.doc(orderDocId.value).update({OrderModel.isNewString : false}).then((_) => debugPrint('order status is false.'));
   }
 
   void rejectFunction() {
-    setDriverId();
-    orderCollection.doc(orderDocId.value).update({OrderModel.isNewString : false}).then((_) => debugPrint('update successful.'));
-    deliverCollection.doc(deliverDocId.value).update({DeliverModel.processString : 'Rejected'}).then((_) => debugPrint('order id ${newOrderId.value} was reject.'));
-    deliverCollection.doc(deliverDocId.value).update({DeliverModel.step1String : false, DeliverModel.step2String : false, DeliverModel.step3String : false, DeliverModel.step4String : false}).then((_) => debugPrint('update all step successful.'));
+    newOrderId.value = '';
+    //setDriverId();
+    //orderCollection.doc(orderDocId.value).update({OrderModel.isNewString : false}).then((_) => debugPrint('update successful.'));
+    //deliverCollection.doc(deliverDocId.value).update({DeliverModel.processString : 'Rejected'}).then((_) => debugPrint('order id ${newOrderId.value} was reject.'));
+    //deliverCollection.doc(deliverDocId.value).update({DeliverModel.step1String : false, DeliverModel.step2String : false, DeliverModel.step3String : false, DeliverModel.step4String : false}).then((_) => debugPrint('update all step successful.'));
     _timer.cancel();
     Get.offAllNamed('/instruction');
   }
   void setDriverId() {
+    DateTime dateTime = DateFormat('dd-MMM-yy').parse(orderDate.value);
+    var inputDayFormat = DateFormat('d');
+    var inputMonthFormat = DateFormat('M');
+    var inputYearFormat = DateFormat('yy');
+    var outputDay = inputDayFormat.format(dateTime);
+    var outputMonth = inputMonthFormat.format(dateTime);
+    var outputYear = inputYearFormat.format(dateTime);
+
     final tel = mainPageController.readDriverPhoneNumber();
     final data = driverCollection.where(DriverModel.telString, isEqualTo: tel).snapshots();
     data.listen((data) {
@@ -217,6 +239,21 @@ class NewOrderCardController extends GetxController {
       String id = driver[0].driverId;
       orderCollection.doc(orderDocId.value).update({OrderModel.driverIdString : id}).then((_) => debugPrint('Order was accept/reject by driver id: $id'));
       deliverCollection.doc(deliverDocId.value).update({DeliverModel.driverIdString : id}).then((_) => debugPrint('deliver was accept/reject by driver id: $id'));
+      driverReportCollection.doc(driverReportDocId.value).update({
+        DriverReportModel.driverIdString: id,
+        DriverReportModel.dateString: orderDate.value,
+        DriverReportModel.dayString: int.parse(outputDay),
+        DriverReportModel.monthString: int.parse(outputMonth),
+        DriverReportModel.yearString: int.parse(outputYear),
+        DriverReportModel.bonusString: '0.00',
+        DriverReportModel.deliveryFeeString: '0.00',
+        DriverReportModel.distanceString: '0.00',
+        DriverReportModel.onlineHourString: '0',
+        DriverReportModel.onlineMinuteString: '0',
+        DriverReportModel.pointString: '0',
+        DriverReportModel.tipString: '0.0',
+        DriverReportModel.tripString: '0',
+      }).then((_) => debugPrint('driver report was write driver id: $id'));
     });
   }
 }

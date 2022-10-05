@@ -65,7 +65,7 @@ class ReportController extends GetxController{
   }
   void _loadOrderByDate(String id, String date) {
     try {
-      final data = orderCollection.where(OrderModel.driverIdString, isEqualTo: id).where(OrderModel.dateString, isEqualTo: date).orderBy(OrderModel.orderIdString, descending: true).snapshots();
+      final data = orderCollection.where(OrderModel.driverIdString, isEqualTo: id).where(OrderModel.dateString, isEqualTo: date).snapshots();
       data.listen((result) {
         final orders = result.docs.map((e) => OrderModel.fromMap(e.data())).toList();
         if (orders.isNotEmpty) {
