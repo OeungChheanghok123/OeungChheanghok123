@@ -11,5 +11,4 @@ class ScreenWidgets {
   static Widget get error {
     return const Text('Error while loading data from server.');
   }
-
 }

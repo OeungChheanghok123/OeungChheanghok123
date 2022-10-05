@@ -11,7 +11,6 @@ import 'package:loy_eat/widgets/layout_widget/text_widget.dart';
 import 'package:loy_eat/widgets/screen_widget/home_screen_app_bar.dart';
 import 'package:loy_eat/widgets/screen_widget/home_screen_bar_chart.dart';
 import 'package:loy_eat/widgets/screen_widget/new_order_card.dart';
-import 'package:loy_eat/widgets/screen_widget/screen_widgets.dart';
 
 class HomeScreen extends StatelessWidget {
   HomeScreen({Key? key}) : super(key: key);
@@ -28,7 +27,7 @@ class HomeScreen extends StatelessWidget {
         backgroundColor: lightGray,
         appBar: HomeScreenAppBar(),
         body: _buildBody,
-        bottomSheet: Obx(() => newOrderController.newOrderId.value != '' ? NewOrderCard() : const SizedBox(),
+        bottomSheet: Obx(() => newOrderController.newOrderId.value != '' && homeController.isOnline.value == true ? NewOrderCard() : const SizedBox(),
         ),
       ),
     );
@@ -142,8 +141,7 @@ class HomeScreen extends StatelessWidget {
       lastDate: DateTime(2025),
     ).then((DateTimeRange? value) {
       if (value != null) {
-        DateTimeRange _fromRange =
-        DateTimeRange(start: DateTime.now(), end: DateTime.now());
+        DateTimeRange _fromRange = DateTimeRange(start: DateTime.now(), end: DateTime.now());
         _fromRange = value;
 
         DateTime rangeStart = DateFormat('yyyy-MM-dd').parse(_fromRange.start.toString());
@@ -151,6 +149,30 @@ class HomeScreen extends StatelessWidget {
         var outputFormat = DateFormat('dd-MMM-yy');
         var outputDateStart = outputFormat.format(rangeStart);
         var outputDateEnd = outputFormat.format(rangeEnd);
+
+        var outputDay = DateFormat('d');
+        var outputMonth = DateFormat('M');
+        var outputYear = DateFormat('yy');
+        var outputDayStart = outputDay.format(rangeStart);
+        var outputMonthStart = outputMonth.format(rangeStart);
+        var outputYearStart = outputYear.format(rangeStart);
+        var outputDayEnd = outputDay.format(rangeEnd);
+        var outputMonthEnd = outputMonth.format(rangeEnd);
+        var outputYearEnd = outputYear.format(rangeEnd);
+        homeController.dayStart = int.parse(outputDayStart);
+        homeController.monthStart = int.parse(outputMonthStart);
+        homeController.yearStart = int.parse(outputYearStart);
+        homeController.dayEnd = int.parse(outputDayEnd);
+        homeController.monthEnd = int.parse(outputMonthEnd);
+        homeController.yearEnd = int.parse(outputYearEnd);
+
+        debugPrint('outputDayStart : $outputDayStart');
+        debugPrint('outputMonthStart : $outputMonthStart');
+        debugPrint('outputYearStart : $outputYearStart');
+        debugPrint('outputDayEnd : $outputDayEnd');
+        debugPrint('outputMonthEnd : $outputMonthEnd');
+        debugPrint('outputYearEnd : $outputYearEnd');
+
 
         homeController.startDate.value = outputDateStart;
         homeController.endDate.value = outputDateEnd;
@@ -178,10 +200,20 @@ class HomeScreen extends StatelessWidget {
         child: Container(
           alignment: Alignment.center,
           padding: const EdgeInsets.fromLTRB(15, 20, 15, 0),
-          child: homeController.chartData.isNotEmpty ? HomeScreenBarChart(chartData: homeController.chartData) : ScreenWidgets.loading,
+          child: homeController.chartData.isNotEmpty ? HomeScreenBarChart(chartData: homeController.chartData) : FutureBuilder(
+            future: _waite3Second(),
+            builder: (context, snapshot) {
+              return const TextWidget(text: 'No Data to show......');
+            },
+          ),
         ),
       ),
     );
+  }
+
+  Future<Widget> _waite3Second() async {
+    await Future.delayed(const Duration(seconds: 3));
+    return const CircularProgressIndicator();
   }
 
   Widget get _buildStatus {

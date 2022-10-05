@@ -14,6 +14,9 @@ class DriverReportModel {
   static const String onlineMinuteString = "online_minute";
   static const String pointString = "point";
   static const String tripString = "trip";
+  static const String dayString = "day";
+  static const String monthString = "month";
+  static const String yearString = "year";
 
   String driverId;
   String date;
@@ -27,7 +30,10 @@ class DriverReportModel {
   String onlineMinute;
   String point;
   String trip;
-  
+  int day;
+  int month;
+  int year;
+
   DriverReportModel({
     required this.driverId,
     required this.date,
@@ -41,6 +47,9 @@ class DriverReportModel {
     required this.onlineMinute,
     required this.point,
     required this.trip,
+    required this.day,
+    required this.month,
+    required this.year,
   });
 
 
@@ -59,7 +68,10 @@ class DriverReportModel {
     result.addAll({onlineMinuteString: onlineMinute});
     result.addAll({pointString: point});
     result.addAll({tripString: trip});
-  
+    result.addAll({dayString: day});
+    result.addAll({monthString: month});
+    result.addAll({yearString: year});
+
     return result;
   }
 
@@ -77,6 +89,9 @@ class DriverReportModel {
       onlineMinute: map[onlineMinuteString] ?? '',
       point: map[pointString] ?? '',
       trip: map[tripString] ?? '',
+      day: map[dayString] ?? 1,
+      month: map[monthString] ?? 1,
+      year: map[yearString] ?? 22,
     );
   }
 

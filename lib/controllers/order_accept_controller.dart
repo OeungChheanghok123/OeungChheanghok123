@@ -22,12 +22,14 @@ class OrderAcceptController extends GetxController{
   var step4 = '';
   var orderStep = [];
 
+  var orderDate = '';
   var customerName = '';
   var driverId = '';
   var driverDocId = '';
   var deliverDocId = '';
   var driverReportDocId = '';
 
+  var point = '0.00'.obs;
   var orderDistance = '0.00'.obs;
 
   var orderDeliveryFee = '0.00'.obs;
@@ -83,15 +85,17 @@ class OrderAcceptController extends GetxController{
     }
   }
   void setDriverReportData() async {
-    final data = await driverReportCollection.where(DriverReportModel.driverIdString, isEqualTo: driverId).get();
+    final data = await driverReportCollection.where(DriverReportModel.driverIdString, isEqualTo: driverId).where(DriverReportModel.dateString, isEqualTo: orderDate).get();
     final driverReport = data.docs.map((e) => DriverReportModel.fromMap(e.data())).toList();
 
+    var point = int.parse(driverReport[0].point);
     var distance = double.parse(driverReport[0].distance);
     var trip = int.parse(driverReport[0].trip);
     var deliveryFee = double.parse(driverReport[0].deliveryFee);
     var bonus = double.parse(driverReport[0].bonus);
     var tip = double.parse(driverReport[0].tip);
 
+    var totalPoint = point + 3;
     var totalDistance = distance + double.parse(orderDistance.value);
     var totalTrip = trip + 1;
     var totalDeliveryFee = deliveryFee + double.parse(orderDeliveryFee.value);
@@ -99,6 +103,8 @@ class OrderAcceptController extends GetxController{
     var totalTip = tip + double.parse(orderTip.value);
 
     driverReportCollection.doc(driverReportDocId).update({
+      DriverReportModel.pointString : totalPoint.toString(),
+
       DriverReportModel.distanceString : totalDistance.toStringAsFixed(2),
       DriverReportModel.tripString : totalTrip.toString(),
 
@@ -112,6 +118,7 @@ class OrderAcceptController extends GetxController{
       snapshot.docs.forEach((element) {      // ignore: avoid_function_literals_in_foreach_calls
         deliverDocId = element.id;
         driverId = element['driver_id'];
+        orderDate = element['date'];
         _loadDriverDocumentId(driverId);
         _loadDeliverReportDocumentId(driverId);
 

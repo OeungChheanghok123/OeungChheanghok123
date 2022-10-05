@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:loy_eat/controllers/main_page_controller.dart';
+import 'package:loy_eat/controllers/new_order_card_controller.dart';
 import 'package:loy_eat/models/driver_model.dart';
 import 'package:loy_eat/models/driver_report_model.dart';
 import 'package:loy_eat/models/remote_data.dart';
@@ -21,9 +22,16 @@ class HomeController extends GetxController{
   var notificationCount = 0.obs;
   var readAll = false.obs;
 
+  var isOnline = false.obs;
   var isSearch = false.obs;
   var startDate  = 'Start Date'.obs;
   var endDate = 'End Date'.obs;
+  var dayStart = 0;
+  var monthStart = 0;
+  var yearStart = 0;
+  var dayEnd = 0;
+  var monthEnd = 0;
+  var yearEnd = 0;
 
   List<ReportChart> chartData = [];
 
@@ -59,6 +67,7 @@ class HomeController extends GetxController{
   RemoteData<List<DriverReportModel>> get data => _driverReportData.value;
 
   final mainPageController = Get.put(MainPageController());
+  final newOrderController = Get.put(NewOrderCardController());
 
   @override
   void onInit() {
@@ -91,22 +100,36 @@ class HomeController extends GetxController{
   }
   void loadDriverReport(String id) {
     if (startDate.value == 'Start Date' && endDate.value == 'End Date') {
-      final data = driverReportCollection.where(DriverReportModel.driverIdString, isEqualTo: id).snapshots();
-      data.listen((result) {
-        final driverReport = result.docs.map((e) => DriverReportModel.fromMap(e.data())).toList();
-        driverReportLength.value = driverReport.length;
-        dataBase(driverReport);
-        _driverReportData.value = RemoteData<List<DriverReportModel>>(status: RemoteDataStatus.success, data: driverReport);
-      });
-    }
-    else {
-      final data = driverReportCollection.where(DriverReportModel.driverIdString, isEqualTo: id).where(DriverReportModel.dateString, isEqualTo: startDate.value).snapshots();
+      final data = driverReportCollection.where(DriverReportModel.driverIdString, isEqualTo: id).limit(7).snapshots();
       data.listen((result) {
         final driverReport = result.docs.map((e) => DriverReportModel.fromMap(e.data())).toList();
         driverReportLength.value = driverReport.length;
         clearData();
         dataBase(driverReport);
         _driverReportData.value = RemoteData<List<DriverReportModel>>(status: RemoteDataStatus.success, data: driverReport);
+      });
+    }
+    else {
+      final data = driverReportCollection
+          .where(DriverReportModel.driverIdString, isEqualTo: id)
+          .where(DriverReportModel.monthString, isEqualTo: monthStart)
+          .where(DriverReportModel.dayString, isLessThanOrEqualTo: dayEnd, isGreaterThanOrEqualTo: dayStart).orderBy(DriverReportModel.dayString)
+          .snapshots();
+      data.listen((result) {
+        if (result.docs.isEmpty) {
+          debugPrint('No Data Show');
+          final driverReport = result.docs.map((e) => DriverReportModel.fromMap(e.data())).toList();
+          driverReportLength.value = driverReport.length;
+          clearData();
+          dataBase(driverReport);
+        } else {
+          debugPrint('Data is not empty');
+          final driverReport = result.docs.map((e) => DriverReportModel.fromMap(e.data())).toList();
+          driverReportLength.value = driverReport.length;
+          clearData();
+          dataBase(driverReport);
+          _driverReportData.value = RemoteData<List<DriverReportModel>>(status: RemoteDataStatus.success, data: driverReport);
+        }
       });
     }
   }
@@ -196,7 +219,10 @@ class HomeController extends GetxController{
     });
   }
   void loadDriverReportDocumentId(String id) {
-    driverReportCollection.where(DriverReportModel.driverIdString, isEqualTo: id).get().then((snapshot) => {
+    var today = DateTime.now();
+    var format = DateFormat('dd-MMM-yy');
+    var output = format.format(today);
+    driverReportCollection.where(DriverReportModel.driverIdString, isEqualTo: id).where(DriverReportModel.dateString, isEqualTo: output).get().then((snapshot) => {
       snapshot.docs.forEach((element) { // ignore: avoid_function_literals_in_foreach_calls
         driverReportDocId = element.id;
       }),
@@ -204,6 +230,7 @@ class HomeController extends GetxController{
   }
 
   void startTimer() {
+    loadDriverReportDocumentId(id);
     timer = Timer.periodic(const Duration(seconds: 1), (_) => updateOnlineTimer());
   }
   void closeTimer() {
@@ -252,10 +279,43 @@ class HomeController extends GetxController{
   void toggleClicked() {
     if (toggleState.value == false) {
       driverCollection.doc(driverDocId).update({DriverModel.isOnlineString : true}).then((_) => debugPrint('Driver is Online'));
+      isOnline.value = true;
+
+      var today = DateTime.now();
+      var format = DateFormat('dd-MMM-yy');
+      var day = DateFormat('d');
+      var month = DateFormat('M');
+      var year = DateFormat('yy');
+      var output = format.format(today);
+      var outputDay = day.format(today);
+      var outputMonth = month.format(today);
+      var outputYear = year.format(today);
+      final data = driverReportCollection.where(DriverReportModel.dateString, isEqualTo: output).snapshots();
+      data.listen((event) {
+        if (event.docs.isEmpty) {
+          driverReportCollection.add({
+            DriverReportModel.driverIdString: id,
+            DriverReportModel.dateString: output,
+            DriverReportModel.dayString: int.parse(outputDay),
+            DriverReportModel.monthString: int.parse(outputMonth),
+            DriverReportModel.yearString: int.parse(outputYear),
+            DriverReportModel.bonusString: '0.00',
+            DriverReportModel.deliveryFeeString: '0.00',
+            DriverReportModel.distanceString: '0.00',
+            DriverReportModel.onlineHourString: '0',
+            DriverReportModel.onlineMinuteString: '0',
+            DriverReportModel.pointString: '0',
+            DriverReportModel.tipString: '0.0',
+            DriverReportModel.tripString: '0',
+          }).then((_) => debugPrint('driver report was write driver id: $id'));
+        }
+      });
+
       startTimer();
     }
     else {
       driverCollection.doc(driverDocId).update({DriverModel.isOnlineString : false}).then((_) => debugPrint('Driver is Offline'));
+      isOnline.value = false;
       closeTimer();
     }
     loadToggleState();

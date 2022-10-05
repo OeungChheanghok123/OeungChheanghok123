@@ -195,8 +195,7 @@ class NewOrderCard extends StatelessWidget {
         ),
         _buildIconAndText(
           icon: Icons.monetization_on,
-          title:
-              '\$${double.parse(deliverModel.deliveryFee).toStringAsFixed(2)}',
+          title: '\$${double.parse(deliverModel.deliveryFee).toStringAsFixed(2)}',
           color: rabbit,
         ),
         _buildIconAndText(
