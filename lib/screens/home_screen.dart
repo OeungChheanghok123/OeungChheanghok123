@@ -26,7 +26,9 @@ class HomeScreen extends StatelessWidget {
         extendBody: true,
         backgroundColor: lightGray,
         appBar: HomeScreenAppBar(),
-        body: _buildBody,
+        body: SingleChildScrollView(
+          child: _buildBody,
+        ),
         bottomSheet: Obx(() => newOrderController.newOrderId.value != '' && homeController.isOnline.value == true ? NewOrderCard() : const SizedBox(),
         ),
       ),
