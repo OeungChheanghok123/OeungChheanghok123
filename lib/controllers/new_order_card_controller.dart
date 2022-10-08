@@ -195,12 +195,14 @@ class NewOrderCardController extends GetxController {
       snapshot.docs.forEach((element) {       // ignore: avoid_function_literals_in_foreach_calls
         orderDocId.value = '';
         orderDocId.value = element.id;
+        debugPrint('orderDocId : ${orderDocId.value}');
       }),
     });
     deliverCollection.where(DeliverModel.orderIdString, isEqualTo: id).get().then((snapshot) => {
       snapshot.docs.forEach((element) {       // ignore: avoid_function_literals_in_foreach_calls
         deliverDocId.value = '';
         deliverDocId.value = element.id;
+        debugPrint('deliverDocId : ${deliverDocId.value}');
       }),
     });
     driverReportCollection.where(DriverReportModel.dateString, isEqualTo: '').get().then((snapshot) => {
@@ -224,6 +226,8 @@ class NewOrderCardController extends GetxController {
     Get.offAllNamed('/instruction');
   }
   void setDriverId() {
+    _getDocumentId(newOrderId.value);
+
     DateTime dateTime = DateFormat('dd-MMM-yy').parse(orderDate.value);
     var inputDayFormat = DateFormat('d');
     var inputMonthFormat = DateFormat('M');
@@ -233,27 +237,60 @@ class NewOrderCardController extends GetxController {
     var outputYear = inputYearFormat.format(dateTime);
 
     final tel = mainPageController.readDriverPhoneNumber();
-    final data = driverCollection.where(DriverModel.telString, isEqualTo: tel).snapshots();
-    data.listen((data) {
-      final driver = data.docs.map((e) => DriverModel.fromMap(e.data())).toList();
-      String id = driver[0].driverId;
-      orderCollection.doc(orderDocId.value).update({OrderModel.driverIdString : id}).then((_) => debugPrint('Order was accept/reject by driver id: $id'));
-      deliverCollection.doc(deliverDocId.value).update({DeliverModel.driverIdString : id}).then((_) => debugPrint('deliver was accept/reject by driver id: $id'));
-      driverReportCollection.doc(driverReportDocId.value).update({
-        DriverReportModel.driverIdString: id,
-        DriverReportModel.dateString: orderDate.value,
-        DriverReportModel.dayString: int.parse(outputDay),
-        DriverReportModel.monthString: int.parse(outputMonth),
-        DriverReportModel.yearString: int.parse(outputYear),
-        DriverReportModel.bonusString: '0.00',
-        DriverReportModel.deliveryFeeString: '0.00',
-        DriverReportModel.distanceString: '0.00',
-        DriverReportModel.onlineHourString: '0',
-        DriverReportModel.onlineMinuteString: '0',
-        DriverReportModel.pointString: '0',
-        DriverReportModel.tipString: '0.0',
-        DriverReportModel.tripString: '0',
-      }).then((_) => debugPrint('driver report was write driver id: $id'));
+    driverCollection.where(DriverModel.telString, isEqualTo: tel).get().then((value) {
+
+      for (var data in value.docs) {
+        final id = data['driver_id'];
+        debugPrint('driver Id String: $id');
+        orderCollection.doc(orderDocId.value).update({OrderModel.driverIdString : id}).then((_) {
+          debugPrint('Order was accept/reject by driver id: $id');
+          deliverCollection.doc(deliverDocId.value).update({DeliverModel.driverIdString : id}).then((_){
+            debugPrint('deliver was accept/reject by driver id: $id');
+          });
+        });
+        if (driverReportDocId.value != '') {
+          driverReportCollection.doc(driverReportDocId.value).update({
+            DriverReportModel.driverIdString: id,
+            DriverReportModel.dateString: orderDate.value,
+            DriverReportModel.dayString: int.parse(outputDay),
+            DriverReportModel.monthString: int.parse(outputMonth),
+            DriverReportModel.yearString: int.parse(outputYear),
+            DriverReportModel.bonusString: '0.00',
+            DriverReportModel.deliveryFeeString: '0.00',
+            DriverReportModel.distanceString: '0.00',
+            DriverReportModel.onlineHourString: '0',
+            DriverReportModel.onlineMinuteString: '0',
+            DriverReportModel.pointString: '0',
+            DriverReportModel.tipString: '0.0',
+            DriverReportModel.tripString: '0',
+          }).then((_) => debugPrint('driver report was write driver id: $id'));
+        }
+      }
     });
+
+    // final data = driverCollection.where(DriverModel.telString, isEqualTo: tel).snapshots();
+    // data.listen((data) {
+    //   final driver = data.docs.map((e) => DriverModel.fromMap(e.data())).toList();
+    //   String id = driver[0].driverId;
+    //   orderCollection.doc(orderDocId.value).update({OrderModel.driverIdString : id}).then((_) => debugPrint('Order was accept/reject by driver id: $id'));
+    //   deliverCollection.doc(deliverDocId.value).update({DeliverModel.driverIdString : id}).then((_) => debugPrint('deliver was accept/reject by driver id: $id'));
+    //   if (driverReportDocId.value != '') {
+    //     driverReportCollection.doc(driverReportDocId.value).update({
+    //       DriverReportModel.driverIdString: id,
+    //       DriverReportModel.dateString: orderDate.value,
+    //       DriverReportModel.dayString: int.parse(outputDay),
+    //       DriverReportModel.monthString: int.parse(outputMonth),
+    //       DriverReportModel.yearString: int.parse(outputYear),
+    //       DriverReportModel.bonusString: '0.00',
+    //       DriverReportModel.deliveryFeeString: '0.00',
+    //       DriverReportModel.distanceString: '0.00',
+    //       DriverReportModel.onlineHourString: '0',
+    //       DriverReportModel.onlineMinuteString: '0',
+    //       DriverReportModel.pointString: '0',
+    //       DriverReportModel.tipString: '0.0',
+    //       DriverReportModel.tripString: '0',
+    //     }).then((_) => debugPrint('driver report was write driver id: $id'));
+    //   }
+    // });
   }
 }

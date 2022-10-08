@@ -90,7 +90,7 @@ class HomeController extends GetxController{
         toggleState.value = driverData[0].isOnline;
 
         loadDriverDocumentId(id);
-        loadDriverReportDocumentId(id);
+        loadDriverReportDocumentId();
         loadDriverReport(id);
         loadToggleState();
       });
@@ -100,7 +100,7 @@ class HomeController extends GetxController{
   }
   void loadDriverReport(String id) {
     if (startDate.value == 'Start Date' && endDate.value == 'End Date') {
-      final data = driverReportCollection.where(DriverReportModel.driverIdString, isEqualTo: id).limit(7).snapshots();
+      final data = driverReportCollection.where(DriverReportModel.driverIdString, isEqualTo: id).limit(7).orderBy(DriverReportModel.dayString, descending: true).snapshots();
       data.listen((result) {
         final driverReport = result.docs.map((e) => DriverReportModel.fromMap(e.data())).toList();
         driverReportLength.value = driverReport.length;
@@ -153,8 +153,8 @@ class HomeController extends GetxController{
       totalPoint.value = totalPoint.value + int.parse(point);
       totalDistance.value = totalDistance.value + double.parse(distance);
       totalTrip.value = totalTrip.value + int.parse(trip);
-      totalCustomerRate.value = (totalCustomerRate.value + double.parse(customerRate));
-      totalMerchantRate.value = (totalMerchantRate.value + double.parse(merchantRate));
+      totalCustomerRate.value = totalCustomerRate.value + double.parse(customerRate);
+      totalMerchantRate.value = totalMerchantRate.value + double.parse(merchantRate);
 
       totalDeliveryFee.value = totalDeliveryFee.value + double.parse(fee);
       totalBonus.value = totalBonus.value + double.parse(bonus);
@@ -218,29 +218,34 @@ class HomeController extends GetxController{
       }),
     });
   }
-  void loadDriverReportDocumentId(String id) {
+  void loadDriverReportDocumentId() {
     var today = DateTime.now();
     var format = DateFormat('dd-MMM-yy');
     var output = format.format(today);
     driverReportCollection.where(DriverReportModel.driverIdString, isEqualTo: id).where(DriverReportModel.dateString, isEqualTo: output).get().then((snapshot) => {
       snapshot.docs.forEach((element) { // ignore: avoid_function_literals_in_foreach_calls
         driverReportDocId = element.id;
+        onlineMinute.value = int.parse(element[DriverReportModel.onlineMinuteString]);
+        debugPrint('online minute : ${onlineMinute.value}');
       }),
     });
   }
 
   void startTimer() {
-    loadDriverReportDocumentId(id);
+    debugPrint('timer is start');
     timer = Timer.periodic(const Duration(seconds: 1), (_) => updateOnlineTimer());
   }
   void closeTimer() {
+    debugPrint('timer is close');
     timer?.cancel();
   }
   void updateOnlineTimer() {
+
     const addSeconds = 1;
     onlineSecond.value = onlineSecond.value + addSeconds;
 
     if (onlineSecond.value == 60) {
+      loadDriverReportDocumentId();
       if (onlineSecond.value == 60 && onlineMinute.value == 59) {
         onlineMinute.value = 60;
         driverReportCollection.doc(driverReportDocId).update({
@@ -276,10 +281,11 @@ class HomeController extends GetxController{
     });
   }
 
-  void toggleClicked() {
+  Future<void> toggleClicked() async {
     if (toggleState.value == false) {
-      driverCollection.doc(driverDocId).update({DriverModel.isOnlineString : true}).then((_) => debugPrint('Driver is Online'));
+      await driverCollection.doc(driverDocId).update({DriverModel.isOnlineString : true}).then((_) => debugPrint('Driver is Online'));
       isOnline.value = true;
+      toggleState.value = true;
 
       var today = DateTime.now();
       var format = DateFormat('dd-MMM-yy');
@@ -290,32 +296,42 @@ class HomeController extends GetxController{
       var outputDay = day.format(today);
       var outputMonth = month.format(today);
       var outputYear = year.format(today);
-      final data = driverReportCollection.where(DriverReportModel.dateString, isEqualTo: output).snapshots();
-      data.listen((event) {
-        if (event.docs.isEmpty) {
-          driverReportCollection.add({
-            DriverReportModel.driverIdString: id,
-            DriverReportModel.dateString: output,
-            DriverReportModel.dayString: int.parse(outputDay),
-            DriverReportModel.monthString: int.parse(outputMonth),
-            DriverReportModel.yearString: int.parse(outputYear),
-            DriverReportModel.bonusString: '0.00',
-            DriverReportModel.deliveryFeeString: '0.00',
-            DriverReportModel.distanceString: '0.00',
-            DriverReportModel.onlineHourString: '0',
-            DriverReportModel.onlineMinuteString: '0',
-            DriverReportModel.pointString: '0',
-            DriverReportModel.tipString: '0.0',
-            DriverReportModel.tripString: '0',
-          }).then((_) => debugPrint('driver report was write driver id: $id'));
-        }
-      });
-
-      startTimer();
+      if (isOnline.value == true) {
+        driverReportCollection.where(DriverReportModel.driverIdString, isEqualTo: id).where(DriverReportModel.dateString, isEqualTo: output).get().then((value) {
+          if (value.docs.isEmpty) {
+            driverReportCollection.add({
+              DriverReportModel.driverIdString: id,
+              DriverReportModel.dateString: output,
+              DriverReportModel.dayString: int.parse(outputDay),
+              DriverReportModel.monthString: int.parse(outputMonth),
+              DriverReportModel.yearString: int.parse(outputYear),
+              DriverReportModel.customerRatingString: '5.0',
+              DriverReportModel.merchantRatingString: '5.0',
+              DriverReportModel.bonusString: '0.00',
+              DriverReportModel.deliveryFeeString: '0.00',
+              DriverReportModel.distanceString: '0.00',
+              DriverReportModel.onlineHourString: '0',
+              DriverReportModel.onlineMinuteString: '0',
+              DriverReportModel.pointString: '0',
+              DriverReportModel.tipString: '0.0',
+              DriverReportModel.tripString: '0',
+            }).then((_) {
+              debugPrint('driver report was write driver id: $id');
+              loadDriverReportDocumentId();
+              startTimer();
+            });
+          }
+          else {
+            loadDriverReportDocumentId();
+            startTimer();
+          }
+        });
+      }
     }
     else {
       driverCollection.doc(driverDocId).update({DriverModel.isOnlineString : false}).then((_) => debugPrint('Driver is Offline'));
       isOnline.value = false;
+      toggleState.value = false;
       closeTimer();
     }
     loadToggleState();

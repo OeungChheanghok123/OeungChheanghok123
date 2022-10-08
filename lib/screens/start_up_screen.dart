@@ -62,7 +62,7 @@ class StartUpScreen extends StatelessWidget {
                           mainPageController.writeLanguage(khmerFlag);
                           mainPageController.writeLanguageCode('kh');
                           mainPageController.writeCountryCode('KH');
-                          Get.offAllNamed('/log_in');
+                          Get.toNamed('/log_in');
                         },
                         child: _buildLanguage(khmerFlag, 'ខ្មែរ', 'Cambodia Flag Logo'),
                       ),
@@ -74,7 +74,7 @@ class StartUpScreen extends StatelessWidget {
                           mainPageController.writeLanguage(englishFlag);
                           mainPageController.writeLanguageCode('en');
                           mainPageController.writeCountryCode('US');
-                          Get.offAllNamed('/log_in');
+                          Get.toNamed('/log_in');
                         },
                         child: _buildLanguage(englishFlag, 'English', 'United kingdom Flag Logo'),
                       ),

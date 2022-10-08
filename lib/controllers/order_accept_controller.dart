@@ -84,49 +84,66 @@ class OrderAcceptController extends GetxController{
       setDriverReportData();
     }
   }
-  void setDriverReportData() async {
-    final data = await driverReportCollection.where(DriverReportModel.driverIdString, isEqualTo: driverId).where(DriverReportModel.dateString, isEqualTo: orderDate).get();
-    final driverReport = data.docs.map((e) => DriverReportModel.fromMap(e.data())).toList();
+  void setDriverReportData() {
+    _loadDeliverDocumentId(newOrderCardController.orderId.value);
+    debugPrint('order date: $orderDate');
+    debugPrint('driverId: $driverId');
+    driverReportCollection.where(DriverReportModel.driverIdString, isEqualTo: driverId).where(DriverReportModel.dateString, isEqualTo: orderDate).get().then((driverReport){
+      // ignore: avoid_function_literals_in_foreach_calls
+      driverReport.docs.forEach((data) {
+        var point = int.parse(data[DriverReportModel.pointString]);
+        var distance = double.parse(data[DriverReportModel.distanceString]);
+        var trip = int.parse(data[DriverReportModel.tripString]);
+        var deliveryFee = double.parse(data[DriverReportModel.deliveryFeeString]);
+        var bonus = double.parse(data[DriverReportModel.bonusString]);
+        var tip = double.parse(data[DriverReportModel.tipString]);
 
-    var point = int.parse(driverReport[0].point);
-    var distance = double.parse(driverReport[0].distance);
-    var trip = int.parse(driverReport[0].trip);
-    var deliveryFee = double.parse(driverReport[0].deliveryFee);
-    var bonus = double.parse(driverReport[0].bonus);
-    var tip = double.parse(driverReport[0].tip);
+        var totalPoint = point + 3;
+        var totalDistance = distance + double.parse(orderDistance.value);
+        var totalTrip = trip + 1;
+        var totalDeliveryFee = deliveryFee + double.parse(orderDeliveryFee.value);
+        var totalBonus = bonus + double.parse(orderBonus.value);
+        var totalTip = tip + double.parse(orderTip.value);
 
-    var totalPoint = point + 3;
-    var totalDistance = distance + double.parse(orderDistance.value);
-    var totalTrip = trip + 1;
-    var totalDeliveryFee = deliveryFee + double.parse(orderDeliveryFee.value);
-    var totalBonus = bonus + double.parse(orderBonus.value);
-    var totalTip = tip + double.parse(orderTip.value);
+        debugPrint('totalPoint: $totalPoint');
+        debugPrint('totalDistance: $totalDistance');
+        debugPrint('totalPoint: $totalPoint');
+        debugPrint('totalTrip: $totalTrip');
+        debugPrint('totalDeliveryFee: $totalDeliveryFee');
+        debugPrint('totalBonus: $totalBonus');
 
-    driverReportCollection.doc(driverReportDocId).update({
-      DriverReportModel.pointString : totalPoint.toString(),
+        driverReportCollection.doc(driverReportDocId).update({
+          DriverReportModel.pointString : totalPoint.toString(),
 
-      DriverReportModel.distanceString : totalDistance.toStringAsFixed(2),
-      DriverReportModel.tripString : totalTrip.toString(),
+          DriverReportModel.distanceString : totalDistance.toStringAsFixed(2),
+          DriverReportModel.tripString : totalTrip.toString(),
 
-      DriverReportModel.deliveryFeeString : totalDeliveryFee.toStringAsFixed(2),
-      DriverReportModel.bonusString : totalBonus.toStringAsFixed(2),
-      DriverReportModel.tipString : totalTip.toStringAsFixed(2),
+          DriverReportModel.deliveryFeeString : totalDeliveryFee.toStringAsFixed(2),
+          DriverReportModel.bonusString : totalBonus.toStringAsFixed(2),
+          DriverReportModel.tipString : totalTip.toStringAsFixed(2),
+        });
+
+      });
     });
   }
+
   void _loadDeliverDocumentId(String id) {
-    deliverCollection.where(DeliverModel.orderIdString, isEqualTo: id).get().then((snapshot) => {
+    deliverCollection.where(DeliverModel.orderIdString, isEqualTo: id).get().then((value) {
+      value.docs.forEach((element) { // ignore: avoid_function_literals_in_foreach_calls
+        orderDistance.value = element['distance'];
+        orderDeliveryFee.value = element['delivery_fee'];
+        orderBonus.value = element['bonus'];
+        orderTip.value = element['tip'];
+      });
+    });
+    orderCollection.where(OrderModel.orderIdString, isEqualTo: id).get().then((snapshot) {
       snapshot.docs.forEach((element) {      // ignore: avoid_function_literals_in_foreach_calls
         deliverDocId = element.id;
         driverId = element['driver_id'];
         orderDate = element['date'];
         _loadDriverDocumentId(driverId);
         _loadDeliverReportDocumentId(driverId);
-
-        orderDistance.value = element['distance'];
-        orderDeliveryFee.value = element['delivery_fee'];
-        orderBonus.value = element['bonus'];
-        orderTip.value = element['tip'];
-      }),
+      });
     });
   }
   void _loadDriverDocumentId(String id) {
@@ -137,7 +154,7 @@ class OrderAcceptController extends GetxController{
     });
   }
   void _loadDeliverReportDocumentId(String id) {
-    driverReportCollection.where(DriverReportModel.driverIdString, isEqualTo: id).get().then((snapshot) => {
+    driverReportCollection.where(DriverReportModel.driverIdString, isEqualTo: id).where(DriverReportModel.dateString, isEqualTo: orderDate).get().then((snapshot) => {
       snapshot.docs.forEach((element) {      // ignore: avoid_function_literals_in_foreach_calls
         driverReportDocId = element.id;
       }),

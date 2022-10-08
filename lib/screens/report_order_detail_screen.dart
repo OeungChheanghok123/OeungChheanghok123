@@ -2,6 +2,8 @@ import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:loy_eat/controllers/report_order_detail_controller.dart';
+import 'package:loy_eat/models/customer_model.dart';
+import 'package:loy_eat/models/remote_data.dart';
 import 'package:loy_eat/widgets/layout_widget/button_widget.dart';
 import 'package:loy_eat/widgets/layout_widget/color.dart';
 import 'package:loy_eat/widgets/layout_widget/icon_widget.dart';
@@ -9,6 +11,7 @@ import 'package:loy_eat/widgets/layout_widget/space.dart';
 import 'package:loy_eat/widgets/layout_widget/text_field_widget.dart';
 import 'package:loy_eat/widgets/layout_widget/text_widget.dart';
 import 'package:loy_eat/widgets/layout_widget/title_appbar_widget.dart';
+import 'package:loy_eat/widgets/screen_widget/screen_widgets.dart';
 
 class ReportOrderDetailScreen extends StatelessWidget {
   ReportOrderDetailScreen({Key? key}) : super(key: key);
@@ -17,7 +20,6 @@ class ReportOrderDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    controller.getOrderNo.value = Get.arguments['order'];
     return SafeArea(
       child: Scaffold(
         extendBody: true,
@@ -67,6 +69,27 @@ class ReportOrderDetailScreen extends StatelessWidget {
   }
 
   Widget get _buildDetailCustomer{
+    return Obx(() {
+      final status = controller.customerData.status;
+      if (status == RemoteDataStatus.processing) {
+        return ScreenWidgets.loading;
+      } else if (status == RemoteDataStatus.error) {
+        return ScreenWidgets.error;
+      } else {
+        final report = controller.customerData.data;
+        return ListView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: report!.length,
+          itemBuilder: (context, index) {
+            final customer = controller.customerData.data![index];
+            return customerDetailItem(customer);
+          },
+        );
+      }
+    });
+  }
+  Widget customerDetailItem(CustomerModel customerModel) {
     return Container(
       color: lightGray,
       padding: const EdgeInsets.only(left: 15, right: 20, top: 10, bottom: 10),
@@ -79,8 +102,8 @@ class ReportOrderDetailScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                profileCustomer('controller.customer.image'),
-                detailCustomer('controller.customer.name', 'controller.customer.address'),
+                profileCustomer(customerModel.image),
+                detailCustomer(customerModel.customerName, customerModel.location),
               ],
             ),
           ),
@@ -148,10 +171,10 @@ class ReportOrderDetailScreen extends StatelessWidget {
             height: 20,
             alignment: Alignment.center,
             decoration: const BoxDecoration(
-                color: none,
-                image: DecorationImage(
-                  image: AssetImage('assets/image/smart_icon.png'),
-                )
+              color: none,
+              image: DecorationImage(
+                image: AssetImage('assets/image/smart_icon.png'),
+              ),
             ),
           ),
         ),
@@ -165,15 +188,21 @@ class ReportOrderDetailScreen extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const TextWidget(text: '5 items - Collect money (exclude tip)'),
-          Container(
-            color: rabbit,
-            child: const TextWidget(
-              text: '\$19.00',
-              color: white,
-              fontWeight: FontWeight.w500,
+          Obx(() => TextWidget(text: '${controller.itemLength.value} items - Collect money (exclude Tip and Bonus)')),
+          Obx(() => Container(
+            decoration: BoxDecoration(
+              color: rabbit,
+              borderRadius: BorderRadius.circular(5),
             ),
-          ),
+            child: Padding(
+              padding: const EdgeInsets.all(3.0),
+              child: TextWidget(
+                text: ' \$ ${controller.totalMoney.value} ',
+                color: white,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          )),
         ],
       ),
     );
