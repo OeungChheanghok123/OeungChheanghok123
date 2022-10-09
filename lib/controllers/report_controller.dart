@@ -105,7 +105,7 @@ class ReportController extends GetxController{
     isHasData.value = true;
     dataDatePicker.value = '';
   }
-  void cardOrderPage(String orderId) {
-    Get.toNamed('/report_order_detail', arguments: {'order': orderId});
+  void cardOrderPage(String orderId, String deliveryFee, String tip, String bonus, String customerName) {
+    Get.toNamed('/report_order_detail', arguments: {'order': orderId, 'delivery_fee': deliveryFee, 'tip': tip, 'bonus': bonus, 'customerName': customerName});
   }
 }

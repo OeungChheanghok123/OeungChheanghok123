@@ -158,7 +158,7 @@ class ReportScreen extends StatelessWidget {
           ),
           // detail card
           InkWell(
-            onTap: () => controller.cardOrderPage(orderModel.orderId),
+            onTap: () => controller.cardOrderPage(orderModel.orderId, deliverModel.deliveryFee, deliverModel.tip, deliverModel.bonus, orderModel.customerName),
             child: _buildCard(
               child: Container(
                 padding: const EdgeInsets.all(10),

@@ -182,6 +182,7 @@ class ReportOrderDetailScreen extends StatelessWidget {
     );
   }
 
+
   Widget get _buildItemCountAndTotal{
     return Container(
       margin: const EdgeInsets.only(top: 10, right: 15,  left: 15),
@@ -197,7 +198,7 @@ class ReportOrderDetailScreen extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(3.0),
               child: TextWidget(
-                text: ' \$ ${controller.totalMoney.value} ',
+                text: ' \$ ${controller.total.value.toStringAsFixed(2)} ',
                 color: white,
                 fontWeight: FontWeight.w500,
               ),
@@ -229,6 +230,7 @@ class ReportOrderDetailScreen extends StatelessWidget {
       ),
     );
   }
+
   Widget get _buildItemsOrderDetail{
     return Container(
       margin: const EdgeInsets.only(top: 5, right: 15, left: 15),
@@ -240,48 +242,7 @@ class ReportOrderDetailScreen extends StatelessWidget {
             text: 'items',
             color: rabbit,
           ),
-          ListView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: 5,
-            itemBuilder: (BuildContext context, int index){
-              return Container(
-                  margin: const EdgeInsets.only(top: 10),
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              TextWidget(text: '${index+1}. '),
-                              TextWidget(text: 'Product ${index+1}'),
-                            ],
-                          ),
-                          const TextWidget(
-                            text: '\$3.00',
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          TextWidget(text: '${index+1}. ', color: none,),
-                          const TextWidget(text: '1 X \$3.00', color: silver,),
-                        ],
-                      ),
-                      index == 4 ? const SizedBox.shrink() : Container(
-                        margin: const EdgeInsets.only(top: 5),
-                        child: const DottedLine(
-                          dashLength: 1.5,
-                          lineThickness: 2,
-                          dashColor: silver,
-                        ),
-                      ),
-                    ],
-                  )
-              );
-            },
-          ),
+          _buildListProducts,
           Container(
             margin: const EdgeInsets.only(top: 15),
             width: double.infinity,
@@ -292,18 +253,73 @@ class ReportOrderDetailScreen extends StatelessWidget {
       ),
     );
   }
+  Widget get _buildListProducts{
+    return Obx(() {
+      final status = controller.productData.status;
+      if (status == RemoteDataStatus.processing) {
+        return ScreenWidgets.loading;
+      } else if (status == RemoteDataStatus.error) {
+        return ScreenWidgets.error;
+      } else {
+        return ListView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: controller.listProductName.length,
+          itemBuilder: (BuildContext context, int index){
+            return productItem(index);
+          },
+        );
+      }
+    });
+  }
+  Widget productItem(int index){
+    return Container(
+        margin: const EdgeInsets.only(top: 10),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    TextWidget(text: '${index + 1}. '),
+                    TextWidget(text: controller.listProductName[index]),
+                  ],
+                ),
+                TextWidget(text: '\$${controller.listAmount[index].toStringAsFixed(2)}'),
+              ],
+            ),
+            Row(
+              children: [
+                TextWidget(text: '${index+1}. ', color: none,),
+                TextWidget(text: '${controller.listQty[index]} X \$${controller.listSalePrice[index]}', color: silver,),
+              ],
+            ),
+            index == controller.listProductName.length - 1 ? const SizedBox.shrink() : Container(
+              margin: const EdgeInsets.only(top: 5),
+              child: const DottedLine(
+                dashLength: 1.5,
+                lineThickness: 2,
+                dashColor: silver,
+              ),
+            ),
+          ],
+        )
+    );
+  }
+
   Widget get _buildStatusDetail{
     return Container(
       margin: const EdgeInsets.only(top: 10, right: 15, left: 15),
       child: Column(
         children: [
-          _buildItemsStatus('Subtotal', '\$15.00'),
+          Obx(() => _buildItemsStatus('Subtotal', '\$${controller.subTotal.value.toStringAsFixed(2)}')),
           _buildItemsStatus('Discount', '\$0.00'),
           _buildItemsStatus('VAT', '\$0.00', dottedLine: true),
-          _buildItemsStatus('Net delivery fee', '\$4.00', fontBold: true),
-          _buildItemsStatus('Tip', '\$1.00', fontBold: true),
-          _buildItemsStatus('Bonus', '\$0.00', fontBold: true, underLine: true),
-          _buildItemsStatus('Total', '\$20.00'),
+          Obx(() => _buildItemsStatus('Net delivery fee', '\$${controller.getDeliveryFee.value}', fontBold: true)),
+          Obx(() => _buildItemsStatus('Tip', '\$${controller.getTip.value}', fontBold: true)),
+          Obx(() => _buildItemsStatus('Bonus', '\$${controller.getBonus.value}', fontBold: true, underLine: true)),
+          Obx(() => _buildItemsStatus('Total', '\$${controller.totalEarning.value.toStringAsFixed(2)}')),
         ],
       ),
     );
@@ -320,12 +336,12 @@ class ReportOrderDetailScreen extends StatelessWidget {
           ),
           Container(
             color: rabbit,
-            padding: const EdgeInsets.symmetric(horizontal: 2),
-            child: const TextWidget(
-              text: '\$5.00',
+            padding: const EdgeInsets.all(3),
+            child: Obx(() => TextWidget(
+              text: '\$${controller.yourEarning.value.toStringAsFixed(2)}',
               color: white,
               fontWeight: FontWeight.bold,
-            ),
+            )),
           ),
         ],
       ),
@@ -338,11 +354,11 @@ class ReportOrderDetailScreen extends StatelessWidget {
       child: ButtonWidget(
         onPressed: () => Get.back(),
         width: double.infinity,
-        child: const TextWidget(
-          text: 'Delivered successfully to Sovongdy',
+        child: Obx(() => TextWidget(
+          text: 'Delivered successfully to ${controller.getCustomerName.value}',
           color: white,
           fontWeight: FontWeight.bold,
-        ),
+        )),
       ),
     );
   }

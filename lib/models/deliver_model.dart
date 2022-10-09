@@ -17,11 +17,9 @@ class DeliverModel {
   static const String step4String = "step_4";
   static const String periodString = "period";
   static const String tipString = "tip";
-  static const String itemsString = "items";
 
   late String orderId, driverId, date, bonus, customerRating, deliveryFee, distance, merchantRating, process, period, tip;
   late bool step1, step2, step3, step4;
-  late List<dynamic> items;
   DocumentReference? reference;
 
   DeliverModel({
@@ -40,7 +38,6 @@ class DeliverModel {
     this.step4 = false,
     this.period = "no time",
     this.tip = "no tip",
-    this.items = const [],
     this.reference,
   });
 
@@ -61,7 +58,6 @@ class DeliverModel {
     step4 = (map ?? {})[step4String] ?? "no step 4";
     period = (map ?? {})[periodString] ?? "no time";
     tip = (map ?? {})[tipString] ?? "no tip";
-    items = (map ?? {})[itemsString] ?? [];
   }
 
   DeliverModel.fromSnapshot(DocumentSnapshot snapshot): this.fromMap(snapshot.data(), reference: snapshot.reference);
@@ -82,6 +78,5 @@ class DeliverModel {
     step4String : step4,
     periodString : period,
     tipString : tip,
-    itemsString : items,
   };
 }
