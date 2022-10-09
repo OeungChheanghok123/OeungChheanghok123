@@ -47,6 +47,7 @@ class OrderAcceptController extends GetxController{
   @override
   void onInit() {
     _loadDeliverDocumentId(newOrderCardController.orderId.value);
+    newOrderCardController.closeTimer();
 
     step1 = "Arrived Merchant to Pickup (Step: 1/4)";
     step2 = "Picked Order ID: ${newOrderCardController.orderId.value} (Step: 2/4)";
@@ -130,6 +131,7 @@ class OrderAcceptController extends GetxController{
   void _loadDeliverDocumentId(String id) {
     deliverCollection.where(DeliverModel.orderIdString, isEqualTo: id).get().then((value) {
       value.docs.forEach((element) { // ignore: avoid_function_literals_in_foreach_calls
+        deliverDocId = element.id;
         orderDistance.value = element['distance'];
         orderDeliveryFee.value = element['delivery_fee'];
         orderBonus.value = element['bonus'];
@@ -138,7 +140,6 @@ class OrderAcceptController extends GetxController{
     });
     orderCollection.where(OrderModel.orderIdString, isEqualTo: id).get().then((snapshot) {
       snapshot.docs.forEach((element) {      // ignore: avoid_function_literals_in_foreach_calls
-        deliverDocId = element.id;
         driverId = element['driver_id'];
         orderDate = element['date'];
         _loadDriverDocumentId(driverId);

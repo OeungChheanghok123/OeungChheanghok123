@@ -146,7 +146,7 @@ class MapController extends GetxController {
 
         merchantPosition = LatLng(merchant[0].position.latitude, merchant[0].position.longitude);
         myPosLatLng.add(merchantPosition);
-        initMerchantMarker().then((marker) => markers.value = marker as List<Marker>);
+        initMerchantMarker().then((marker) => markers = marker as RxList<Marker>);
         debugPrint('merchant position : $merchantPosition');
         getPolyline(merchantPosition);
       });
@@ -164,7 +164,7 @@ class MapController extends GetxController {
         customerPosition = LatLng(customer[0].position.latitude, customer[0].position.longitude);
         myPosLatLng.clear();
         myPosLatLng.add(customerPosition);
-        initCustomerMarker().then((marker) => markers.value = marker as List<Marker>);
+        initCustomerMarker().then((marker) => markers = marker as RxList<Marker>);
         getPolyline(customerPosition);
       });
     } catch (ex) {

@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:loy_eat/controllers/main_page_controller.dart';
-import 'package:loy_eat/controllers/new_order_card_controller.dart';
 import 'package:loy_eat/models/driver_model.dart';
 import 'package:loy_eat/models/driver_report_model.dart';
 import 'package:loy_eat/models/remote_data.dart';
@@ -67,7 +66,6 @@ class HomeController extends GetxController{
   RemoteData<List<DriverReportModel>> get data => _driverReportData.value;
 
   final mainPageController = Get.put(MainPageController());
-  final newOrderController = Get.put(NewOrderCardController());
 
   @override
   void onInit() {
@@ -113,7 +111,7 @@ class HomeController extends GetxController{
       final data = driverReportCollection
           .where(DriverReportModel.driverIdString, isEqualTo: id)
           .where(DriverReportModel.monthString, isEqualTo: monthStart)
-          .where(DriverReportModel.dayString, isLessThanOrEqualTo: dayEnd, isGreaterThanOrEqualTo: dayStart).orderBy(DriverReportModel.dayString)
+          .where(DriverReportModel.dayString, isLessThanOrEqualTo: dayEnd, isGreaterThanOrEqualTo: dayStart).limit(7)
           .snapshots();
       data.listen((result) {
         if (result.docs.isEmpty) {
@@ -121,13 +119,15 @@ class HomeController extends GetxController{
           final driverReport = result.docs.map((e) => DriverReportModel.fromMap(e.data())).toList();
           driverReportLength.value = driverReport.length;
           clearData();
-          dataBase(driverReport);
+          final reverseReport = driverReport.reversed;
+          dataBase(reverseReport.toList());
         } else {
           debugPrint('Data is not empty');
           final driverReport = result.docs.map((e) => DriverReportModel.fromMap(e.data())).toList();
           driverReportLength.value = driverReport.length;
           clearData();
-          dataBase(driverReport);
+          final reverseReport = driverReport.reversed;
+          dataBase(reverseReport.toList());
           _driverReportData.value = RemoteData<List<DriverReportModel>>(status: RemoteDataStatus.success, data: driverReport);
         }
       });
@@ -225,7 +225,8 @@ class HomeController extends GetxController{
     driverReportCollection.where(DriverReportModel.driverIdString, isEqualTo: id).where(DriverReportModel.dateString, isEqualTo: output).get().then((snapshot) => {
       snapshot.docs.forEach((element) { // ignore: avoid_function_literals_in_foreach_calls
         driverReportDocId = element.id;
-        onlineMinute.value = int.parse(element[DriverReportModel.onlineMinuteString]);
+        var minute = element['online_minute'];
+        onlineMinute.value = int.parse(minute);
         debugPrint('online minute : ${onlineMinute.value}');
       }),
     });

@@ -31,7 +31,6 @@ List<GetPage<dynamic>>? getRoutPage = [
   GetPage(name: '/instruction', page: () => const InstructionScreen()),
   GetPage(name: '/home', page: () => HomeScreen()),
   GetPage(name: '/notification', page: () => const NotificationScreen(), transition: Transition.rightToLeftWithFade, transitionDuration: const Duration(milliseconds: 500)),
-  //GetPage(name: '/notification_detail', page: () => NotificationDetailScreen(notificationIndex: homeController.notificationIndex.value), transition: Transition.rightToLeftWithFade, transitionDuration: const Duration(milliseconds: 500)),
   GetPage(name: '/become_driver_success', page: () => const BecomeDriverSuccessScreen()),
   GetPage(name: '/become_driver_fail', page: () => const BecomeDriverFailScreen()),
   GetPage(name: '/auto_complete_text_field', page: () => const AutoCompleteTextField(), transition: Transition.downToUp),

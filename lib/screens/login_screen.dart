@@ -63,7 +63,7 @@ class LoginScreen extends StatelessWidget {
   Widget _buildButton(String text, Color color, String page){
     return ButtonWidget(
       color: color,
-      onPressed: () => Get.offAllNamed(page),
+      onPressed: () => Get.toNamed(page),
       child: TextWidget(
         text: text,
         color: white,
