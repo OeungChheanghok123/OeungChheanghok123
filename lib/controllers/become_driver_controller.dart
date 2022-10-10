@@ -1,18 +1,17 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:loy_eat/widgets/layout_widget/color.dart';
 
 class BecomeDriverController extends GetxController {
+  final driverNameController = TextEditingController();
+  final birthDayController = TextEditingController();
+  final phoneNumberController = TextEditingController();
+  final districtController = TextEditingController();
+  final communeController = TextEditingController();
+  final referralCodeController = TextEditingController();
 
-  TextEditingController driverNameController = TextEditingController();
-  TextEditingController birthDayController = TextEditingController();
-  TextEditingController phoneNumberController = TextEditingController();
-  TextEditingController districtController = TextEditingController();
-  TextEditingController communeController = TextEditingController();
-  TextEditingController referralCodeController = TextEditingController();
+  var dataDatePicker = ''.obs;
+  var gender = ''.obs;
 
   var radioGenderValue = 0.obs;
   var dropDownDistrictValue = "".obs;
@@ -48,6 +47,14 @@ class BecomeDriverController extends GetxController {
 
   void selectGender(int index) {
     radioGenderValue.value = index;
+    if (radioGenderValue.value == 0) {
+      gender.value = 'Male';
+      debugPrint('Gender: ${gender.value}');
+    } else {
+      gender.value = 'Female';
+      debugPrint('Gender: ${gender.value}');
+
+    }
   }
   void selectVehicle(int index) {
     if (index == 0){
@@ -125,15 +132,6 @@ class BecomeDriverController extends GetxController {
       eveningTextScheduleColor.value = black;
       eveningBackgroundScheduleColor.value = white;
       eveningBorderScheduleColor.value = silver;
-    }
-  }
-  Future pickImage(ImageSource imageSource) async {
-    final pickedImage = await ImagePicker().pickImage(source: imageSource);
-    if (pickedImage != null){
-      selectImagePath.value = pickedImage.path;
-      selectImageSize.value = ((File(selectImagePath.value)).lengthSync()/1024/1024).toStringAsFixed(2) + " Mb";
-    } else {
-      Get.snackbar('Error', 'No Image selected', snackPosition: SnackPosition.BOTTOM, backgroundColor: white, colorText: black,);
     }
   }
 }

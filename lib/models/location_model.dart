@@ -11,9 +11,5 @@ const menuDistrictItems = <String>[
 
 const menuCommuneItems = <String>[
   'Boeng Trabaek', 'Chbar Ampov Ti Muoy', 'Bak Kaeng', 'Veal Sbov', 'Boeng Keng Kang Ti Muoy',
-  'Boeng Tumpun', 'Monourom', 'Ruessei Kaev', 'Phnum Penh Thmei'
-];
-
-const menuVillageItems = <String>[
-  'Phum 1', 'Phum 2', 'Phum 3', 'Phum 4'
+  'Boeng Tumpun', 'Monourom', 'Ruessei Kaev', 'Phnum Penh Thmei', 'Prek Leap'
 ];

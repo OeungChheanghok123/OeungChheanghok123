@@ -7,32 +7,35 @@ import 'package:loy_eat/models/driver_model.dart';
 
 class VerifyPhoneNumberController extends GetxController {
   final driverCollection = FirebaseFirestore.instance.collection(DriverModel.collectionName);
-  var driverDoc = '';
-  var allPhoneNumberList = [];
-  var phoneNumber = '';
+  var phoneNumber = ''.obs;
   var verificationIDReceived = '';
 
   final auth = FirebaseAuth.instance;
   final phoneController = TextEditingController();
   final mainPageController = Get.put(MainPageController());
 
-  void editPhoneNumber() {
+  void loadAllPhoneNumber() {
     List phone = phoneController.text.split("");
 
-    if(phone[0] == "0"){
+    if (phone[0] == "0") {
       phone.removeAt(0);
     }
 
     phoneController.text = phone.join();
-    phoneNumber = phone.join();
+    phoneNumber.value = phone.join();
 
-    driverCollection.where(DriverModel.telString, isEqualTo: phoneNumber).get().then((snapshot) => {
-      // ignore: avoid_function_literals_in_foreach_calls
-      snapshot.docs.forEach((element) {
-        driverDoc = element.id;
-      }),
+    final driver = driverCollection.where(DriverModel.telString, isEqualTo: phoneNumber.value).where(DriverModel.statusString, isEqualTo: 'Approved').snapshots();
+    driver.listen((result) {
+      if (result.docs.isNotEmpty) {
+        debugPrint('phoneNumber is : $phoneNumber');
+        mainPageController.writeDriverPhoneNumber(phoneNumber.value);
+        Get.toNamed('/enter_otp_code');
+        verifyNumber();
+      }
+      else {
+        Get.toNamed('/log_in_fail');
+      }
     });
-
   }
   void verifyNumber() {
     auth.verifyPhoneNumber(
@@ -51,36 +54,5 @@ class VerifyPhoneNumberController extends GetxController {
       },
       codeAutoRetrievalTimeout: (String verificationID){},
     );
-  }
-  void loadAllPhoneNumber() {
-    try {
-      final data = FirebaseFirestore.instance.collection(DriverModel.collectionName).snapshots();
-      data.listen((result) {
-        final driver = result.docs.map((e) => DriverModel.fromMap(e.data())).toList();
-
-        for (var e in driver) {
-          allPhoneNumberList.add(e.tel);
-        }
-
-        editPhoneNumber();
-
-        for (int i = 0 ; i < allPhoneNumberList.length ; i++) {
-          String num = allPhoneNumberList[i];
-          if (num == phoneNumber) {
-            mainPageController.writeDriverPhoneNumber(num);
-            Get.toNamed('/enter_otp_code');
-            verifyNumber();
-            break;
-          }
-          if (i == allPhoneNumberList.length - 1) {
-            if (num != phoneNumber) {
-              Get.toNamed('/log_in_fail');
-            }
-          }
-        }
-      });
-    } catch (ex) {
-      debugPrint("Load All Phone Number Error: $ex");
-    }
   }
 }

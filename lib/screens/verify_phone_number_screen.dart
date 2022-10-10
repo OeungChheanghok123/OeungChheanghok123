@@ -112,10 +112,7 @@ class VerifyPhoneNumberScreen extends StatelessWidget {
   }
   Widget get _buildButtonNext {
     return ButtonWidget(
-      onPressed: () {
-        controller.loadAllPhoneNumber();
-        debugPrint('phone number is ${controller.phoneController.text}');
-      },
+      onPressed: () => controller.loadAllPhoneNumber(),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: const [

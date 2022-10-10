@@ -1,9 +1,7 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:loy_eat/controllers/become_driver_controller.dart';
 import 'package:loy_eat/models/location_model.dart';
 import 'package:loy_eat/widgets/layout_widget/button_widget.dart';
@@ -15,17 +13,10 @@ import 'package:loy_eat/widgets/layout_widget/space.dart';
 import 'package:loy_eat/widgets/layout_widget/text_field_widget.dart';
 import 'package:loy_eat/widgets/layout_widget/text_widget.dart';
 
-class BecomeDriverScreen extends StatefulWidget {
-  const BecomeDriverScreen({Key? key}) : super(key: key);
+class BecomeDriverScreen extends StatelessWidget {
+  BecomeDriverScreen({Key? key}) : super(key: key);
 
-  @override
-  State<BecomeDriverScreen> createState() => _BecomeDriverScreenState();
-}
-
-class _BecomeDriverScreenState extends State<BecomeDriverScreen> {
-
-  BecomeDriverController becomeDriverController = Get.put(BecomeDriverController());
-  File? image;
+  final becomeDriverController = Get.put(BecomeDriverController());
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +26,6 @@ class _BecomeDriverScreenState extends State<BecomeDriverScreen> {
         backgroundColor: white,
         appBar: null,
         body: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
           child: Container(
             margin: const EdgeInsets.all(15.0),
             child: Column(
@@ -43,11 +33,12 @@ class _BecomeDriverScreenState extends State<BecomeDriverScreen> {
               children: [
                 _buildDriverName,
                 _buildDriverGenderAndBirthYear,
+                _buildIdCard,
                 _buildDriverMobilePhone,
                 _buildDriverVehicle,
                 _buildDriverAddress,
                 _buildDriverSchedule,
-                _buildDriverIDCard,
+                //_buildDriverIDCard,
                 _buildDriverReferral,
                 _buildSubmitButton,
               ],
@@ -69,14 +60,15 @@ class _BecomeDriverScreenState extends State<BecomeDriverScreen> {
             text: 'Name:',
           ),
           TextFieldWidget(
-            controller: becomeDriverController.driverNameController,
             height: 35,
+            controller: becomeDriverController.driverNameController,
             inputType: TextInputType.text,
           ),
         ],
       ),
     );
   }
+
   Widget get _buildDriverGenderAndBirthYear{
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
@@ -84,41 +76,108 @@ class _BecomeDriverScreenState extends State<BecomeDriverScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const TextWidget(
-                isTitle: true,
-                text: 'Gender:',
-              ),
-              Row(
-                children: [
-                  Obx(() => _buildRadioButton(0, 'Male')),
-                  const Space(width: 10),
-                  Obx(() => _buildRadioButton(1, 'Female')),
-                ],
-              ),
-            ],
+          _buildGender,
+          _buildBirthYear,
+        ],
+      ),
+    );
+  }
+  Widget get _buildGender {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const TextWidget(
+          isTitle: true,
+          text: 'Gender:',
+        ),
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Obx(() => _buildRadioButton(0, 'Male')),
+            const Space(width: 10),
+            Obx(() => _buildRadioButton(1, 'Female')),
+          ],
+        ),
+      ],
+    );
+  }
+  Widget _buildRadioButton(int index, String text) => InkWell(
+    splashColor: none,
+    onTap: () => becomeDriverController.selectGender(index),
+    child: Container(
+      margin: const EdgeInsets.fromLTRB(0, 10, 10, 10),
+      child: Row(
+        children: [
+          RadioButtonWidget(
+            index: index,
+            groupValue: becomeDriverController.radioGenderValue.value,
+            onChanged: (newValue) => becomeDriverController.radioGenderValue.value = newValue,
           ),
-          Column(
-            children: [
-              const TextWidget(
-                isTitle: true,
-                text: 'Birth Year:',
-              ),
-              SizedBox(
-                width: 100,
-                height: 45,
-                child: TextFieldWidget(
-                  controller: becomeDriverController.birthDayController,
-                  inputType: TextInputType.datetime,
-                  height: 50,
-                  hintText: '2000',
-                  textAlign: TextAlign.center,
-                  contentPadding: EdgeInsets.zero,
-                ),
-              ),
-            ],
+          const Space(width: 8),
+          TextWidget(text: text),
+        ],
+      ),
+    ),
+  );
+  Widget get _buildBirthYear {
+    return Column(
+      children: [
+        const TextWidget(
+          isTitle: true,
+          text: 'Birth Year:',
+        ),
+        InkWell(
+          onTap: () => showCalender(Get.context!),
+          child: Container(
+            margin: const EdgeInsets.symmetric(vertical: 10),
+            child: Obx(() {
+              var isHasData = false.obs;
+              if (becomeDriverController.dataDatePicker.value == '') {
+                isHasData.value = false;
+              }
+              else {
+                isHasData.value = true;
+              }
+              return isHasData.value == false ? const Padding(padding: EdgeInsets.symmetric(horizontal: 10), child: IconWidget(icon: Icons.calendar_today, size: 20)) : TextWidget(text: becomeDriverController.dataDatePicker.value, size: 14);
+            }),
+          ),
+        ),
+      ],
+    );
+  }
+  void showCalender(BuildContext context) {
+    showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1990),
+      lastDate: DateTime(2030),
+    ).then((DateTime? value) {
+      if (value != null) {
+        DateTime _fromDate = DateTime.now();
+        _fromDate = value;
+        var outputFormat = DateFormat('dd-MMM-yy');
+        final String date = outputFormat.format(_fromDate);
+        becomeDriverController.dataDatePicker.value = date;
+      }
+    });
+  }
+
+  Widget get _buildIdCard{
+    return Container(
+      margin: const EdgeInsets.only(bottom: 10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const TextWidget(
+            isTitle: true,
+            text: 'ID Card:',
+          ),
+          TextFieldWidget(
+            controller: becomeDriverController.phoneNumberController,
+            height: 35,
+            inputType: TextInputType.phone,
+            hintText: 'Enter your ID card',
+            hintColor: silver,
           ),
         ],
       ),
@@ -195,14 +254,13 @@ class _BecomeDriverScreenState extends State<BecomeDriverScreen> {
             menuItem: menuCommuneItems,
             noItemFoundText: 'No commune matched.',
           ),
-          const Space(height: 10),
         ],
       ),
     );
   }
   Widget get _buildDriverSchedule{
     return Container(
-      margin: const EdgeInsets.only(bottom: 10),
+      margin: const EdgeInsets.only(top: 5),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -213,12 +271,15 @@ class _BecomeDriverScreenState extends State<BecomeDriverScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Obx(() => _buildButtonSchedule(
+              Obx(
+                () => _buildButtonSchedule(
                   0,
                   'Morning',
                   becomeDriverController.morningTextScheduleColor.value,
                   becomeDriverController.morningBackgroundScheduleColor.value,
-                  becomeDriverController.morningBorderScheduleColor.value)),
+                  becomeDriverController.morningBorderScheduleColor.value,
+                ),
+              ),
               Obx(() => _buildButtonSchedule(
                   1,
                   'Afternoon',
@@ -237,82 +298,6 @@ class _BecomeDriverScreenState extends State<BecomeDriverScreen> {
       ),
     );
   }
-  Widget get _buildDriverIDCard{
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const TextWidget(
-          isTitle: true,
-          text: 'Take your ID card photo:',
-        ),
-        Container(
-          width: MediaQuery.of(context).size.width,
-          height: 120,
-          margin: const EdgeInsets.symmetric(vertical: 10),
-          color: platinum,
-          child: Obx(() => becomeDriverController.selectImagePath.value == ''
-                ? ButtonWidget(
-                    width: MediaQuery.of(context).size.width,
-                    height: 120,
-                    onPressed: () {
-                      showModalBottomSheet(
-                        context: context,
-                        builder: (BuildContext context) => Container(
-                          margin: const EdgeInsets.symmetric(vertical: 10),
-                          child: Wrap(
-                            children: [
-                              Container(
-                                width: MediaQuery.of(context).size.width,
-                                height: 5,
-                                margin: const EdgeInsets.only(bottom: 15),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Container(
-                                      width: 50,
-                                      decoration: BoxDecoration(
-                                        color: silver,
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              _buildItemBottomSheet(
-                                iconData: Icons.photo_library_outlined,
-                                text: "Select picture from gallery",
-                                onTap: becomeDriverController.pickImage(ImageSource.camera),
-                              ),
-                              _buildItemBottomSheet(
-                                iconData: Icons.add_a_photo,
-                                text: "Open camera to take picture",
-                                onTap: becomeDriverController.pickImage(ImageSource.camera),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                    color: platinum,
-                    child: IconWidget(
-                      icon: Icons.photo_camera,
-                      size: 48,
-                      color: black.withOpacity(0.3),
-                    ),
-                  )
-                : SizedBox(
-                  width: 200,
-                  height: 120,
-                  child: Image.file(
-                      File(becomeDriverController.selectImagePath.value),
-                      fit: BoxFit.fitHeight,
-                    ),
-                ),
-          ),
-        ),
-      ],
-    );
-  }
   Widget get _buildDriverReferral{
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -321,25 +306,22 @@ class _BecomeDriverScreenState extends State<BecomeDriverScreen> {
           isTitle: true,
           text: 'Referral code if have:',
         ),
-        SizedBox(
-          width: 120,
-          height: 50,
-          child: TextFieldWidget(
-            controller: becomeDriverController.referralCodeController,
-            height: 50,
-            inputType: TextInputType.number,
-            textAlign: TextAlign.center,
-            hintText: 'Enter code',
-            contentPadding: EdgeInsets.zero,
-          ),
+        TextFieldWidget(
+          controller: becomeDriverController.referralCodeController,
+          width: 150,
+          height: 35,
+          inputType: TextInputType.number,
+          textAlign: TextAlign.center,
+          hintText: 'Enter code',
+          contentPadding: EdgeInsets.zero,
         ),
       ],
     );
   }
   Widget get _buildSubmitButton{
     return Container(
-      width: MediaQuery.of(context).size.width,
-      margin: const EdgeInsets.fromLTRB(25, 15, 25, 0),
+      width: 300,
+      margin: const EdgeInsets.only(top: 20),
       child:  ButtonWidget(
         onPressed: () {
           if (becomeDriverController.phoneNumberController.text == "") {
@@ -351,31 +333,13 @@ class _BecomeDriverScreenState extends State<BecomeDriverScreen> {
         child: const TextWidget(
           text: 'Submit',
           color: white,
-          size: 14,
-          fontWeight: FontWeight.w500,
+          size: 16,
+          fontWeight: FontWeight.bold,
         ),
       ),
     );
   }
 
-  Widget _buildRadioButton(int index, String text) => InkWell(
-    splashColor: none,
-    onTap: () => becomeDriverController.selectGender(index),
-    child: Container(
-      margin: const EdgeInsets.fromLTRB(0, 10, 10, 10),
-      child: Row(
-        children: [
-          RadioButtonWidget(
-            index: index,
-            groupValue: becomeDriverController.radioGenderValue.value,
-            onChanged: (newValue) => becomeDriverController.radioGenderValue.value = newValue,
-          ),
-          const Space(width: 8),
-          TextWidget(text: text),
-        ],
-      ),
-    ),
-  );
   Widget _buildVehicleButton(int index, String image, String text, Color borderColor, Color backgroundColor) => InkWell(
     splashColor: none,
     onTap: () => becomeDriverController.selectVehicle(index),
@@ -470,35 +434,6 @@ class _BecomeDriverScreenState extends State<BecomeDriverScreen> {
               borderRadius: BorderRadius.circular(5),
               borderSide: const BorderSide(),
             ),
-          ),
-        ),
-      ),
-    );
-  }
-  Widget _buildItemBottomSheet({required IconData iconData, required String text, required Future onTap}){
-    return Container(
-      padding: const EdgeInsets.only(top: 10),
-      child: GestureDetector(
-        onTap: () => onTap,
-        child: Padding(
-          padding: const EdgeInsets.only(left: 15, top: 5, bottom: 5),
-          child: Row(
-            children: [
-              Container(
-                margin: const EdgeInsets.only(right: 15),
-                decoration: BoxDecoration(
-                  color: silver.withOpacity(0.5),
-                  borderRadius: BorderRadius.circular(100),
-                ),
-                padding: const EdgeInsets.all(8),
-                child: IconWidget(
-                  icon: iconData,
-                  size: 25,
-                  color: black,
-                ),
-              ),
-              TextWidget(isTitle: true, text: text),
-            ],
           ),
         ),
       ),

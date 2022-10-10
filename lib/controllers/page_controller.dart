@@ -25,7 +25,7 @@ import 'package:loy_eat/widgets/screen_widget/order_empty_screen.dart';
 List<GetPage<dynamic>>? getRoutPage = [
   GetPage(name: '/start_up', page: () => StartUpScreen()),
   GetPage(name: '/log_in', page: () => const LoginScreen()),
-  GetPage(name: '/become_driver', page: () => const BecomeDriverScreen()),
+  GetPage(name: '/become_driver', page: () => BecomeDriverScreen()),
   GetPage(name: '/verify_phone_number', page: () => VerifyPhoneNumberScreen()),
   GetPage(name: '/enter_otp_code', page: () => EnterOTPCodeScreen()),
   GetPage(name: '/instruction', page: () => const InstructionScreen()),

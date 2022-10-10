@@ -15,6 +15,7 @@ class DriverModel {
   static const String statusString = "status";  
   static const String telString = "tel";
   static const String isOnlineString = "is_online";
+  static const String vehicleString = "vehicle";
 
   String yob;
   String createAt;
@@ -23,12 +24,13 @@ class DriverModel {
   String gender;
   String idCard;
   String image;
-  String location;
+  Map<String, dynamic> location;
   String referralCode;
   String shift;
   String status;
   String tel;
   bool isOnline;
+  String vehicle;
 
   DriverModel({
     this.yob = '',
@@ -38,11 +40,12 @@ class DriverModel {
     this.gender = '',
     this.idCard = '',
     this.image = '',
-    this.location = '',
+    this.location = const {},
     this.referralCode = '',
     this.shift = '',
     this.status = '',
     this.tel = '',
+    this.vehicle = '',
     this.isOnline = false,
   });
 
@@ -62,6 +65,7 @@ class DriverModel {
     result.addAll({statusString: status});
     result.addAll({telString: tel});
     result.addAll({isOnlineString: isOnline});
+    result.addAll({vehicleString: vehicle});
 
     return result;
   }
@@ -75,11 +79,12 @@ class DriverModel {
       gender: map[genderString] ?? '',
       idCard: map[idCardString] ?? '',
       image: map[imageString] ?? '',
-      location: map[locationString] ?? '',
+      location: map[locationString] ?? {},
       referralCode: map[referralCodeString] ?? '',
       shift: map[shiftString] ?? '',
       status: map[statusString] ?? '',
       tel: map[telString] ?? '',
+      vehicle: map[vehicleString] ?? '',
       isOnline: map[isOnlineString] ?? false,
     );
   }

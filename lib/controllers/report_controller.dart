@@ -32,7 +32,6 @@ class ReportController extends GetxController{
   }
   void _loadDriverId() {
     var num = mainPageController.readDriverPhoneNumber();
-    debugPrint('phone number on report controller : $num');
     final data = driverCollection.where(DriverModel.telString, isEqualTo: num).snapshots();
     data.listen((result) {
       final driver = result.docs.map((e) => DriverModel.fromMap(e.data())).toList();
