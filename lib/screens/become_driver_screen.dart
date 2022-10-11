@@ -38,7 +38,6 @@ class BecomeDriverScreen extends StatelessWidget {
                 _buildDriverVehicle,
                 _buildDriverAddress,
                 _buildDriverSchedule,
-                //_buildDriverIDCard,
                 _buildDriverReferral,
                 _buildSubmitButton,
               ],
@@ -173,7 +172,7 @@ class BecomeDriverScreen extends StatelessWidget {
             text: 'ID Card:',
           ),
           TextFieldWidget(
-            controller: becomeDriverController.phoneNumberController,
+            controller: becomeDriverController.idCardController,
             height: 35,
             inputType: TextInputType.phone,
             hintText: 'Enter your ID card',
@@ -323,13 +322,7 @@ class BecomeDriverScreen extends StatelessWidget {
       width: 300,
       margin: const EdgeInsets.only(top: 20),
       child:  ButtonWidget(
-        onPressed: () {
-          if (becomeDriverController.phoneNumberController.text == "") {
-            Get.offAllNamed('/become_driver_fail');
-          } else {
-            Get.offAllNamed('/become_driver_success');
-          }
-        },
+        onPressed: () => becomeDriverController.submitData(),
         child: const TextWidget(
           text: 'Submit',
           color: white,

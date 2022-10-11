@@ -56,7 +56,7 @@ class BecomeDriverFailScreen extends StatelessWidget {
                       width: 260,
                       child: const TextWidget(
                         textAlign: TextAlign.center,
-                        text: 'Your Phone number is already to register!\nPlease try to login! Thanks.',
+                        text: 'Your phone number is already to register!\nPlease try to login! Thanks.',
                       ),
                     ),
                     ButtonWidget(

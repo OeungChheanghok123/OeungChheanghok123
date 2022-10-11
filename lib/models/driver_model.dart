@@ -26,7 +26,7 @@ class DriverModel {
   String image;
   Map<String, dynamic> location;
   String referralCode;
-  String shift;
+  List shift;
   String status;
   String tel;
   bool isOnline;
@@ -42,7 +42,7 @@ class DriverModel {
     this.image = '',
     this.location = const {},
     this.referralCode = '',
-    this.shift = '',
+    this.shift = const [],
     this.status = '',
     this.tel = '',
     this.vehicle = '',
@@ -81,7 +81,7 @@ class DriverModel {
       image: map[imageString] ?? '',
       location: map[locationString] ?? {},
       referralCode: map[referralCodeString] ?? '',
-      shift: map[shiftString] ?? '',
+      shift: map[shiftString] ?? [],
       status: map[statusString] ?? '',
       tel: map[telString] ?? '',
       vehicle: map[vehicleString] ?? '',

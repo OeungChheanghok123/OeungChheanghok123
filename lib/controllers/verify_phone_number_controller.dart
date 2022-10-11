@@ -33,7 +33,15 @@ class VerifyPhoneNumberController extends GetxController {
         verifyNumber();
       }
       else {
-        Get.toNamed('/log_in_fail');
+        final driver = driverCollection.where(DriverModel.telString, isEqualTo: phoneNumber.value).where(DriverModel.statusString, isEqualTo: '').snapshots();
+        driver.listen((result) {
+          if (result.docs.isNotEmpty) {
+            Get.toNamed('/log_in_fail', arguments: {'message': 'Your phone number is not yet approved!\nPlease try again later! Thanks.'});
+          }
+          else {
+            Get.toNamed('/log_in_fail', arguments: {'message': 'Your phone number is not yet register!\nPlease try to register before login! Thanks.'});
+          }
+        });
       }
     });
   }

@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:loy_eat/controllers/become_driver_success_controller.dart';
 import 'package:loy_eat/widgets/layout_widget/button_widget.dart';
 import 'package:loy_eat/widgets/layout_widget/color.dart';
 import 'package:loy_eat/widgets/layout_widget/icon_widget.dart';
 import 'package:loy_eat/widgets/layout_widget/text_widget.dart';
 
 class BecomeDriverSuccessScreen extends StatelessWidget {
-  const BecomeDriverSuccessScreen({Key? key}) : super(key: key);
+  BecomeDriverSuccessScreen({Key? key}) : super(key: key);
+
+  final controller = Get.put(BecomeDriverSuccessController());
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    final size = MediaQuery.of(context).size;
 
     return Scaffold(
       extendBody: true,
@@ -52,7 +55,7 @@ class BecomeDriverSuccessScreen extends StatelessWidget {
                         text: 'Thank you',
                       ),
                     ),
-                    const TextWidget(text: 'You are now submitted!',),
+                    const TextWidget(text: 'You are now submitted!'),
                     Container(
                       margin: const EdgeInsets.symmetric(vertical: 50),
                       width: 250,
@@ -61,8 +64,9 @@ class BecomeDriverSuccessScreen extends StatelessWidget {
                         text: 'You have successfully submitted a request to be our driver partner. you will be contacted your team very soon.',
                       ),
                     ),
-                    ButtonWidget(
-                        onPressed: () => Get.offAllNamed('/instruction'),
+                    Obx(() {
+                      return controller.showButton.value ? ButtonWidget(
+                        onPressed: () => Get.offAllNamed('/log_in'),
                         width: size.width - 100,
                         child: const TextWidget(
                           text: 'Got it',
@@ -70,7 +74,8 @@ class BecomeDriverSuccessScreen extends StatelessWidget {
                           size: 14,
                           fontWeight: FontWeight.w500,
                         ),
-                      ),
+                      ) : const SizedBox();
+                    }),
                   ],
                 ),
               )),
