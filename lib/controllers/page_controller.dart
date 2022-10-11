@@ -10,6 +10,7 @@ import 'package:loy_eat/screens/instruction_screen.dart';
 import 'package:loy_eat/screens/invite_friend_screen.dart';
 import 'package:loy_eat/screens/login_fail_screen.dart';
 import 'package:loy_eat/screens/login_screen.dart';
+import 'package:loy_eat/screens/notification_detail_screen.dart';
 import 'package:loy_eat/screens/order_accept_screen.dart';
 import 'package:loy_eat/screens/order_screen.dart';
 import 'package:loy_eat/screens/qr_code_screen.dart';
@@ -31,7 +32,8 @@ List<GetPage<dynamic>>? getRoutPage = [
   GetPage(name: '/instruction', page: () => const InstructionScreen()),
   GetPage(name: '/home', page: () => HomeScreen()),
   GetPage(name: '/notification', page: () => const NotificationScreen(), transition: Transition.rightToLeftWithFade, transitionDuration: const Duration(milliseconds: 500)),
-  GetPage(name: '/become_driver_success', page: () => const BecomeDriverSuccessScreen()),
+  GetPage(name: '/notification_detail', page: () => const NotificationDetailScreen(), transition: Transition.rightToLeftWithFade, transitionDuration: const Duration(milliseconds: 500)),
+  GetPage(name: '/become_driver_success', page: () => BecomeDriverSuccessScreen()),
   GetPage(name: '/become_driver_fail', page: () => const BecomeDriverFailScreen()),
   GetPage(name: '/auto_complete_text_field', page: () => const AutoCompleteTextField(), transition: Transition.downToUp),
   GetPage(name: '/edit_profile', page: () => const EditProfileScreen(), transition: Transition.rightToLeftWithFade),
@@ -45,5 +47,5 @@ List<GetPage<dynamic>>? getRoutPage = [
   GetPage(name: '/order_accept', page: () => OrderAccept()),
   GetPage(name: '/order', page: () => OrderScreen()),
   GetPage(name: '/become_driver_fail', page: () => const BecomeDriverFailScreen()),
-  GetPage(name: '/log_in_fail', page: () => const LoginFailScreen()),
+  GetPage(name: '/log_in_fail', page: () => LoginFailScreen()),
 ];

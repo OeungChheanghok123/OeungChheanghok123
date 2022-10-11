@@ -7,7 +7,6 @@ import 'package:flutter_app_badger/flutter_app_badger.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:loy_eat/models/notification_model.dart';
-import 'package:loy_eat/screens/notification_detail_screen.dart';
 
 class FirebaseNotifications {
   int messageCount = 1;
@@ -85,8 +84,7 @@ class FirebaseNotifications {
         }
 
         lastMessageId = remoteMessage.messageId!;
-
-        Get.to(NotificationDetailScreen(refId: remoteMessage.data['ref_id']));
+        Get.toNamed('/notification_detail', arguments: {'ref_id': remoteMessage.data['ref_id']});
       });
     });
   }

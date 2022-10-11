@@ -6,7 +6,9 @@ import 'package:loy_eat/widgets/layout_widget/icon_widget.dart';
 import 'package:loy_eat/widgets/layout_widget/text_widget.dart';
 
 class LoginFailScreen extends StatelessWidget {
-  const LoginFailScreen({Key? key}) : super(key: key);
+  LoginFailScreen({Key? key}) : super(key: key);
+
+  final getText = ''.obs;
 
   @override
   Widget build(BuildContext context) {
@@ -30,15 +32,16 @@ class LoginFailScreen extends StatelessWidget {
   }
 
   Widget _buildBody(BuildContext context) {
-    final size = MediaQuery.of(context).size;
+    getText.value = Get.arguments['message'];
+
     return Container(
-      width: size.width,
+      width: double.infinity,
       alignment: Alignment.center,
       child: Column(
         children: [
           _buildIconClose(),
           _buildTextFail(),
-          _buildText('Your Phone number is not yet register!\nPlease try to register before login! Thanks.'),
+          _buildText(getText.value),
           _buildButton(context),
         ],
       ),

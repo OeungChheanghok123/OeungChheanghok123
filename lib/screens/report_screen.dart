@@ -26,10 +26,26 @@ class ReportScreen extends StatelessWidget {
       child: Scaffold(
         extendBody: true,
         backgroundColor: lightGray,
-        body: _buildBody,
+        body: FutureBuilder(
+          future: homeController.wait3SecAndLoadData(),
+          builder: _buildFunctionBody,
+        ),
         bottomSheet: Obx(() => newOrderController.newOrderId.value != '' && homeController.isOnline.value == true ? NewOrderCard() : const SizedBox()),
       ),
     );
+  }
+  Widget _buildFunctionBody(BuildContext context, AsyncSnapshot<Widget> snapshot) {
+    if (snapshot.hasError) {
+      return TextWidget(text: "${snapshot.error}");
+    } else if (snapshot.hasData) {
+      return _buildBody;
+    } else {
+      return Container(
+        height: MediaQuery.of(context).size.height - 55,
+        alignment: Alignment.center,
+        child: const CircularProgressIndicator(color: rabbit),
+      );
+    }
   }
 
   Widget get _buildBody {
