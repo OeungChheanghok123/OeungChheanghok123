@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:loy_eat/controllers/google_map_controller.dart';
 import 'package:loy_eat/controllers/new_order_card_controller.dart';
+import 'package:loy_eat/controllers/order_controller.dart';
 import 'package:loy_eat/models/customer_model.dart';
 import 'package:loy_eat/models/deliver_model.dart';
 import 'package:loy_eat/models/merchant_model.dart';
@@ -18,6 +19,8 @@ class NewOrderCard extends StatelessWidget {
 
   final newOrderController = Get.put(NewOrderCardController());
   final mapController = Get.put(MapController());
+  final orderController = Get.put(OrderController());
+
   final List<BoxShadow> boxShadowList = [
     BoxShadow(
       color: silver.withOpacity(0.5),
@@ -222,6 +225,9 @@ class NewOrderCard extends StatelessWidget {
             buttonText: 'Accept'.tr,
             color: succeed,
             onPressed: () {
+              orderController.orderAccept.value = true;
+              orderController.getOrderNo.value = newOrderController.orderId.value;
+
               newOrderController.setDriverId();
               newOrderController.closeTimer();
               newOrderController.updateOrderStatus();

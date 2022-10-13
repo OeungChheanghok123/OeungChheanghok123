@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:loy_eat/controllers/new_order_card_controller.dart';
+import 'package:loy_eat/controllers/order_controller.dart';
 import 'package:loy_eat/models/deliver_model.dart';
 import 'package:loy_eat/models/driver_model.dart';
 import 'package:loy_eat/models/driver_report_model.dart';
@@ -10,6 +11,7 @@ import 'package:loy_eat/models/remote_data.dart';
 
 class OrderAcceptController extends GetxController{
   final newOrderCardController = Get.put(NewOrderCardController());
+  final orderController = Get.put(OrderController());
 
   var slideIndex = 0.obs;
   var ratingStar = 0.0.obs;
@@ -58,7 +60,30 @@ class OrderAcceptController extends GetxController{
     orderStep.add(step2);
     orderStep.add(step3);
     orderStep.add(step4);
+    getSlideIndex();
     super.onInit();
+  }
+
+  void getSlideIndex() {
+    final deliver = deliverCollection.where(DeliverModel.orderIdString, isEqualTo: newOrderCardController.orderId.value).snapshots();
+    deliver.listen((event) {
+      for (var element in event.docs) {
+        var step = 0;
+        if (element['step_1'] == false) {
+          step = 0;
+          slideIndex.value = step;
+        } else if (element['step_2'] == false) {
+          step = 1;
+          slideIndex.value = step;
+        } else if (element['step_3'] == false) {
+          step = 2;
+          slideIndex.value = step;
+        } else if (element['step_4'] == false) {
+          step = 3;
+          slideIndex.value = step;
+        }
+      }
+    });
   }
 
   void sendComment(String comment) {
@@ -83,6 +108,7 @@ class OrderAcceptController extends GetxController{
       deliverCollection.doc(deliverDocId).update({DeliverModel.processString : 'Delivered'}).then((_) => debugPrint('order is Delivered successful.'));
       customerName = newOrderCardController.customerName.value;
       setDriverReportData();
+      orderController.orderAccept.value = false;
     }
   }
   void setDriverReportData() {

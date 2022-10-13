@@ -44,7 +44,7 @@ class OrderAccept extends StatelessWidget {
       left: 0,
       right: 0,
       child: Obx(() => Container(
-        padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+        padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 30),
         color: none,
         child: ConfirmationSlider(
           height: 50,
