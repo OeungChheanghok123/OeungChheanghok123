@@ -60,7 +60,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
             backgroundColor: lightGray,
             appBar: appBar(icon: Icons.arrow_back_ios, appBarText: "Notification"),
             body: StreamBuilder<QuerySnapshot>(
-              stream: notification.orderBy('date', descending: true).snapshots(),
+              stream: notification.orderBy('ref_id', descending: true).snapshots(),
               builder: (context, snapshot){
                 if (snapshot.hasError) {
                   return const Center(child: TextWidget(text: 'Something went wrong'));
@@ -195,7 +195,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
   Widget _buildLeadingAppBar(IconData iconData) {
     return InkWell(
       onTap: () {
-        Get.back();
+        Get.offNamed('/instruction');
 
         notification.where('isRead', isEqualTo: false).get().then((QuerySnapshot snapshot) => {
           homeController.notificationCount.value = snapshot.docs.length,

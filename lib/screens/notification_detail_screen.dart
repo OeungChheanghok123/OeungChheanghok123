@@ -35,9 +35,11 @@ class _NotificationDetailScreenState extends State<NotificationDetailScreen> {
     });
   }
   Future<void> updateStatus() async{
+
     await notifications.where("ref_id", isEqualTo: id.value).get().then((value) {
       FlutterAppBadger.updateBadgeCount(value.docs.length);
       debugPrint("ref id get in detail page ${value.docs[0].id}");
+
       notifications.doc(value.docs[0].id).update({'isRead': true}).then((value) {
         notifications.where("isRead", isEqualTo: false).get().then((value) => FlutterAppBadger.updateBadgeCount(value.docs.length));
       }).catchError((error) => print("Failed to add user: $error"));      // ignore: avoid_print, invalid_return_type_for_catch_error

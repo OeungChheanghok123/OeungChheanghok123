@@ -33,7 +33,6 @@ class FirebaseNotifications {
             'isRead': false,
             'ref_id':remoteMessage.data['ref_id'],
             'date': remoteMessage.data['date'],
-            'dri_id': remoteMessage.data['dri_id'],
           }).then((value) => print("User Added")).catchError((error) => print("Failed to add user: $error")); // ignore: avoid_print
           notification.where("isRead", isEqualTo: false).get().then((value) => FlutterAppBadger.updateBadgeCount(value.docs.length));
         }
@@ -46,7 +45,6 @@ class FirebaseNotifications {
             'isRead': false,
             'ref_id':remoteMessage.data['ref_id'],
             'date': remoteMessage.data['date'],
-            'dri_id': remoteMessage.data['dri_id'],
           }).then((value) => print("User Added")).catchError((error) => print("Failed to add user: $error")); // ignore: avoid_print
           notification.where("isRead", isEqualTo: false).get().then((value) => FlutterAppBadger.updateBadgeCount(value.docs.length));
         }
@@ -64,7 +62,6 @@ class FirebaseNotifications {
               'isRead': false,
               'ref_id':remoteMessage.data['ref_id'],
               'date': remoteMessage.data['date'],
-              'dri_id': remoteMessage.data['dri_id'],
             }).then((value) => print("User Added")).catchError((error) => print("Failed to add user: $error")); // ignore: avoid_print
             notification.where("isRead", isEqualTo: false).get().then((value) => FlutterAppBadger.updateBadgeCount(value.docs.length));
           }
@@ -77,7 +74,6 @@ class FirebaseNotifications {
               'isRead': false,
               'ref_id':remoteMessage.data['ref_id'],
               'date': remoteMessage.data['date'],
-              'dri_id': remoteMessage.data['dri_id'],
             }).then((value) => print("User Added")).catchError((error) => print("Failed to add user: $error")); // ignore: avoid_print
             notification.where("isRead", isEqualTo: false).get().then((value) => FlutterAppBadger.updateBadgeCount(value.docs.length));
           }
