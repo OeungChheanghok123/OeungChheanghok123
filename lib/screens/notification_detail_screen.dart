@@ -4,6 +4,7 @@ import 'package:flutter_app_badger/flutter_app_badger.dart';
 import 'package:get/get.dart';
 import 'package:loy_eat/widgets/layout_widget/color.dart';
 import 'package:loy_eat/widgets/layout_widget/icon_widget.dart';
+import 'package:loy_eat/widgets/layout_widget/text_widget.dart';
 import 'package:loy_eat/widgets/layout_widget/title_appbar_widget.dart';
 
 class NotificationDetailScreen extends StatefulWidget {
@@ -18,6 +19,7 @@ class _NotificationDetailScreenState extends State<NotificationDetailScreen> {
   final notifications = FirebaseFirestore.instance.collection('notification');
   final id = ''.obs;
   final title = ''.obs;
+  final body = ''.obs;
 
   @override
   void initState() {
@@ -31,6 +33,7 @@ class _NotificationDetailScreenState extends State<NotificationDetailScreen> {
     notifications.where('ref_id', isEqualTo: id.value).get().then((value){
       for (var element in value.docs) {
         title.value = element['title'];
+        body.value = element['body'];
       }
     });
   }
@@ -89,6 +92,7 @@ class _NotificationDetailScreenState extends State<NotificationDetailScreen> {
             ),
           ],
         ),
+        body: TextWidget(text: body.value),
       ),
     );
   }

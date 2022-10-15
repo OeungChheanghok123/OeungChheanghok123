@@ -74,9 +74,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                   children: snapshot.data!.docs.map((DocumentSnapshot document) {
                     Map<String,dynamic> data = document.data() as Map<String, dynamic>;
                     return InkWell(
-                      onTap: (){
-                        Get.toNamed('/notification_detail', arguments: {'ref_id': data['ref_id']});
-                      },
+                      onTap: () => Get.toNamed('/notification_detail', arguments: {'ref_id': data['ref_id']}),
                       child: Card(
                         elevation: 1,
                         color: white,
