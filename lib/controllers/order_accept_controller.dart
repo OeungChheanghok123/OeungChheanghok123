@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:loy_eat/controllers/new_order_card_controller.dart';
 import 'package:loy_eat/controllers/order_controller.dart';
+import 'package:loy_eat/controllers/order_detail_contrller.dart';
 import 'package:loy_eat/models/deliver_model.dart';
 import 'package:loy_eat/models/driver_model.dart';
 import 'package:loy_eat/models/driver_report_model.dart';
@@ -12,6 +13,7 @@ import 'package:loy_eat/models/remote_data.dart';
 class OrderAcceptController extends GetxController{
   final newOrderCardController = Get.put(NewOrderCardController());
   final orderController = Get.put(OrderController());
+  final orderDetailController = Get.put(OrderDetailController());
 
   var slideIndex = 0.obs;
   var ratingStar = 0.0.obs;
@@ -109,6 +111,7 @@ class OrderAcceptController extends GetxController{
       customerName = newOrderCardController.customerName.value;
       setDriverReportData();
       orderController.orderAccept.value = false;
+      orderDetailController.clearList();
     }
   }
   void setDriverReportData() {

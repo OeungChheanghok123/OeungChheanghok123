@@ -102,7 +102,7 @@ class OTPCodeController extends GetxController {
             debugPrint('Login is save = ${mainPageController.readLogin()}');
             debugPrint('you are logged in successfully');
             debugPrint('code SMS: ${credential.smsCode}');
-            Get.offAllNamed('/instruction');
+            Get.offAndToNamed('/instruction');
         } catch (ex) {
             labelErrorColor.value = red;
             otpColor.value = red;

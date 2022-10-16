@@ -282,9 +282,9 @@ class HomeController extends GetxController{
     });
   }
 
-  Future<void> toggleClicked() async {
+  toggleClicked() {
     if (toggleState.value == false) {
-      await driverCollection.doc(driverDocId).update({DriverModel.isOnlineString : true}).then((_) => debugPrint('Driver is Online'));
+      driverCollection.doc(driverDocId).update({DriverModel.isOnlineString : true}).then((_) => debugPrint('Driver is Online'));
       isOnline.value = true;
       toggleState.value = true;
 

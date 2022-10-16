@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:loy_eat/controllers/google_map_controller.dart';
 import 'package:loy_eat/controllers/new_order_card_controller.dart';
 import 'package:loy_eat/controllers/order_controller.dart';
+import 'package:loy_eat/controllers/order_detail_contrller.dart';
 import 'package:loy_eat/models/customer_model.dart';
 import 'package:loy_eat/models/deliver_model.dart';
 import 'package:loy_eat/models/merchant_model.dart';
@@ -20,6 +21,7 @@ class NewOrderCard extends StatelessWidget {
   final newOrderController = Get.put(NewOrderCardController());
   final mapController = Get.put(MapController());
   final orderController = Get.put(OrderController());
+  final orderDetailController = Get.put(OrderDetailController());
 
   final List<BoxShadow> boxShadowList = [
     BoxShadow(
@@ -226,7 +228,8 @@ class NewOrderCard extends StatelessWidget {
             color: succeed,
             onPressed: () {
               orderController.orderAccept.value = true;
-              orderController.getOrderNo.value = newOrderController.orderId.value;
+              orderDetailController.getOrderNo.value =  newOrderController.orderId.value;
+              orderDetailController.onInit();
 
               newOrderController.setDriverId();
               newOrderController.closeTimer();
