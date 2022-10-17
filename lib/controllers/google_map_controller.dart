@@ -126,12 +126,14 @@ class MapController extends GetxController {
     try {
       final data = FirebaseFirestore.instance.collection(OrderModel.collectionName).where(OrderModel.orderIdString, isEqualTo: newOrderController.newOrderId.value).snapshots();
       data.listen((result) {
-        final orders = result.docs.map((e) => OrderModel.fromMap(e.data())).toList();
-        _orderData.value = RemoteData<List<OrderModel>>(status: RemoteDataStatus.success, data: orders);
+        if (result.docs.isNotEmpty){
+          final orders = result.docs.map((e) => OrderModel.fromMap(e.data())).toList();
+          _orderData.value = RemoteData<List<OrderModel>>(status: RemoteDataStatus.success, data: orders);
 
-        merchantId.value = orders[0].merchantId;
-        customerId.value = orders[0].customerId;
-        loadMerchantData();
+          merchantId.value = orders[0].merchantId;
+          customerId.value = orders[0].customerId;
+          loadMerchantData();
+        }
       });
     } catch (ex) {
       _orderData.value = RemoteData<List<OrderModel>>(status: RemoteDataStatus.error, data: null);

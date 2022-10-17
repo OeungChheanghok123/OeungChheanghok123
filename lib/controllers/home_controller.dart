@@ -283,59 +283,65 @@ class HomeController extends GetxController{
   }
 
   toggleClicked() {
+    debugPrint('driverDoc = $driverDocId');
     if (toggleState.value == false) {
-      driverCollection.doc(driverDocId).update({DriverModel.isOnlineString : true}).then((_) => debugPrint('Driver is Online'));
-      isOnline.value = true;
-      toggleState.value = true;
+      driverCollection.doc(driverDocId).update({DriverModel.isOnlineString : true}).then((_) {
+        debugPrint('Driver is Online');
+        isOnline.value = true;
+        toggleState.value = true;
 
-      var today = DateTime.now();
-      var format = DateFormat('dd-MMM-yy');
-      var day = DateFormat('d');
-      var month = DateFormat('M');
-      var year = DateFormat('yy');
-      var output = format.format(today);
-      var outputDay = day.format(today);
-      var outputMonth = month.format(today);
-      var outputYear = year.format(today);
-      if (isOnline.value == true) {
-        driverReportCollection.where(DriverReportModel.driverIdString, isEqualTo: id).where(DriverReportModel.dateString, isEqualTo: output).get().then((value) {
-          if (value.docs.isEmpty) {
-            driverReportCollection.add({
-              DriverReportModel.driverIdString: id,
-              DriverReportModel.dateString: output,
-              DriverReportModel.dayString: int.parse(outputDay),
-              DriverReportModel.monthString: int.parse(outputMonth),
-              DriverReportModel.yearString: int.parse(outputYear),
-              DriverReportModel.customerRatingString: '5.0',
-              DriverReportModel.merchantRatingString: '5.0',
-              DriverReportModel.bonusString: '0.00',
-              DriverReportModel.deliveryFeeString: '0.00',
-              DriverReportModel.distanceString: '0.00',
-              DriverReportModel.onlineHourString: '0',
-              DriverReportModel.onlineMinuteString: '0',
-              DriverReportModel.pointString: '0',
-              DriverReportModel.tipString: '0.0',
-              DriverReportModel.tripString: '0',
-            }).then((_) {
-              debugPrint('driver report was write driver id: $id');
+        var today = DateTime.now();
+        var format = DateFormat('dd-MMM-yy');
+        var day = DateFormat('d');
+        var month = DateFormat('M');
+        var year = DateFormat('yy');
+        var output = format.format(today);
+        var outputDay = day.format(today);
+        var outputMonth = month.format(today);
+        var outputYear = year.format(today);
+        if (isOnline.value == true) {
+          driverReportCollection.where(DriverReportModel.driverIdString, isEqualTo: id).where(DriverReportModel.dateString, isEqualTo: output).get().then((value) {
+            if (value.docs.isEmpty) {
+              driverReportCollection.add({
+                DriverReportModel.driverIdString: id,
+                DriverReportModel.dateString: output,
+                DriverReportModel.dayString: int.parse(outputDay),
+                DriverReportModel.monthString: int.parse(outputMonth),
+                DriverReportModel.yearString: int.parse(outputYear),
+                DriverReportModel.customerRatingString: '5.0',
+                DriverReportModel.merchantRatingString: '5.0',
+                DriverReportModel.bonusString: '0.00',
+                DriverReportModel.deliveryFeeString: '0.00',
+                DriverReportModel.distanceString: '0.00',
+                DriverReportModel.onlineHourString: '0',
+                DriverReportModel.onlineMinuteString: '0',
+                DriverReportModel.pointString: '0',
+                DriverReportModel.tipString: '0.0',
+                DriverReportModel.tripString: '0',
+              }).then((_) {
+                debugPrint('driver report was write driver id: $id');
+                loadDriverReportDocumentId();
+                loadToggleState();
+                startTimer();
+              });
+            }
+            else {
               loadDriverReportDocumentId();
               startTimer();
-            });
-          }
-          else {
-            loadDriverReportDocumentId();
-            startTimer();
-          }
-        });
-      }
+            }
+          });
+        }
+      });
     }
     else {
-      driverCollection.doc(driverDocId).update({DriverModel.isOnlineString : false}).then((_) => debugPrint('Driver is Offline'));
-      isOnline.value = false;
-      toggleState.value = false;
-      closeTimer();
+      driverCollection.doc(driverDocId).update({DriverModel.isOnlineString : false}).then((_) {
+        debugPrint('Driver is Offline');
+        isOnline.value = false;
+        toggleState.value = false;
+        loadToggleState();
+        closeTimer();
+      });
     }
-    loadToggleState();
   }
 
   Future<Widget> wait3SecAndLoadData() async {

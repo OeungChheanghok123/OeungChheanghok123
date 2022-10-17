@@ -96,19 +96,26 @@ class OTPCodeController extends GetxController {
       );
 
       await auth.signInWithCredential(credential).then((value) {
-        try{
-            _timer.cancel();
-            mainPageController.writeLogin(true);
-            debugPrint('Login is save = ${mainPageController.readLogin()}');
-            debugPrint('you are logged in successfully');
-            debugPrint('code SMS: ${credential.smsCode}');
-            Get.offAndToNamed('/instruction');
-        } catch (ex) {
-            labelErrorColor.value = red;
-            otpColor.value = red;
-            deleteNumberClick();
-            debugPrint('your otp number not correctly.');
-        }
+        _timer.cancel();
+        mainPageController.writeLogin(true);
+        debugPrint('Login is save = ${mainPageController.readLogin()}');
+        debugPrint('you are logged in successfully');
+        debugPrint('code SMS: ${credential.smsCode}');
+        Get.offAllNamed('/instruction');
+
+        // try{
+        //     _timer.cancel();
+        //     mainPageController.writeLogin(true);
+        //     debugPrint('Login is save = ${mainPageController.readLogin()}');
+        //     debugPrint('you are logged in successfully');
+        //     debugPrint('code SMS: ${credential.smsCode}');
+        //     Get.offAllNamed('/instruction');
+        // } catch (ex) {
+        //     labelErrorColor.value = red;
+        //     otpColor.value = red;
+        //     deleteNumberClick();
+        //     debugPrint('your otp number not correctly.');
+        // }
       });
     }
   }
