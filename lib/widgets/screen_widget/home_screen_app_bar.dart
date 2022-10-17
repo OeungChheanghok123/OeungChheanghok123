@@ -30,7 +30,7 @@ class HomeScreenAppBar extends StatelessWidget implements PreferredSize{
   Widget get child => throw UnimplementedError();
 
   Widget get _buildLeading {
-    return Obx(() => InkWell(
+    return InkWell(
       splashColor: none,
       onTap: () => homeController.toggleClicked(),
       child: Container(
@@ -41,13 +41,13 @@ class HomeScreenAppBar extends StatelessWidget implements PreferredSize{
           color: white,
         ),
       ),
-    ));
+    );
   }
   Widget get _buildTitleAppbar {
-    return Obx(() => TitleAppBarWidget(
+    return TitleAppBarWidget(
       text: homeController.status.value,
       color: white,
-    ));
+    );
   }
   List<Widget> get _buildAction {
     return [

@@ -24,7 +24,7 @@ class BecomeDriverScreen extends StatelessWidget {
       child: Scaffold(
         extendBody: true,
         backgroundColor: white,
-        appBar: null,
+        appBar: appBar,
         body: SingleChildScrollView(
           child: Container(
             margin: const EdgeInsets.all(15.0),
@@ -47,6 +47,11 @@ class BecomeDriverScreen extends StatelessWidget {
       ),
     );
   }
+  final appBar = AppBar(
+    elevation: 0,
+    title: const TextWidget(text: 'Become Driver', isTitle: true, color: white, size: 16),
+    backgroundColor: rabbit,
+  );
 
   Widget get _buildDriverName{
     return Container(

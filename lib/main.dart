@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -38,7 +39,19 @@ class MyApp extends StatelessWidget {
       initialRoute: "/",
       defaultTransition: Transition.noTransition,
       getPages: getRoutPage,
-      home: controller.readLogin() ? const InstructionScreen() : StartUpScreen(),
+      home: getLogin(),
+    );
+  }
+
+  Widget getLogin() {
+    return StreamBuilder(
+      stream: FirebaseAuth.instance.authStateChanges(),
+      builder: (BuildContext context, AsyncSnapshot<User?> snapshot) {
+        if (snapshot.hasData) {
+          return const InstructionScreen();
+        }
+        return StartUpScreen();
+      },
     );
   }
 }

@@ -34,10 +34,12 @@ class ReportController extends GetxController{
     var num = mainPageController.readDriverPhoneNumber();
     final data = driverCollection.where(DriverModel.telString, isEqualTo: num).snapshots();
     data.listen((result) {
-      final driver = result.docs.map((e) => DriverModel.fromMap(e.data())).toList();
-      id.value = driver[0].driverId;
-      _loadOrderData(id.value);
-      _loadDeliverData(id.value);
+      if (result.docs.isNotEmpty) {
+        final driver = result.docs.map((e) => DriverModel.fromMap(e.data())).toList();
+        id.value = driver[0].driverId;
+        _loadOrderData(id.value);
+        _loadDeliverData(id.value);
+      }
     });
   }
   void _loadOrderData(String id) {

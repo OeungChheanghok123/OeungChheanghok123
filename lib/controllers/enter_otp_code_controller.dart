@@ -98,11 +98,11 @@ class OTPCodeController extends GetxController {
       await auth.signInWithCredential(credential).then((value) {
         try{
             _timer.cancel();
-            mainPageController.writeLogin(true);
-            debugPrint('Login is save = ${mainPageController.readLogin()}');
+            //mainPageController.writeLogin(true);
+            //debugPrint('Login is save = ${mainPageController.readLogin()}');
             debugPrint('you are logged in successfully');
             debugPrint('code SMS: ${credential.smsCode}');
-            Get.offAndToNamed('/instruction');
+            Get.offAllNamed('/instruction');
         } catch (ex) {
             labelErrorColor.value = red;
             otpColor.value = red;

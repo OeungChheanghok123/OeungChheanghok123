@@ -73,7 +73,7 @@ class EnterOTPCodeScreen extends StatelessWidget {
                           onTap: () {
                             otpCodeController.closeTimer();
                             otpCodeController.start.value = 60;
-                            //verifyNumber();
+                            verifyPhoneNumberController.verifyNumber();
                             otpCodeController.startTimer();
                           },
                           child: const TextWidget(text: 'Resend Code', color: rabbit,),

@@ -104,20 +104,22 @@ class ReportOrderDetailController extends GetxController{
   void getProductDetail(String id) {
     final data = productCollection.where(ProductModel.productIdString, isEqualTo: id).snapshots();
     data.listen((result) {
-      final product = result.docs.map((e) => ProductModel.fromMap(e.data())).toList();
-      listProductName.add(product[0].productName);
-      listSalePrice.add(product[0].price);
+      if (result.docs.isNotEmpty) {
+        final product = result.docs.map((e) => ProductModel.fromMap(e.data())).toList();
+        listProductName.add(product[0].productName);
+        listSalePrice.add(product[0].price);
 
-      debugPrint('listSalePrice : ${listSalePrice.length}');
-      for(int i = listSalePrice.length - 1 ; i < listSalePrice.length ; i++) {
-        var qty = double.parse(listQty[i]);
-        var salePrice = double.parse(listSalePrice[i]);
+        debugPrint('listSalePrice : ${listSalePrice.length}');
+        for(int i = listSalePrice.length - 1 ; i < listSalePrice.length ; i++) {
+          var qty = double.parse(listQty[i]);
+          var salePrice = double.parse(listSalePrice[i]);
 
-        listAmount.add(qty * salePrice);
-        debugPrint('amount : $listAmount');
-        calculate();
+          listAmount.add(qty * salePrice);
+          debugPrint('amount : $listAmount');
+          calculate();
+        }
+        _productData.value = RemoteData<List<ProductModel>>(status: RemoteDataStatus.success, data: product);
       }
-      _productData.value = RemoteData<List<ProductModel>>(status: RemoteDataStatus.success, data: product);
     });
   }
 

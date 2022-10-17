@@ -112,7 +112,7 @@ class NewOrderCardController extends GetxController {
   }
 
   void _loadNewOrder() {
-    final data = orderCollection.where(OrderModel.isNewString, isEqualTo: true).snapshots();
+    final data = orderCollection.where('available', isEqualTo: true).where(OrderModel.isNewString, isEqualTo: true).snapshots();
     data.listen((result) {
       final orders = result.docs.map((e) => OrderModel.fromMap(e.data())).toList();
 

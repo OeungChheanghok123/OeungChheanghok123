@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:get/get.dart';
@@ -6,6 +7,7 @@ import 'package:loy_eat/controllers/languages_controller.dart';
 import 'package:loy_eat/controllers/main_page_controller.dart';
 import 'package:loy_eat/models/driver_model.dart';
 import 'package:loy_eat/models/remote_data.dart';
+import 'package:loy_eat/screens/start_up_screen.dart';
 import 'package:loy_eat/widgets/layout_widget/color.dart';
 
 class AccountController extends GetxController {
@@ -77,11 +79,13 @@ class AccountController extends GetxController {
       phoneNumber.value = mainPageController.readDriverPhoneNumber();
       final data = driverCollection.where(DriverModel.telString, isEqualTo: phoneNumber.value).snapshots();
       data.listen((result) {
-        final driver = result.docs.map((e) => DriverModel.fromMap(e.data())).toList();
-        _driverData.value = RemoteData<List<DriverModel>>(status: RemoteDataStatus.success, data: driver);
+        if (result.docs.isNotEmpty) {
+          final driver = result.docs.map((e) => DriverModel.fromMap(e.data())).toList();
+          _driverData.value = RemoteData<List<DriverModel>>(status: RemoteDataStatus.success, data: driver);
 
-        id = driver[0].driverId;
-        loadDocumentId(id);
+          id = driver[0].driverId;
+          loadDocumentId(id);
+        }
       });
     } catch (ex) {
       _driverData.value = RemoteData<List<DriverModel>>(status: RemoteDataStatus.error, data: null);
@@ -100,6 +104,12 @@ class AccountController extends GetxController {
     mainPageController.removeLanguage();
     mainPageController.removeCode();
     driverCollection.doc(docId).update({DriverModel.isOnlineString : false}).then((_) => debugPrint('Driver is Offline'));
+    _signOut();
     Phoenix.rebirth(context);
+  }
+
+  Future<StartUpScreen> _signOut() async {
+    await FirebaseAuth.instance.signOut();
+    return StartUpScreen();
   }
 }
