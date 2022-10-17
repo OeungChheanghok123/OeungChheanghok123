@@ -58,7 +58,7 @@ class OTPCodeController extends GetxController {
   void closeTimer() {
     _timer.cancel();
   }
-  void numberClick(int index) async{
+  void numberClick(int index) {
     if (index == 10){
       labelErrorColor.value = none;
       otpColor.value = rabbit;
@@ -90,28 +90,23 @@ class OTPCodeController extends GetxController {
     otpNumber.value = (otp1.text + otp2.text + otp3.text + otp4.text + otp5.text + otp6.text).toString();
 
     if (otp6.text != ''){
-      PhoneAuthCredential credential = PhoneAuthProvider.credential(
-        verificationId: verifyPhoneNumberController.verificationIDReceived,
-        smsCode: otpNumber.value,
-      );
-
-      await auth.signInWithCredential(credential).then((value) {
-        try{
-            _timer.cancel();
-            //mainPageController.writeLogin(true);
-            //debugPrint('Login is save = ${mainPageController.readLogin()}');
-            debugPrint('you are logged in successfully');
-            debugPrint('code SMS: ${credential.smsCode}');
-            Get.offAllNamed('/instruction');
-        } catch (ex) {
-            labelErrorColor.value = red;
-            otpColor.value = red;
-            deleteNumberClick();
-            debugPrint('your otp number not correctly.');
-        }
-      });
+      verifyOTP();
     }
   }
+
+  void verifyOTP() async {
+    try {
+      PhoneAuthCredential credential = PhoneAuthProvider.credential(verificationId: verifyPhoneNumberController.verificationIDReceived, smsCode: otpNumber.value);
+      await auth.signInWithCredential(credential);
+      Get.offNamedUntil('/instruction', (route) => false);
+    } catch (e) {
+      labelErrorColor.value = red;
+      otpColor.value = red;
+      deleteNumberClick();
+      debugPrint('your otp number not correctly.');
+    }
+  }
+
   void deleteNumberClick() {
     labelErrorColor.value = none;
     otpColor.value = rabbit;

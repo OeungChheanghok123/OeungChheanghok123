@@ -70,7 +70,6 @@ class HomeController extends GetxController{
   final _driverReportData = RemoteData<List<DriverReportModel>>(status: RemoteDataStatus.processing, data: null).obs;
   RemoteData<List<DriverReportModel>> get data => _driverReportData.value;
 
-  final mainPageController = Get.put(MainPageController());
 
   @override
   void onInit() {
@@ -83,6 +82,7 @@ class HomeController extends GetxController{
   }
 
   void loadDriverReportData() {
+    final mainPageController = Get.put(MainPageController());
     try {
       final driverPhoneNumber = mainPageController.readDriverPhoneNumber();
       final driver = driverCollection.where(DriverModel.telString, isEqualTo: driverPhoneNumber).snapshots();
@@ -288,7 +288,7 @@ class HomeController extends GetxController{
     });
   }
 
-  toggleClicked() {
+  toggleClicked() async {
     debugPrint('driverDoc = $driverDocId');
     if (toggleState.value == false) {
       debugPrint('Driver is Online');
@@ -307,8 +307,8 @@ class HomeController extends GetxController{
       outputMonth = month.format(today);
       outputYear = year.format(today);
 
-      driverCollection.doc(driverDocId).update({DriverModel.isOnlineString : true}).then((_) => loadDriverReportCollection());
-
+      await driverCollection.doc(driverDocId).update({DriverModel.isOnlineString : true});
+      loadDriverReportCollection();
     }
     else {
       debugPrint('Driver is Offline');
@@ -316,7 +316,7 @@ class HomeController extends GetxController{
       toggleState.value = false;
       loadToggleState();
 
-      driverCollection.doc(driverDocId).update({DriverModel.isOnlineString : false}).then((_) => closeTimer());
+      await driverCollection.doc(driverDocId).update({DriverModel.isOnlineString : false});
     }
   }
 

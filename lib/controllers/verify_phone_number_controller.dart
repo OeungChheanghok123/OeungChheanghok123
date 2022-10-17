@@ -29,7 +29,6 @@ class VerifyPhoneNumberController extends GetxController {
       if (result.docs.isNotEmpty) {
         debugPrint('phoneNumber is : $phoneNumber');
         mainPageController.writeDriverPhoneNumber(phoneNumber.value);
-        Get.toNamed('/enter_otp_code');
         verifyNumber();
       }
       else {
@@ -45,20 +44,19 @@ class VerifyPhoneNumberController extends GetxController {
       }
     });
   }
-  void verifyNumber() {
-    auth.verifyPhoneNumber(
+  verifyNumber() async {
+    await auth.verifyPhoneNumber(
       phoneNumber: "+855${phoneController.text}",
-      timeout: const Duration(seconds: 20),
-      verificationCompleted: (PhoneAuthCredential credential) async{
-        await auth.signInWithCredential(credential).then((value) => {
-          debugPrint('You are logged in successfully'),
-        });
+      timeout: const Duration(seconds: 60),
+      verificationCompleted: (PhoneAuthCredential credential) {
+        auth.signInWithCredential(credential).then((value) => debugPrint('You are logged in successfully'));
       },
       verificationFailed: (FirebaseAuthException exception){
         debugPrint(exception.message);
       },
       codeSent: (String verificationID, int? resendToken){
         verificationIDReceived = verificationID;
+        Get.toNamed('/enter_otp_code');
       },
       codeAutoRetrievalTimeout: (String verificationID){},
     );
