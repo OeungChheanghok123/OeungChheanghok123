@@ -70,6 +70,7 @@ class HomeController extends GetxController{
   final _driverReportData = RemoteData<List<DriverReportModel>>(status: RemoteDataStatus.processing, data: null).obs;
   RemoteData<List<DriverReportModel>> get data => _driverReportData.value;
 
+  final mainPageController = Get.put(MainPageController());
 
   @override
   void onInit() {
@@ -82,7 +83,6 @@ class HomeController extends GetxController{
   }
 
   void loadDriverReportData() {
-    final mainPageController = Get.put(MainPageController());
     try {
       final driverPhoneNumber = mainPageController.readDriverPhoneNumber();
       final driver = driverCollection.where(DriverModel.telString, isEqualTo: driverPhoneNumber).snapshots();
