@@ -40,8 +40,6 @@ dependencies:
   flutter_rating_bar: ^4.0.0
   fl_chart: ^0.55.1
   flutter_typeahead: ^4.0.0
-  image_picker: ^0.8.5+3
-  path_provider: ^2.0.10
   slide_to_confirm: ^1.1.0
   firebase_core: ^1.17.1
   firebase_auth: ^3.3.19
