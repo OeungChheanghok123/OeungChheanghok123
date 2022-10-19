@@ -83,16 +83,14 @@ class HomeController extends GetxController{
 
   void getCurrentUser() {
     User? user = FirebaseAuth.instance.currentUser;
-    debugPrint('user :${user?.phoneNumber.toString()}');
     final num = user?.phoneNumber.toString();
     final list = num?.split('').toList();
-    debugPrint('list :$list');
     list?.removeAt(0);
     list?.removeAt(0);
     list?.removeAt(0);
     list?.removeAt(0);
     var phoneNumber = list?.join('');
-    debugPrint('phoneNumber in main : ${phoneNumber.toString()}');
+    debugPrint('phoneNumber : ${phoneNumber.toString()}');
     driverPhoneNumber.value = phoneNumber.toString();
   }
 

@@ -231,6 +231,7 @@ class NewOrderCard extends StatelessWidget {
               orderDetailController.getOrderNo.value =  newOrderController.orderId.value;
               orderDetailController.onInit();
 
+              newOrderController.available.value = false;
               newOrderController.setDriverId();
               newOrderController.closeTimer();
               newOrderController.updateOrderStatus();

@@ -39,6 +39,7 @@ class NewOrderCardController extends GetxController {
   final _deliverData = RemoteData<List<DeliverModel>>(status: RemoteDataStatus.processing, data: null).obs;
   RemoteData<List<DeliverModel>> get deliverData => _deliverData.value;
 
+  var available = true.obs;
   var newOrderId = ''.obs;
   var orderId = ''.obs;
   var orderDate = ''.obs;
@@ -112,7 +113,7 @@ class NewOrderCardController extends GetxController {
   }
 
   void _loadNewOrder() {
-    final data = orderCollection.where('available', isEqualTo: true).where(OrderModel.isNewString, isEqualTo: true).snapshots();
+    final data = orderCollection.where(OrderModel.isNewString, isEqualTo: true).snapshots();
     data.listen((result) {
       final orders = result.docs.map((e) => OrderModel.fromMap(e.data())).toList();
 

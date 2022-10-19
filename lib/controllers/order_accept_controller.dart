@@ -111,6 +111,7 @@ class OrderAcceptController extends GetxController{
       customerName = newOrderCardController.customerName.value;
       setDriverReportData();
       orderController.orderAccept.value = false;
+      newOrderCardController.available.value = true;
       orderDetailController.clearList();
     }
   }
