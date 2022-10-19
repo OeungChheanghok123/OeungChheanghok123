@@ -5,7 +5,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:loy_eat/controllers/main_page_controller.dart';
 import 'package:loy_eat/models/driver_model.dart';
 import 'package:loy_eat/models/driver_report_model.dart';
 import 'package:loy_eat/models/remote_data.dart';
@@ -71,8 +70,6 @@ class HomeController extends GetxController{
 
   final _driverReportData = RemoteData<List<DriverReportModel>>(status: RemoteDataStatus.processing, data: null).obs;
   RemoteData<List<DriverReportModel>> get data => _driverReportData.value;
-
-  final mainPageController = Get.put(MainPageController());
 
   @override
   void onInit() {

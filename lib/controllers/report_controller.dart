@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:loy_eat/controllers/main_page_controller.dart';
+import 'package:loy_eat/controllers/home_controller.dart';
 import 'package:loy_eat/models/deliver_model.dart';
 import 'package:loy_eat/models/driver_model.dart';
 import 'package:loy_eat/models/order_model.dart';
@@ -23,7 +23,7 @@ class ReportController extends GetxController{
   final _deliverData = RemoteData<List<DeliverModel>>(status: RemoteDataStatus.processing, data: null).obs;
   RemoteData<List<DeliverModel>> get deliverData => _deliverData.value;
 
-  final mainPageController = Get.put(MainPageController());
+  final homeController = Get.put(HomeController());
 
   @override
   void onInit() {
@@ -31,7 +31,7 @@ class ReportController extends GetxController{
     _loadDriverId();
   }
   void _loadDriverId() {
-    var num = mainPageController.readDriverPhoneNumber();
+    var num = homeController.driverPhoneNumber.value;
     final data = driverCollection.where(DriverModel.telString, isEqualTo: num).snapshots();
     data.listen((result) {
       if (result.docs.isNotEmpty) {
