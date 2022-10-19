@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -35,6 +36,7 @@ class HomeController extends GetxController{
   List<ReportChart> chartData = [];
 
   var id = '';
+  var driverPhoneNumber = ''.obs;
   var driverDocId = '';
   var driverReportDocId = '';
 
@@ -82,10 +84,25 @@ class HomeController extends GetxController{
     super.onInit();
   }
 
+  void getCurrentUser() {
+    User? user = FirebaseAuth.instance.currentUser;
+    debugPrint('user :${user?.phoneNumber.toString()}');
+    final num = user?.phoneNumber.toString();
+    final list = num?.split('').toList();
+    debugPrint('list :$list');
+    list?.removeAt(0);
+    list?.removeAt(0);
+    list?.removeAt(0);
+    list?.removeAt(0);
+    var phoneNumber = list?.join('');
+    debugPrint('phoneNumber in main : ${phoneNumber.toString()}');
+    driverPhoneNumber.value = phoneNumber.toString();
+  }
+
   void loadDriverReportData() {
     try {
-      final driverPhoneNumber = mainPageController.readDriverPhoneNumber();
-      final driver = driverCollection.where(DriverModel.telString, isEqualTo: driverPhoneNumber).snapshots();
+      getCurrentUser();
+      final driver = driverCollection.where(DriverModel.telString, isEqualTo: driverPhoneNumber.value).snapshots();
       driver.listen((e) {
         if (e.docs.isNotEmpty) {
           final driverData = e.docs.map((e) => DriverModel.fromMap(e.data())).toList();
