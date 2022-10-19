@@ -19,7 +19,7 @@ class OrderDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    controller.onInit();
+    //controller.onInit();
     return SingleChildScrollView(
       scrollDirection: Axis.vertical,
       physics: const ClampingScrollPhysics(),

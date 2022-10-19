@@ -118,24 +118,26 @@ class NewOrderCardController extends GetxController {
       final orders = result.docs.map((e) => OrderModel.fromMap(e.data())).toList();
 
       if (orders.isNotEmpty) {
-        startTimer();
+        if (available.value == true) {
+          startTimer();
 
-        newOrderId.value = '';
-        newOrderId.value = orders[0].orderId;
-        orderId.value = newOrderId.value;
-        orderDate.value = orders[0].date;
-        _loadOrderData(newOrderId.value);
-        _loadDeliverData(newOrderId.value);
-        _getDocumentId(newOrderId.value);
+          newOrderId.value = '';
+          newOrderId.value = orders[0].orderId;
+          orderId.value = newOrderId.value;
+          orderDate.value = orders[0].date;
+          _loadOrderData(newOrderId.value);
+          _loadDeliverData(newOrderId.value);
+          _getDocumentId(newOrderId.value);
 
-        merchantId.value = '';
-        merchantId.value = orders[0].merchantId;
-        _loadMerchantData(merchantId.value);
+          merchantId.value = '';
+          merchantId.value = orders[0].merchantId;
+          _loadMerchantData(merchantId.value);
 
-        customerId.value = '';
-        customerId.value = orders[0].customerId;
-        customerName.value = orders[0].customerName;
-        _loadCustomerData(customerId.value);
+          customerId.value = '';
+          customerId.value = orders[0].customerId;
+          customerName.value = orders[0].customerName;
+          _loadCustomerData(customerId.value);
+        }
       }
       else {
         closeTimer();
