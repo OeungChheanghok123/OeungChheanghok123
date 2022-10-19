@@ -168,14 +168,6 @@ class HomeScreen extends StatelessWidget {
         homeController.monthEnd = int.parse(outputMonthEnd);
         homeController.yearEnd = int.parse(outputYearEnd);
 
-        debugPrint('outputDayStart : $outputDayStart');
-        debugPrint('outputMonthStart : $outputMonthStart');
-        debugPrint('outputYearStart : $outputYearStart');
-        debugPrint('outputDayEnd : $outputDayEnd');
-        debugPrint('outputMonthEnd : $outputMonthEnd');
-        debugPrint('outputYearEnd : $outputYearEnd');
-
-
         homeController.startDate.value = outputDateStart;
         homeController.endDate.value = outputDateEnd;
 
