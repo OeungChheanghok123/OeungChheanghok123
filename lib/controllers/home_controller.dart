@@ -23,8 +23,8 @@ class HomeController extends GetxController{
 
   var isOnline = false.obs;
   var isSearch = false.obs;
-  var startDate  = 'Start Date'.obs;
-  var endDate = 'End Date'.obs;
+  var startDate  = ''.obs;
+  var endDate = ''.obs;
   var dayStart = 0;
   var monthStart = 0;
   var yearStart = 0;

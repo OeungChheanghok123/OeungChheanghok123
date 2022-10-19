@@ -113,6 +113,9 @@ class HomeScreen extends StatelessWidget {
                 onTap: () {
                   homeController.startDate.value  = 'Start Date';
                   homeController.endDate.value = 'End Date';
+                  homeController.dayStart = 0;
+                  homeController.dayEnd = 0;
+                  homeController.monthStart = 0;
 
                   homeController.isSearch.value = false;
                   homeController.clearData();
@@ -167,14 +170,6 @@ class HomeScreen extends StatelessWidget {
         homeController.dayEnd = int.parse(outputDayEnd);
         homeController.monthEnd = int.parse(outputMonthEnd);
         homeController.yearEnd = int.parse(outputYearEnd);
-
-        debugPrint('outputDayStart : $outputDayStart');
-        debugPrint('outputMonthStart : $outputMonthStart');
-        debugPrint('outputYearStart : $outputYearStart');
-        debugPrint('outputDayEnd : $outputDayEnd');
-        debugPrint('outputMonthEnd : $outputMonthEnd');
-        debugPrint('outputYearEnd : $outputYearEnd');
-
 
         homeController.startDate.value = outputDateStart;
         homeController.endDate.value = outputDateEnd;
