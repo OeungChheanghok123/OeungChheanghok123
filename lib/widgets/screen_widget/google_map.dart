@@ -20,30 +20,37 @@ class GoogleMapWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: TextWidget(text: 'Order No: ${orderDetailController.getOrderNo.value}', isTitle: true),
+        title: TextWidget(
+            text: 'Order No: ${orderDetailController.getOrderNo.value}',
+            isTitle: true),
         backgroundColor: white,
         elevation: 0,
         leading: InkWell(
-          onTap: () {
-            orderDetailController.onInit();
-            Get.back();
-          },
-            child: const IconWidget(icon: Icons.arrow_back_ios_outlined, size: 32, color: black)),
+            onTap: () {
+              orderDetailController.onInit();
+              Get.back();
+            },
+            child: const IconWidget(
+                icon: Icons.arrow_back_ios_outlined, size: 32, color: black)),
       ),
-      body: Obx(() => GoogleMap(
-        mapType: MapType.normal,
-        myLocationEnabled: true,
-        initialCameraPosition: CameraPosition(
-          target: LatLng(mapController.latitude.value, mapController.longitude.value),
-          zoom: mapController.zoom.value,
-        ),
-        markers: Set<Marker>.of(mapController.markers),
-        polylines: Set<Polyline>.of(mapController.polyLines.values),
-        onMapCreated: (GoogleMapController con) {
-          _controller.complete(con);
-          newGoogleMapController = con;
-        },
-      ),),
+      body: Obx(() {
+        //debugPrint(mapController.polyLines.value);
+        return GoogleMap(
+          mapType: MapType.normal,
+          myLocationEnabled: true,
+          initialCameraPosition: CameraPosition(
+            target: LatLng(
+                mapController.latitude.value, mapController.longitude.value),
+            zoom: mapController.zoom.value,
+          ),
+          markers: Set<Marker>.of(mapController.markers),
+          polylines: Set<Polyline>.of(mapController.polyLines.values),
+          onMapCreated: (GoogleMapController con) {
+            _controller.complete(con);
+            newGoogleMapController = con;
+          },
+        );
+      }),
     );
   }
 }

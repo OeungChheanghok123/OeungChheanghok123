@@ -53,15 +53,22 @@ class MapController extends GetxController {
   }
 
   void locationChange() {
-    final LocationSettings locationSettings = LocationSettings(
+    debugPrint('1');
+    const LocationSettings locationSettings = LocationSettings(
       accuracy: LocationAccuracy.high,
       distanceFilter: 100,
     );
+
+    // ignore: unused_local_variable
     final positionStream =
         Geolocator.getPositionStream(locationSettings: locationSettings)
             .listen((Position? position) {
       latitude.value = position!.latitude;
       longitude.value = position.longitude;
+
+      debugPrint('2');
+
+      getPolyline(merchantPosition);
     });
   }
 
@@ -89,8 +96,8 @@ class MapController extends GetxController {
     Position _currentPos = await getCurrentPosition();
     latitude.value = _currentPos.latitude;
     longitude.value = _currentPos.longitude;
-    if (_currentPos != null) {
-      // ignore: unnecessary_null_comparison
+    if (_currentPos != null) {      // ignore: unnecessary_null_comparison
+
       return CameraPosition(
         target: LatLng(latitude.value, longitude.value),
         zoom: zoom.value,
@@ -234,10 +241,14 @@ class MapController extends GetxController {
       travelMode: TravelMode.driving,
     );
     polylineCoordinates.clear();
+    debugPrint('sss');
+    debugPrint(result.toString());
     if (result.points.isNotEmpty) {
       for (var point in result.points) {
         polylineCoordinates.add(LatLng(point.latitude, point.longitude));
       }
+    } else {
+      debugPrint('empty');
     }
     addPolyLine(location.toString());
   }
@@ -251,5 +262,6 @@ class MapController extends GetxController {
       points: polylineCoordinates,
     );
     polyLines[id] = polyline;
+    debugPrint(location);
   }
 }
