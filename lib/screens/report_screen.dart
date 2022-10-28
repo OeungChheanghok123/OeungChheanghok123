@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:loy_eat/controllers/home_controller.dart';
 import 'package:loy_eat/controllers/new_order_card_controller.dart';
+import 'package:loy_eat/controllers/order_controller.dart';
 import 'package:loy_eat/controllers/report_controller.dart';
 import 'package:loy_eat/models/deliver_model.dart';
 import 'package:loy_eat/models/order_model.dart';
@@ -19,6 +20,7 @@ class ReportScreen extends StatelessWidget {
   final controller = Get.put(ReportController());
   final newOrderController = Get.put(NewOrderCardController());
   final homeController = Get.put(HomeController());
+  final orderController = Get.put(OrderController());
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +32,7 @@ class ReportScreen extends StatelessWidget {
           future: homeController.wait3SecAndLoadData(),
           builder: _buildFunctionBody,
         ),
-        bottomSheet: Obx(() => newOrderController.newOrderId.value != '' && homeController.isOnline.value == true ? NewOrderCard() : const SizedBox()),
+        bottomSheet: Obx(() => newOrderController.newOrderId.value != '' && homeController.isOnline.value == true && orderController.orderAccept.value == false ? NewOrderCard() : const SizedBox()),
       ),
     );
   }
@@ -174,7 +176,7 @@ class ReportScreen extends StatelessWidget {
           ),
           // detail card
           InkWell(
-            onTap: () => controller.cardOrderPage(orderModel.orderId, deliverModel.deliveryFee, deliverModel.tip, deliverModel.bonus, orderModel.customerName),
+            onTap: () => controller.cardOrderPage(orderModel.orderId, deliverModel.deliveryFee, deliverModel.tip, deliverModel.bonus, orderModel.customerName, deliverModel.process),
             child: _buildCard(
               child: Container(
                 padding: const EdgeInsets.all(10),

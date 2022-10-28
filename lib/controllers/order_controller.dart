@@ -8,4 +8,5 @@ class OrderController extends GetxController{
   var reasonMerchantCancel = "Sorry! Order #123456 has been canceled by Cafe Amazon (PPIU) due to ...";
 
   var orderAccept = false.obs;
+  var emptyScreen = true.obs;
 }

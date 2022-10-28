@@ -15,6 +15,7 @@ class ReportOrderDetailController extends GetxController{
   var getTip = ''.obs;
   var getBonus = ''.obs;
   var getCustomerName = ''.obs;
+  var getStatus = ''.obs;
   var customerNo = ''.obs;
   var itemLength = 0.obs;
 
@@ -49,6 +50,7 @@ class ReportOrderDetailController extends GetxController{
     getTip.value = Get.arguments['tip'];
     getBonus.value = Get.arguments['bonus'];
     getCustomerName.value = Get.arguments['customerName'];
+    getStatus.value = Get.arguments['status'];
     super.onInit();
 
     loadOrderData();

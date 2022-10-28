@@ -96,9 +96,10 @@ class OrderDetailController extends GetxController {
     });
   }
   void loadOrderDetailData() {
-    clearList();
     final orderDetail = orderDetailCollection.where(OrderDetailModel.orderIdString, isEqualTo: getOrderNo.value).snapshots();
     orderDetail.listen((e) {
+      clearList();
+
       if (e.docs.isNotEmpty) {
         final data = e.docs.map((e) => OrderDetailModel.fromMap(e.data())).toList();
         _orderDetailData.value = RemoteData<List<OrderDetailModel>>(status: RemoteDataStatus.success, data: data);
@@ -114,6 +115,7 @@ class OrderDetailController extends GetxController {
           var proId = data[0].items[i]['product_id'];
           listProductId.add(proId);
         }
+
         debugPrint('listProductId : ${listProductId.length}');
         for(int i = 0 ; i < listProductId.length ; i++) {
           var id = listProductId[i];
@@ -142,15 +144,17 @@ class OrderDetailController extends GetxController {
       listSalePrice.add(product[0].price);
 
       debugPrint('listSalePrice : ${listSalePrice.length}');
-      for(int i = listSalePrice.length - 1 ; i < listSalePrice.length ; i++) {
-        var qty = double.parse(listQty[i]);
-        var salePrice = double.parse(listSalePrice[i]);
+      if (listSalePrice.isNotEmpty && listQty.isNotEmpty) {
+        for(int i = listSalePrice.length - 1 ; i < listSalePrice.length ; i++) {
+          var qty = double.parse(listQty[i]);
+          var salePrice = double.parse(listSalePrice[i]);
 
-        listAmount.add(qty * salePrice);
-        debugPrint('amount : $listAmount');
-        calculate();
+          listAmount.add(qty * salePrice);
+          debugPrint('amount : $listAmount');
+          calculate();
+        }
+        _productData.value = RemoteData<List<ProductModel>>(status: RemoteDataStatus.success, data: product);
       }
-      _productData.value = RemoteData<List<ProductModel>>(status: RemoteDataStatus.success, data: product);
     });
   }
 

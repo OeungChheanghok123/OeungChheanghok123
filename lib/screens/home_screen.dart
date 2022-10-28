@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:loy_eat/controllers/home_controller.dart';
 import 'package:loy_eat/controllers/new_order_card_controller.dart';
+import 'package:loy_eat/controllers/order_controller.dart';
 import 'package:loy_eat/widgets/layout_widget/color.dart';
 import 'package:loy_eat/widgets/layout_widget/icon_widget.dart';
 import 'package:loy_eat/widgets/layout_widget/space.dart';
@@ -18,6 +19,7 @@ class HomeScreen extends StatelessWidget {
   final dateFormat = DateFormat('dd-MMM-yyyy');
   final homeController = Get.put(HomeController());
   final newOrderController = Get.put(NewOrderCardController());
+  final orderController = Get.put(OrderController());
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +31,7 @@ class HomeScreen extends StatelessWidget {
         body: SingleChildScrollView(
           child: _buildBody,
         ),
-        bottomSheet: Obx(() => newOrderController.newOrderId.value != '' && homeController.isOnline.value == true ? NewOrderCard() : const SizedBox(),
+        bottomSheet: Obx(() => newOrderController.newOrderId.value != '' && homeController.isOnline.value == true  && orderController.orderAccept.value == false  ? NewOrderCard() : const SizedBox(),
         ),
       ),
     );

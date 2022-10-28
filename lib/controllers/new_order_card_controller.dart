@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:loy_eat/controllers/home_controller.dart';
 import 'package:loy_eat/controllers/main_page_controller.dart';
 import 'package:loy_eat/models/customer_model.dart';
 import 'package:loy_eat/models/deliver_model.dart';
@@ -19,6 +20,7 @@ class NewOrderCardController extends GetxController {
   var startCounter = 60.obs;
 
   final mainPageController = Get.put(MainPageController());
+  final homeController = Get.put(HomeController());
 
   final driverReportCollection = FirebaseFirestore.instance.collection(DriverReportModel.collectionName);
   final driverCollection = FirebaseFirestore.instance.collection(DriverModel.collectionName);
@@ -53,21 +55,19 @@ class NewOrderCardController extends GetxController {
 
   @override
   void onInit() {
-    startTimer();
-    _loadNewOrder();
     super.onInit();
+
+    _loadNewOrder();
+    const oneSec = Duration(seconds: 1);
+    _timer = Timer.periodic(oneSec, (Timer timer) {});
   }
-  @override
-  void onClose() {
-    super.onClose();
-    closeTimer();
-  }
+
 
   void startTimer() {
     const oneSec = Duration(seconds: 1);
     _timer = Timer.periodic(oneSec, (Timer timer) {
         if (startCounter.value == 0) {
-          closeTimer();
+          timer.cancel();
           Get.defaultDialog(
             radius: 5,
             title: '',
@@ -113,30 +113,31 @@ class NewOrderCardController extends GetxController {
   }
 
   void _loadNewOrder() {
-    final data = orderCollection.where(OrderModel.isNewString, isEqualTo: false).where('status', isEqualTo: 'Accepted').snapshots();
+    final data = orderCollection.where(OrderModel.isNewString, isEqualTo: true).where('status', isEqualTo: 'Accepted').snapshots();
     data.listen((result) {
       final orders = result.docs.map((e) => OrderModel.fromMap(e.data())).toList();
-
       if (orders.isNotEmpty) {
-        if (available.value == true) {
-          startTimer();
+        if (homeController.isOnline.value == true) {
+          if (available.value == true) {
+            startTimer();
 
-          newOrderId.value = '';
-          newOrderId.value = orders[0].orderId;
-          orderId.value = newOrderId.value;
-          orderDate.value = orders[0].date;
-          _loadOrderData(newOrderId.value);
-          _loadDeliverData(newOrderId.value);
-          _getDocumentId(newOrderId.value);
+            newOrderId.value = '';
+            newOrderId.value = orders[0].orderId;
+            orderId.value = newOrderId.value;
+            orderDate.value = orders[0].date;
+            _loadOrderData(newOrderId.value);
+            _loadDeliverData(newOrderId.value);
+            _getDocumentId(newOrderId.value);
 
-          merchantId.value = '';
-          merchantId.value = orders[0].merchantId;
-          _loadMerchantData(merchantId.value);
+            merchantId.value = '';
+            merchantId.value = orders[0].merchantId;
+            _loadMerchantData(merchantId.value);
 
-          customerId.value = '';
-          customerId.value = orders[0].customerId;
-          customerName.value = orders[0].customerName;
-          _loadCustomerData(customerId.value);
+            customerId.value = '';
+            customerId.value = orders[0].customerId;
+            customerName.value = orders[0].customerName;
+            _loadCustomerData(customerId.value);
+          }
         }
       }
       else {
@@ -225,7 +226,6 @@ class NewOrderCardController extends GetxController {
     //orderCollection.doc(orderDocId.value).update({OrderModel.isNewString : false}).then((_) => debugPrint('update successful.'));
     //deliverCollection.doc(deliverDocId.value).update({DeliverModel.processString : 'Rejected'}).then((_) => debugPrint('order id ${newOrderId.value} was reject.'));
     //deliverCollection.doc(deliverDocId.value).update({DeliverModel.step1String : false, DeliverModel.step2String : false, DeliverModel.step3String : false, DeliverModel.step4String : false}).then((_) => debugPrint('update all step successful.'));
-    closeTimer();
     Get.offAllNamed('/instruction');
   }
   void setDriverId() {

@@ -23,8 +23,8 @@ class OrderScreen extends StatelessWidget {
         extendBody: true,
         backgroundColor: lightGray,
         appBar: HomeScreenAppBar(),
-        body: Obx(() => controller.orderAccept.value == true ? OrderDetailScreen() : OrderEmptyScreen()),
-        bottomSheet: Obx(() => newOrderController.newOrderId.value != '' && homeController.isOnline.value == true ? NewOrderCard() : const SizedBox()),
+        body: Obx(() => controller.orderAccept.value == true && controller.emptyScreen.value == false ? OrderDetailScreen() : OrderEmptyScreen()),
+        bottomSheet: Obx(() => newOrderController.newOrderId.value != '' && homeController.isOnline.value == true && controller.orderAccept.value == false ? NewOrderCard() : const SizedBox()),
       ),
     );
   }

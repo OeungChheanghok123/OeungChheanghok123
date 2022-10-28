@@ -62,7 +62,7 @@ class ReportOrderDetailScreen extends StatelessWidget {
           _buildItemsOrderDetail,
           _buildStatusDetail,
           _buildYourEarning,
-          _buildButtonStatus,
+          controller.getStatus.value != '' ? _buildButtonStatus : const SizedBox(),
         ],
       ),
     );

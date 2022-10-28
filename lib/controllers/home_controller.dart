@@ -303,6 +303,7 @@ class HomeController extends GetxController{
   toggleClicked() async {
     debugPrint('driverDoc = $driverDocId');
     if (toggleState.value == false) {
+      await driverCollection.doc(driverDocId).update({DriverModel.isOnlineString : true});
       debugPrint('Driver is Online');
       isOnline.value = true;
       toggleState.value = true;
@@ -319,21 +320,20 @@ class HomeController extends GetxController{
       outputMonth = month.format(today);
       outputYear = year.format(today);
 
-      await driverCollection.doc(driverDocId).update({DriverModel.isOnlineString : true});
       loadDriverReportCollection();
     }
     else {
+      await driverCollection.doc(driverDocId).update({DriverModel.isOnlineString : false});
+
       debugPrint('Driver is Offline');
       isOnline.value = false;
       toggleState.value = false;
       loadToggleState();
-
-      await driverCollection.doc(driverDocId).update({DriverModel.isOnlineString : false});
     }
   }
 
-  loadDriverReportCollection() {
-    driverReportCollection.where(DriverReportModel.driverIdString, isEqualTo: id).where(DriverReportModel.dateString, isEqualTo: outputDate).get().then((value) {
+  loadDriverReportCollection() async {
+    await driverReportCollection.where(DriverReportModel.driverIdString, isEqualTo: id).where(DriverReportModel.dateString, isEqualTo: outputDate).get().then((value) {
       if (value.docs.isEmpty) {
         driverReportCollection.add({
           DriverReportModel.driverIdString: id,
@@ -362,7 +362,6 @@ class HomeController extends GetxController{
         startTimer();
       }
     });
-
   }
 
   Future<Widget> wait3SecAndLoadData() async {

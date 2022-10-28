@@ -228,6 +228,7 @@ class NewOrderCard extends StatelessWidget {
             color: succeed,
             onPressed: () {
               orderController.orderAccept.value = true;
+              orderController.emptyScreen.value = false;
               orderDetailController.getOrderNo.value =  newOrderController.orderId.value;
               orderDetailController.onInit();
 
@@ -235,8 +236,10 @@ class NewOrderCard extends StatelessWidget {
               newOrderController.setDriverId();
               newOrderController.closeTimer();
               newOrderController.updateOrderStatus();
+
               mapController.getCurrentCameraPosition();
               mapController.loadOrderData();
+
               Get.toNamed('/order_accept');
             },
           ),
